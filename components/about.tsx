@@ -15,12 +15,17 @@ export function About() {
           <p className="tenure" data-reveal="">
             <b aria-hidden="true">#</b> {about.tenure}
           </p>
-          <p className="statement" data-scrub-words="">
-            {about.background}
+          {/* each word is its own span so the scroll scene can light them up one by one */}
+          <p className="statement" data-scene="statement">
+            {about.background.split(" ").map((word, i) => (
+              <span key={i} className="w">
+                {word}{" "}
+              </span>
+            ))}
           </p>
         </div>
 
-        <figure className="portrait" data-portrait="">
+        <figure className="portrait" data-scene="portrait">
           <figcaption aria-hidden="true">
             <span>portrait.webp</span>
             <span>480 × 480</span>
@@ -31,7 +36,6 @@ export function About() {
               width={480}
               height={480}
               sizes="(max-width: 720px) 60vw, 300px"
-              loading="eager"
               alt="Manikanta Sriram, full stack developer in Hyderabad, in a navy blazer"
             />
           </div>

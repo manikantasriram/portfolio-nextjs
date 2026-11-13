@@ -1,19 +1,19 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useCommandPalette } from "@/components/command-palette";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { startLazySections } from "@/lib/lazy-sections";
+import { subscribeScroll, useActiveSection } from "@/lib/scroll-store";
 import { navLinks } from "@/lib/site";
-import { useScrollState } from "@/lib/use-active-section";
 
 const subscribeNothing = () => () => {};
 const isMacPlatform = () => /Mac|iPhone|iPad/.test(navigator.userAgent);
 
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const { section, progress } = useScrollState();
+  const section = useActiveSection();
   const { open: openPalette } = useCommandPalette();
   const navRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -22,58 +22,41 @@ export function Nav() {
   const burgerRef = useRef<HTMLButtonElement>(null);
   const isMac = useSyncExternalStore(subscribeNothing, isMacPlatform, () => false);
 
-  // Reading progress: a thin accent line along the bottom of the nav, driven by ScrollTrigger.
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        barRef.current,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
-        },
-      );
-    },
-    { scope: navRef },
+  // Reading progress and the "stuck" border are written straight to the DOM on each scroll
+  // frame, so the nav never re-renders while scrolling.
+  useEffect(
+    () =>
+      subscribeScroll(({ progress }) => {
+        if (barRef.current) barRef.current.style.transform = `scaleX(${progress})`;
+        if (navRef.current) navRef.current.dataset.stuck = String(progress > 0);
+      }),
+    [],
   );
 
-  // The highlight behind the active link glides between links as you scroll.
-  useGSAP(
-    () => {
-      const list = listRef.current;
-      const pill = pillRef.current;
-      if (!list || !pill) return;
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Sections below the fold are rendered during idle time after load (see lib/lazy-sections.ts).
+  useEffect(() => startLazySections(), []);
 
-      const place = (animate: boolean) => {
-        const link = list.querySelector<HTMLElement>('a[aria-current="true"]');
-        if (!link) {
-          gsap.to(pill, { autoAlpha: 0, duration: 0.2, overwrite: true });
-          return;
-        }
-        const box = {
-          x: link.offsetLeft,
-          y: link.offsetTop,
-          width: link.offsetWidth,
-          height: link.offsetHeight,
-        };
-        const hidden = gsap.getProperty(pill, "opacity") === 0;
-        if (!animate || reduce || hidden) {
-          gsap.set(pill, box);
-          gsap.to(pill, { autoAlpha: 1, duration: 0.25, overwrite: "auto" });
-        } else {
-          gsap.to(pill, { ...box, autoAlpha: 1, duration: 0.55, ease: "expo.out", overwrite: true });
-        }
-      };
-
-      place(true);
-      const ro = new ResizeObserver(() => place(false));
-      ro.observe(list);
-      return () => ro.disconnect();
-    },
-    { dependencies: [section], scope: navRef },
-  );
+  // The highlight behind the active link: position it here, CSS transitions do the gliding.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    const pill = pillRef.current;
+    if (!list || !pill) return;
+    const place = () => {
+      const link = list.querySelector<HTMLElement>('a[aria-current="true"]');
+      if (!link) {
+        pill.style.opacity = "0";
+        return;
+      }
+      pill.style.transform = `translate(${link.offsetLeft}px, ${link.offsetTop}px)`;
+      pill.style.width = `${link.offsetWidth}px`;
+      pill.style.height = `${link.offsetHeight}px`;
+      pill.style.opacity = "1";
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, [section]);
 
   useEffect(() => {
     if (!open) return;
@@ -98,26 +81,8 @@ export function Nav() {
     };
   }, [open]);
 
-  // Mobile menu: links cascade in when it opens.
-  useGSAP(
-    () => {
-      if (!open || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      gsap.fromTo(
-        "#menu a",
-        { autoAlpha: 0, y: -8 },
-        { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.04, ease: "power3.out", clearProps: "all" },
-      );
-    },
-    { dependencies: [open], scope: navRef },
-  );
-
-  // Keep ScrollTrigger measurements right once web fonts have settled.
-  useEffect(() => {
-    document.fonts?.ready.then(() => ScrollTrigger.refresh());
-  }, []);
-
   return (
-    <nav ref={navRef} className="nav" aria-label="Primary" data-stuck={progress > 0}>
+    <nav ref={navRef} className="nav" aria-label="Primary">
       <div className="wrap flex h-16 items-center justify-between gap-3">
         <a href="#top" className="logo" aria-label="Manikanta Sriram, back to top">
           <i aria-hidden="true">&lt;</i>Manikanta Sriram<i aria-hidden="true"> /&gt;</i>
@@ -125,8 +90,8 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <ul ref={listRef} id="menu" className="links" data-open={open}>
             <li ref={pillRef} className="pill" role="presentation" aria-hidden="true" />
-            {navLinks.map((l) => (
-              <li key={l.id}>
+            {navLinks.map((l, i) => (
+              <li key={l.id} style={{ "--n": i } as React.CSSProperties}>
                 <a
                   href={`#${l.id}`}
                   aria-current={section === l.id ? "true" : undefined}

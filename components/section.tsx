@@ -18,7 +18,7 @@ export function Section({ id, comment, children }: SectionProps) {
   return (
     <section id={id} className="sec" aria-labelledby={headingId}>
       <div className="wrap">
-        <header className="sh">
+        <header className="sh" data-scene="header">
           <p className="hunk" aria-hidden="true">
             <b>@@</b>
             <span>{meta.number}</span>

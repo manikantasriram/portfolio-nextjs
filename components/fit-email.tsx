@@ -12,6 +12,8 @@ export function FitEmail({ email }: { email: string }) {
     if (!el || !parent) return;
 
     const fit = () => {
+      // While the section is off-screen it is not laid out yet; the observer calls back once it is.
+      if (el.checkVisibility && !el.checkVisibility({ contentVisibilityAuto: true })) return;
       el.style.fontSize = "";
       const size = parseFloat(getComputedStyle(el).fontSize);
       const overflow = el.scrollWidth - el.clientWidth;

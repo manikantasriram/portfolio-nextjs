@@ -34,5 +34,5 @@ export function HeroBackdrop() {
     };
   }, []);
 
-  return <div ref={ref} className="hero-grid" data-hero="grid" aria-hidden="true" />;
+  return <div ref={ref} className="hero-grid" aria-hidden="true" />;
 }

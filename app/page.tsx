@@ -1,4 +1,5 @@
 import { ArrowUpRight, Download } from "lucide-react";
+import { Suspense } from "react";
 import { About } from "@/components/about";
 import { CopyEmail } from "@/components/copy-email";
 import { ExperienceGraph } from "@/components/experience";
@@ -27,7 +28,10 @@ export default function Home() {
         <About />
 
         <Section id="experience" comment="// git log --graph, newest first">
-          <ExperienceGraph />
+          {/* its own Suspense boundary, so React hydrates this larger island as a separate task */}
+          <Suspense>
+            <ExperienceGraph />
+          </Suspense>
         </Section>
 
         <Section id="projects" comment="// full stack proofs of concept">
@@ -56,7 +60,7 @@ export default function Home() {
             <p className="kick" data-reveal="" aria-hidden="true">
               <b>$</b>mail
             </p>
-            <div className="big-mask" data-email="">
+            <div className="big-mask" data-scene="email">
               <FitEmail email={site.email} />
             </div>
             <div className="cta" data-stagger="">

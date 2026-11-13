@@ -2,7 +2,6 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { experience, type CommitType, type Role } from "@/lib/content";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 type Filter = "all" | CommitType;
 const filters: Filter[] = ["all", "feat", "perf", "fix"];
@@ -10,8 +9,12 @@ const allCommits = experience.flatMap((r) => r.commits);
 const count = (f: Filter) =>
   f === "all" ? allCommits.length : allCommits.filter((c) => c.type === f).length;
 
-/** Where the scroll "playhead" sits in the viewport while the graph draws. */
-const PLAYHEAD = "62%";
+interface Line {
+  d: string;
+  /** Vertical extent inside the list, in px. The scroll animation draws between these. */
+  top: number;
+  bottom: number;
+}
 
 interface Geometry {
   width: number;
@@ -19,14 +22,13 @@ interface Geometry {
   /** Dashed HEAD → first commit segment. */
   pending: string;
   /** The main branch, top to bottom. */
-  main: { d: string; top: number; bottom: number };
+  main: Line;
   /** Side branches that fork from main and merge back into it. */
-  branches: { d: string; top: number; bottom: number }[];
+  branches: Line[];
 }
 
 /** Reads node positions from the DOM and turns them into SVG paths for the commit graph. */
 function measure(list: HTMLOListElement): Geometry | null {
-  const base = list.getBoundingClientRect();
   const nodes = [...list.querySelectorAll<HTMLElement>(".node")].map((el) => ({
     // offset* ignores transforms, so an animating node still reports its resting position
     x: el.offsetLeft + el.offsetWidth / 2,
@@ -61,8 +63,8 @@ function measure(list: HTMLOListElement): Geometry | null {
     });
 
   return {
-    width: base.width,
-    height: base.height,
+    width: list.offsetWidth,
+    height: list.offsetHeight,
     pending: `M ${x0} ${head.y + 9} L ${x0} ${firstMain.y - 9}`,
     main: { d: `M ${x0} ${firstMain.y} L ${x0} ${root.y}`, top: firstMain.y, bottom: root.y },
     branches,
@@ -73,7 +75,7 @@ function RoleEntry({ role, filter }: { role: Role; filter: Filter }) {
   const lane = role.ref.tone === "branch" ? 1 : 0;
   return (
     <li className={`g-row lane-${lane}`}>
-      <span className="node" data-lane={lane} aria-hidden="true" />
+      <span className="node" data-lane={lane} data-pop="" aria-hidden="true" />
       <div className="g-meta" data-reveal="">
         <span className={`ref ${lane ? "branch" : ""}`}>{role.ref.label}</span>
         <h3>{role.company}</h3>
@@ -114,7 +116,10 @@ function RoleEntry({ role, filter }: { role: Role; filter: Filter }) {
 
 /**
  * Experience as a `git log --graph`. The graph is a real one: `main` runs top to bottom and the
- * freelance work forks off into its own lane, then merges back. Lines draw as you scroll.
+ * freelance work forks off into its own lane, then merges back.
+ *
+ * This component only draws the graph. The scroll animation (lines drawing, nodes lighting up)
+ * is the "graph" scene in lib/motion-scenes.ts, which reads each path's data-top / data-bottom.
  */
 export function ExperienceGraph() {
   const [filter, setFilter] = useState<Filter>("all");
@@ -124,70 +129,12 @@ export function ExperienceGraph() {
   useLayoutEffect(() => {
     const list = listRef.current;
     if (!list) return;
-    const update = () => setGeo(measure(list));
-    update();
-    const ro = new ResizeObserver(update);
+    // ResizeObserver reports once the list has been laid out, and again whenever it resizes.
+    // (No eager measurement: while the section is off-screen it has no layout to read yet.)
+    const ro = new ResizeObserver(() => setGeo(measure(list)));
     ro.observe(list);
     return () => ro.disconnect();
   }, []);
-
-  useGSAP(
-    () => {
-      const list = listRef.current;
-      if (!geo || !list) return;
-      const mm = gsap.matchMedia();
-
-      mm.add(MOTION_OK, () => {
-        const draw = (path: Element | null, top: number, bottom: number) => {
-          if (!path) return;
-          gsap.fromTo(
-            path,
-            { strokeDashoffset: 1 },
-            {
-              strokeDashoffset: 0,
-              ease: "none",
-              autoRound: false, // the path is 1 unit long, so whole-pixel rounding would snap it
-              immediateRender: true,
-              scrollTrigger: {
-                trigger: list,
-                start: `top+=${top} ${PLAYHEAD}`,
-                end: `top+=${bottom} ${PLAYHEAD}`,
-                scrub: 0.5,
-              },
-            },
-          );
-        };
-
-        draw(list.querySelector(".g-main"), geo.main.top, geo.main.bottom);
-        list
-          .querySelectorAll(".g-branch")
-          .forEach((path, i) => draw(path, geo.branches[i].top, geo.branches[i].bottom));
-
-        // Each commit node lights up as the playhead passes it.
-        list.querySelectorAll<HTMLElement>(".node").forEach((node) => {
-          gsap.fromTo(
-            node,
-            { scale: 0 },
-            {
-              scale: 1,
-              duration: 0.6,
-              ease: "back.out(2.4)",
-              scrollTrigger: { trigger: node, start: "top 90%", once: true },
-            },
-          );
-          ScrollTrigger.create({
-            trigger: node,
-            start: `center ${PLAYHEAD}`,
-            onEnter: () => node.classList.add("on"),
-            onLeaveBack: () => node.classList.remove("on"),
-          });
-        });
-      });
-
-      return () => mm.revert();
-    },
-    { dependencies: [geo], scope: listRef, revertOnUpdate: true },
-  );
 
   return (
     <>
@@ -212,7 +159,7 @@ export function ExperienceGraph() {
         ))}
       </div>
 
-      <ol ref={listRef} className="graph">
+      <ol ref={listRef} className="graph" data-scene="graph">
         {geo && (
           <svg
             className="g-svg"
@@ -227,15 +174,28 @@ export function ExperienceGraph() {
             {geo.branches.map((b, i) => (
               <path key={`t${i}`} className="g-track branch" d={b.d} />
             ))}
-            <path className="g-main" d={geo.main.d} pathLength={1} />
+            <path
+              className="g-line g-main"
+              d={geo.main.d}
+              pathLength={1}
+              data-top={geo.main.top}
+              data-bottom={geo.main.bottom}
+            />
             {geo.branches.map((b, i) => (
-              <path key={`b${i}`} className="g-branch" d={b.d} pathLength={1} />
+              <path
+                key={`b${i}`}
+                className="g-line g-branch"
+                d={b.d}
+                pathLength={1}
+                data-top={b.top}
+                data-bottom={b.bottom}
+              />
             ))}
           </svg>
         )}
 
         <li className="g-row head">
-          <span className="node ghost" data-lane={0} aria-hidden="true" />
+          <span className="node ghost" data-lane={0} data-pop="" aria-hidden="true" />
           <div className="g-meta" data-reveal="">
             <span className="ref">HEAD → next</span>
             <p className="nx">
@@ -252,7 +212,7 @@ export function ExperienceGraph() {
         ))}
 
         <li className="g-row root">
-          <span className="node" data-lane={0} aria-hidden="true" />
+          <span className="node" data-lane={0} data-pop="" aria-hidden="true" />
           <p className="g-init" data-reveal="">
             init ·{" "}
             <a className="ext" href="#education">

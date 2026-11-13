@@ -6,7 +6,7 @@ export function ProjectList() {
   return (
     <ol className="plist">
       {projects.map((p, i) => (
-        <li key={p.name} className="prow" data-project="">
+        <li key={p.name} className="prow" data-scene="project">
           <i className="rule" aria-hidden="true" />
           <p className="pidx" aria-hidden="true">
             <b>{String(i + 1).padStart(2, "0")}</b>

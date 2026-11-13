@@ -12,7 +12,6 @@ import {
 } from "react";
 import { downloadResume, openExternal, scrollToSection, sendEmail } from "@/lib/actions";
 import { experience } from "@/lib/content";
-import { gsap, useGSAP } from "@/lib/gsap";
 import { toggleTheme } from "@/lib/theme";
 import { sections, site } from "@/lib/site";
 
@@ -109,27 +108,7 @@ function Palette({ onClose }: { onClose: () => void }) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
   const listId = useId();
-
-  // Entrance: backdrop fades, the panel drops in, commands cascade.
-  useGSAP(
-    () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      gsap
-        .timeline({ defaults: { ease: "expo.out" } })
-        // opacity only: `visibility: hidden` would stop the input taking focus
-        .fromTo(rootRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" })
-        .fromTo(".pal-b", { y: -14, scale: 0.97 }, { y: 0, scale: 1, duration: 0.45 }, 0)
-        .fromTo(
-          ".pal-l li",
-          { opacity: 0, x: -8 },
-          { opacity: 1, x: 0, duration: 0.35, stagger: 0.018, clearProps: "all" },
-          0.05,
-        );
-    },
-    { scope: rootRef },
-  );
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -174,7 +153,6 @@ function Palette({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      ref={rootRef}
       className="pal"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();

@@ -90,11 +90,14 @@ export const viewport: Viewport = {
 /**
  * Runs before first paint.
  * 1. Applies the saved theme, or the OS preference on a first visit, so the wrong theme never flashes.
- * 2. Marks the document as scripted (`data-js`) so CSS can hold animated elements hidden until GSAP
- *    reveals them. If the animation layer has not started after 4 s, the mark is removed and
+ * 2. Marks the document as scripted (`data-js`) so CSS can hold animated elements back until they
+ *    are revealed. If the animation layer has not started after 4 s, the mark is removed and
  *    everything simply shows.
+ * 3. Marks it `data-lazy` so sections below the fold are skipped on the first paint; they are
+ *    rendered during idle time right after load (lib/lazy-sections.ts). Skipped when the URL
+ *    points at a section (#skills), so deep links land exactly.
  */
-const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";setTimeout(function(){if(!window.__motionReady)delete d.dataset.js},4000)})()`;
+const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";if(!location.hash)d.dataset.lazy="1";setTimeout(function(){if(!window.__motionReady){delete d.dataset.js;delete d.dataset.lazy}},4000)})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
