@@ -1,8 +1,7 @@
 import { ArrowDownRight, Download } from "lucide-react";
 import { HeroBackdrop } from "@/components/hero-backdrop";
-import { HeroTerminal } from "@/components/hero-terminal";
 import { hero } from "@/lib/content";
-import { sections, site } from "@/lib/site";
+import { site } from "@/lib/site";
 
 /** One token of the main.py listing: [text, syntax class]. */
 type Token = [text: string, cls?: string];
@@ -86,7 +85,6 @@ export function Hero() {
               <i />
               <i />
               <span className="tab on">main.py</span>
-              <span className="tab">zsh</span>
             </div>
             <pre className="code" aria-hidden="true">
               {mainPy.map((tokens, i) => (
@@ -104,7 +102,6 @@ export function Hero() {
                 </span>
               ))}
             </pre>
-            <HeroTerminal sectionCount={sections.length} />
           </div>
         </div>
       </div>

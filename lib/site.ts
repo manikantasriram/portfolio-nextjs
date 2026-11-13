@@ -24,8 +24,8 @@ export const site = {
 
 /**
  * The page as a workspace: every section is a "file".
- * Order here is the order on the page; the nav, status bar, command palette,
- * terminal and main.py all read from this one list.
+ * Order here is the order on the page; the nav, section headers, status bar and
+ * command palette all read from this one list.
  */
 export const sections = [
   { id: "about", label: "About", file: "about.md", inNav: true },

@@ -113,7 +113,7 @@ shown in exactly one section.
 | `lib/site.ts`    | Name, email, GitHub and LinkedIn links, resume path, and the section map            |
 
 The section map in `lib/site.ts` (id, label, "file name", order) drives the nav, the section
-headers, the status bar, the command palette, the terminal and the `main.py` card.
+headers, the status bar and the command palette.
 
 Static files are in `public/`:
 
@@ -141,7 +141,6 @@ components/
   motion.tsx            starts motion: CSS reveals now, GSAP scenes on first interaction
   nav.tsx               sticky nav, mobile menu, scroll progress, gliding active highlight
   hero.tsx              name, role, tagline and the main.py editor card
-  hero-terminal.tsx     interactive terminal (help, ls, git log, cd <section>, cat <file>, ...)
   hero-backdrop.tsx     dot grid with pointer spotlight
   section.tsx           section wrapper with the git-diff style header
   about.tsx             background statement, portrait and the "How I build" principles
@@ -158,7 +157,7 @@ lib/
   motion-scenes.ts    the GSAP scroll scenes (lazy chunk)
   lazy-sections.ts    idle-time rendering of sections below the fold
   scroll-store.ts     shared scroll state (active section, progress)
-  theme.ts  terminal.ts  actions.ts
+  theme.ts  actions.ts
 ```
 
 ## How the animation layer works
@@ -210,8 +209,6 @@ npx lighthouse http://localhost:3000 --view
 
 - **Dark / light theme.** Follows the OS on a first visit, then remembers the choice. The switch
   animates as a circular reveal where the browser supports the View Transitions API.
-- **Interactive terminal** in the hero. Try `help`, `ls`, `git log`, `cat about.md`, `cd skills`,
-  `resume`, `theme`.
 - **Command palette.** `Ctrl/Cmd + K` or `/`.
 - **Commit graph.** `main` and a freelance branch draw as you scroll; filter commits by
   `feat`, `perf`, `fix`.

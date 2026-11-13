@@ -1,7 +1,7 @@
 import { prepareJump } from "@/lib/lazy-sections";
 import { site } from "@/lib/site";
 
-/** Browser-side actions shared by the command palette and the hero terminal. */
+/** Browser-side actions used by the command palette. */
 
 export function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
