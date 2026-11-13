@@ -1,0 +1,116 @@
+import type { Metadata, Viewport } from "next";
+import { DM_Mono, DM_Sans, Space_Grotesk } from "next/font/google";
+import { CommandPaletteProvider } from "@/components/command-palette";
+import { JsonLd } from "@/components/json-ld";
+import { site } from "@/lib/site";
+import "./globals.css";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-dm-mono",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: site.title,
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  keywords: [
+    "Manikanta Sriram",
+    "Manikanta Sriram Developer",
+    "Manikanta Sriram Full Stack Developer",
+    "Full Stack Developer Hyderabad",
+    "React Developer Hyderabad",
+    "React",
+    "TypeScript",
+    "FastAPI",
+    "PostgreSQL",
+  ],
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  openGraph: {
+    type: "profile",
+    url: "/",
+    siteName: site.name,
+    title: "Manikanta Sriram | Full Stack Developer",
+    description: site.shortDescription,
+    locale: "en_IN",
+    firstName: "Manikanta",
+    lastName: "Sriram",
+    images: [
+      {
+        url: site.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Manikanta Sriram, Full Stack Developer in Hyderabad",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Manikanta Sriram | Full Stack Developer",
+    description: "React, TypeScript and Python (FastAPI) developer in Hyderabad, India.",
+    images: [site.ogImage],
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F8FB" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A101D" },
+  ],
+};
+
+/**
+ * Runs before first paint.
+ * 1. Applies the saved theme, or the OS preference on a first visit, so the wrong theme never flashes.
+ * 2. Marks the document as scripted (`data-js`) so CSS can hold animated elements hidden until GSAP
+ *    reveals them. If the animation layer has not started after 4 s, the mark is removed and
+ *    everything simply shows.
+ */
+const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";setTimeout(function(){if(!window.__motionReady)delete d.dataset.js},4000)})()`;
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html
+      lang="en"
+      data-theme="light"
+      suppressHydrationWarning
+      className={`${spaceGrotesk.variable} ${dmSans.variable} ${dmMono.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <JsonLd />
+      </head>
+      <body>
+        <CommandPaletteProvider>{children}</CommandPaletteProvider>
+      </body>
+    </html>
+  );
+}
