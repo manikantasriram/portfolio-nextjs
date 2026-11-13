@@ -273,7 +273,8 @@ export function start(): () => void {
     timer = window.setTimeout(() => ScrollTrigger.refresh(true), 200);
   };
   document.addEventListener("contentvisibilityautostatechange", refresh, true);
-  document.fonts?.ready.then(refresh);
+  // Only needed if web fonts are still arriving; usually they loaded long before this runs.
+  if (document.fonts && document.fonts.status !== "loaded") document.fonts.ready.then(refresh);
 
   return () => {
     window.clearTimeout(timer);

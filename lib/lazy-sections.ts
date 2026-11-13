@@ -8,9 +8,9 @@
  *    (a click on an in-page link, the command palette, the terminal's `cd`) renders them all first.
  *
  * 2. Jump checking. A smooth scroll to a section can be cut short, for example when the animation
- *    library measures the page just as the scroll starts. Once scrolling stops, we check that the
- *    target really is where it should be and finish the jump if not. If the visitor takes over
- *    (wheel, touch, keyboard), the check is dropped so we never fight their scrolling.
+ *    library measures the page just as the scroll starts. For a few seconds after a jump we check
+ *    that the target really ends up where it should and finish the jump if not. If the visitor
+ *    takes over (wheel, touch), the check is dropped so we never fight their scrolling.
  */
 
 /** Renders every section now and switches the lazy mode off for good. */
@@ -58,30 +58,58 @@ function renderSectionsWhenIdle() {
 /* ------------------------------------------------------------ jump checking */
 
 const MAX_RETRIES = 2;
-let jump: { id: string; retries: number } | null = null;
+const TICK_MS = 100;
+/** Not arrived and not moving for this long means the scroll was cut short. */
+const STALLED_MS = 300;
+const GIVE_UP_MS = 6000;
 
-/** Call just before scrolling to a section. Makes positions exact and arms the arrival check. */
-export function prepareJump(id: string) {
-  renderAllSections();
-  jump = id && id !== "top" ? { id, retries: 0 } : null;
+let jump: { id: string; retries: number } | null = null;
+let watchdog = 0;
+
+function stopWatching() {
+  window.clearInterval(watchdog);
+  jump = null;
 }
 
-function checkArrival() {
-  if (!jump) return;
-  const target = document.getElementById(jump.id);
-  if (!target) {
-    jump = null;
-    return;
-  }
+function hasArrived(target: HTMLElement) {
   const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
   const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-  const arrived = atBottom || Math.abs(target.getBoundingClientRect().top - offset) <= 4;
-  if (arrived || jump.retries >= MAX_RETRIES) {
-    jump = null;
-    return;
-  }
-  jump.retries += 1;
-  target.scrollIntoView(); // smooth or instant, following the page's scroll-behavior
+  return atBottom || Math.abs(target.getBoundingClientRect().top - offset) <= 4;
+}
+
+/**
+ * Call just before scrolling to a section. Makes positions exact, then watches the jump for a
+ * few seconds: if the page stops moving before the target is in place, the jump is repeated.
+ * (A timer rather than the `scrollend` event, because a scroll that is cancelled before it has
+ * moved fires no event at all.)
+ */
+export function prepareJump(id: string) {
+  renderAllSections();
+  stopWatching();
+  if (!id || id === "top") return;
+
+  jump = { id, retries: 0 };
+  let lastY = window.scrollY;
+  let stalled = 0;
+  let elapsed = 0;
+  watchdog = window.setInterval(() => {
+    const target = jump && document.getElementById(jump.id);
+    elapsed += TICK_MS;
+    if (!jump || !target || elapsed > GIVE_UP_MS || hasArrived(target)) {
+      stopWatching();
+      return;
+    }
+    stalled = window.scrollY === lastY ? stalled + TICK_MS : 0;
+    lastY = window.scrollY;
+    if (stalled < STALLED_MS) return;
+    if (jump.retries >= MAX_RETRIES) {
+      stopWatching();
+      return;
+    }
+    jump.retries += 1;
+    stalled = 0;
+    target.scrollIntoView(); // smooth or instant, following the page's scroll-behavior
+  }, TICK_MS);
 }
 
 function onAnchorClick(event: MouseEvent) {
@@ -90,23 +118,18 @@ function onAnchorClick(event: MouseEvent) {
   if (id !== undefined && id !== null) prepareJump(id);
 }
 
-/** The visitor is scrolling by hand: stop checking, the page is theirs. */
-function onUserScroll() {
-  jump = null;
-}
-
 /** Starts idle rendering and jump checking. Returns a function that stops both. */
 export function startLazySections() {
   const cancelIdle = renderSectionsWhenIdle();
   document.addEventListener("click", onAnchorClick, true);
-  window.addEventListener("scrollend", checkArrival);
-  window.addEventListener("wheel", onUserScroll, { passive: true });
-  window.addEventListener("touchmove", onUserScroll, { passive: true });
+  // The visitor is scrolling by hand: stop checking, the page is theirs.
+  window.addEventListener("wheel", stopWatching, { passive: true });
+  window.addEventListener("touchmove", stopWatching, { passive: true });
   return () => {
     cancelIdle();
+    stopWatching();
     document.removeEventListener("click", onAnchorClick, true);
-    window.removeEventListener("scrollend", checkArrival);
-    window.removeEventListener("wheel", onUserScroll);
-    window.removeEventListener("touchmove", onUserScroll);
+    window.removeEventListener("wheel", stopWatching);
+    window.removeEventListener("touchmove", stopWatching);
   };
 }

@@ -95,9 +95,10 @@ export const viewport: Viewport = {
  *    everything simply shows.
  * 3. Marks it `data-lazy` so sections below the fold are skipped on the first paint; they are
  *    rendered during idle time right after load (lib/lazy-sections.ts). Skipped when the URL
- *    points at a section (#skills), so deep links land exactly.
+ *    points at a section (#skills), so deep links land exactly. The first click anywhere also
+ *    switches it off, so a nav link clicked before the page has hydrated still lands exactly.
  */
-const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";if(!location.hash)d.dataset.lazy="1";setTimeout(function(){if(!window.__motionReady){delete d.dataset.js;delete d.dataset.lazy}},4000)})()`;
+const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";if(!location.hash){d.dataset.lazy="1";addEventListener("click",function(){delete d.dataset.lazy},{capture:true,once:true})}setTimeout(function(){if(!window.__motionReady){delete d.dataset.js;delete d.dataset.lazy}},4000)})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
