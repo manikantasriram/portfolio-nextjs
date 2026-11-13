@@ -1,4 +1,4 @@
-import { renderAllSections } from "@/lib/lazy-sections";
+import { prepareJump } from "@/lib/lazy-sections";
 import { site } from "@/lib/site";
 
 /** Browser-side actions shared by the command palette and the hero terminal. */
@@ -10,7 +10,7 @@ export function prefersReducedMotion() {
 export function scrollToSection(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  renderAllSections(); // exact positions before jumping
+  prepareJump(id); // exact positions, and a check that the jump arrives
   el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
   history.replaceState(null, "", id === "top" ? location.pathname : `#${id}`);
 }
