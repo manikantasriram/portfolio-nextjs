@@ -1151,6 +1151,24 @@
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
   }
+  /* "in progress" badge on projects that are still being built */
+  .pstatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--warn);
+    background: color-mix(in srgb, var(--warn) 11%, transparent);
+  }
+  .pstatus i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
   .pidx b {
     color: var(--acc);
     font-weight: 400;

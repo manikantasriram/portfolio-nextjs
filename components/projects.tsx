@@ -14,6 +14,12 @@ export function ProjectList() {
           </p>
           <h3>{p.name}</h3>
           <div className="pbody">
+            {p.status && (
+              <p className="pstatus">
+                <i aria-hidden="true" />
+                {p.status}
+              </p>
+            )}
             <p>{p.description}</p>
             <ul className="chips" aria-label={`${p.name} tech stack`}>
               {p.stack.map((t) => (

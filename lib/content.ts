@@ -119,20 +119,24 @@ export interface Project {
   name: string;
   description: string;
   stack: string[];
+  /** Shown as a badge. "in progress" means the project is still being built, not shipped. */
+  status?: "in progress";
 }
 
 export const projects: Project[] = [
   {
     name: "Hotel Rate & Booking Manager",
     description:
-      "Manage hotels, room types, rate plans and bookings. Sortable, filterable data grids, optimistic updates, JWT auth with role-based access, and a documented REST API, deployed with Docker Compose to a public URL.",
+      "A full stack app for managing hotels, room types, rate plans and bookings. Planned scope: sortable, filterable data grids, optimistic updates, JWT auth with role-based access and a documented REST API, deployed with Docker Compose.",
     stack: ["React", "TypeScript", "TanStack Query", "FastAPI", "PostgreSQL", "Docker"],
+    status: "in progress",
   },
   {
     name: "AI Email Template Assistant",
     description:
-      "Generates responsive HTML email templates from a text brief and streams them to the UI over Server-Sent Events. A built-in validator flags cross-client issues before save, and every version is kept.",
+      "Turns a text brief into a responsive HTML email template, streamed to the UI over Server-Sent Events. Planned scope: a validator that flags cross-client issues before save, and full version history.",
     stack: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "LLM API"],
+    status: "in progress",
   },
 ];
 
