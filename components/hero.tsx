@@ -6,16 +6,17 @@ import { site } from "@/lib/site";
 /** One token of the main.py listing: [text, syntax class]. */
 type Token = [text: string, cls?: string];
 
-/**
- * main.py is the page itself, written as a tiny program anyone can read:
- * take the sections, show them one by one. It holds no professional details.
- */
+/** main.py: a short, readable profile. Every value matches the rest of the page. */
 const mainPy: Token[][] = [
-  [["# this page, as a program", "cc"]],
-  [["from", "k"], [" portfolio "], ["import", "k"], [" sections"]],
-  [],
-  [["for", "k"], [" section "], ["in", "k"], [" sections:"]],
-  [["    "], ["show", "p"], ["(section)  "], ["# scroll to run", "cc"]],
+  [["# products, end to end", "cc"]],
+  [["developer = {"]],
+  [["    "], ['"name"', "s"], [": "], ['"Manikanta Sriram"', "s"], [","]],
+  [["    "], ['"role"', "s"], [": "], ['"Full Stack Developer"', "s"], [","]],
+  [["    "], ['"frontend"', "s"], [": "], ["["], ['"React"', "s"], [", "], ['"TypeScript"', "s"], ["]"], [","]],
+  [["    "], ['"backend"', "s"], [": "], ["["], ['"FastAPI"', "s"], [", "], ['"PostgreSQL"', "s"], ["]"], [","]],
+  [["    "], ['"location"', "s"], [": "], ['"Hyderabad, India"', "s"], [","]],
+  [["    "], ['"open_to_work"', "s"], [": "], ["True", "n"], [","]],
+  [["}"]],
 ];
 
 /** Letters carry their index so CSS can stagger them (`--i`). */
@@ -102,6 +103,12 @@ export function Hero() {
                 </span>
               ))}
             </pre>
+            <p className="out" aria-hidden="true">
+              <span>
+                <b className="k">$</b> python main.py
+              </span>
+              <span className="ok">✓ ready to ship · open_to_work=True</span>
+            </p>
           </div>
         </div>
       </div>

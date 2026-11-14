@@ -697,13 +697,33 @@
   .code .n {
     color: var(--n);
   }
+  .editor .out {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 14px 20px 16px;
+    border-top: 1px solid var(--line);
+    font-family: var(--f-mono), ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--mute);
+  }
+  .editor .out .ok {
+    color: var(--s);
+  }
   .code .cc {
     color: var(--c);
     font-style: italic;
   }
   @media (max-width: 560px) {
     .code {
-      font-size: 0.75rem;
+      font-size: clamp(0.6rem, 2.9vw, 0.75rem);
+    }
+    .code .l::before {
+      width: 1.4em;
+      margin-right: 0.9em;
+    }
+    .editor .out {
+      font-size: clamp(0.66rem, 3.2vw, 0.8125rem);
     }
   }
 
