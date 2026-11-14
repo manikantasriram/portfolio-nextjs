@@ -74,17 +74,6 @@
   }
 }
 
-/* registered so the hero spotlight position can transition */
-@property --mx {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 72%;
-}
-@property --my {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 34%;
-}
 
 @theme inline {
   --color-bg: var(--bg);
@@ -309,7 +298,6 @@
     transition:
       transform 0.55s var(--ease),
       width 0.55s var(--ease),
-      height 0.3s var(--ease),
       opacity 0.25s;
   }
   .progress {
@@ -476,9 +464,6 @@
     -webkit-mask-image: radial-gradient(440px circle at var(--mx) var(--my), #000, transparent 72%);
     mask-image: radial-gradient(440px circle at var(--mx) var(--my), #000, transparent 72%);
     opacity: 0.7;
-    transition:
-      --mx 0.5s var(--ease),
-      --my 0.5s var(--ease);
   }
   @media (max-width: 900px) {
     /* single column: keep the grid up in the corner, away from body text */
@@ -1248,13 +1233,15 @@
     position: absolute;
     top: -1px;
     left: 0;
-    width: 28px;
+    width: 64px;
     height: 2px;
     background: var(--acc);
-    transition: width 0.5s var(--ease);
+    transform: scaleX(0.4375); /* 28px of 64px */
+    transform-origin: 0 50%;
+    transition: transform 0.5s var(--ease);
   }
   .appr li:hover::before {
-    width: 64px;
+    transform: none;
   }
   .appr .num {
     display: block;
@@ -1448,11 +1435,25 @@
     letter-spacing: -0.03em;
     max-width: 100%;
     white-space: nowrap;
-    background: linear-gradient(var(--acc), var(--acc)) 0 100% / 0 2px no-repeat;
-    transition:
-      background-size 0.5s var(--ease),
-      color 0.3s;
+    position: relative;
+    transition: color 0.3s;
     padding-bottom: 4px;
+  }
+  /* underline drawn with a scaled pseudo-element, so the hover is compositor-only */
+  .big::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--acc);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.5s var(--ease);
+  }
+  .big:hover::after {
+    transform: none;
   }
   @media (min-width: 721px) {
     .big {
@@ -1460,11 +1461,24 @@
     }
   }
   .big:hover {
-    background-size: 100% 2px;
     color: var(--acc);
   }
   .contact .cta {
     margin-top: 36px;
+  }
+
+  /* ---------- 404 ---------- */
+  .nf {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+    padding-block: 80px;
+  }
+  .nf h1 {
+    font-size: var(--d2);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
   }
 
   /* ---------- footer: the session ends ---------- */
