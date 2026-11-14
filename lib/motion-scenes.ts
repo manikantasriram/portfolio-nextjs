@@ -99,7 +99,8 @@ const enterScenes = {
       .fromTo(
         $$(".chip", row),
         { y: 10, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.045 },
+        // Cleared afterwards so the CSS hover on chips can take over.
+        { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.045, clearProps: "opacity,transform" },
         0.55,
       );
     if (title) riseLines(title, { delay: 0.15 });

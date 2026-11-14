@@ -1070,6 +1070,57 @@
   .cmt .msg {
     color: var(--ink);
   }
+  /*
+   * Hover, same language as Skills: the hovered commit steps forward with an accent bar,
+   * its siblings fade back and the role's node glows. Transform and opacity only.
+   */
+  /* The row itself is owned by the scroll reveal ([data-item]), so the hover moves its contents. */
+  @media (hover: hover) {
+    .cmt {
+      position: relative;
+    }
+    .cmt > * {
+      transition:
+        opacity 0.35s,
+        color 0.25s,
+        transform 0.5s var(--ease);
+    }
+    .cmt::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      bottom: 9px;
+      width: 2px;
+      border-radius: 2px;
+      background: var(--acc);
+      transform: scaleY(0);
+      transition: transform 0.45s var(--ease);
+    }
+    .lane-1 .cmt::before {
+      background: var(--br);
+    }
+    .cmt:hover > * {
+      transform: translateX(6px);
+    }
+    .cmt:hover::before {
+      transform: scaleY(1);
+    }
+    .cl:hover .cmt:not(:hover):not([data-dim="true"]) > * {
+      opacity: 0.5;
+    }
+    .g-row:not(.head):not(.root):hover > .node.on {
+      box-shadow: 0 0 0 9px color-mix(in srgb, var(--acc) 14%, transparent);
+    }
+    .lane-1:hover > .node.on {
+      box-shadow: 0 0 0 9px color-mix(in srgb, var(--br) 14%, transparent);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: reduce) {
+    .cmt:hover > * {
+      transform: none;
+    }
+  }
   .g-row.root {
     padding-bottom: 0;
     min-height: 32px;
@@ -1184,7 +1235,7 @@
       color 0.3s,
       transform 0.6s var(--ease);
   }
-  .pbody p {
+  .pbody > p:not([class]) {
     color: var(--mute);
     max-width: 40em;
   }
@@ -1208,6 +1259,29 @@
     }
     .plist:hover .prow:not(:hover) {
       opacity: 0.45;
+    }
+    /* tech stack chips: the hovered one lifts and takes the accent, the rest fade back */
+    .pbody .chip {
+      transition:
+        transform 0.45s var(--ease),
+        opacity 0.3s,
+        color 0.25s,
+        background-color 0.25s,
+        box-shadow 0.3s;
+    }
+    .pbody .chip:hover {
+      transform: translateY(-3px);
+      color: var(--acc);
+      background: color-mix(in srgb, var(--acc) 16%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 35%, transparent);
+    }
+    .pbody .chips:hover .chip:not(:hover) {
+      opacity: 0.5;
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: reduce) {
+    .pbody .chip:hover {
+      transform: none;
     }
   }
   @media (max-width: 860px) {
