@@ -199,9 +199,9 @@ export function ExperienceGraph() {
           <div className="g-meta" data-reveal="">
             <span className="ref">HEAD → next</span>
             <p className="nx">
-              Next commit unwritten.{" "}
+              Open to work, ready to ship the next commit.{" "}
               <a className="ext" href="#contact">
-                Start it in contact.sh
+                Say hello in contact.sh
               </a>
             </p>
           </div>

@@ -8,8 +8,8 @@ interface SectionProps {
 }
 
 /**
- * A page section, opened by a git-diff style hunk header:
- *   @@ 02 experience.log @@ ────────────
+ * A page section, opened by a file-tab style header:
+ *   02 experience.log ────────────
  * The number, file name and title come from the section map in lib/site.ts.
  */
 export function Section({ id, comment, children }: SectionProps) {
@@ -20,10 +20,8 @@ export function Section({ id, comment, children }: SectionProps) {
       <div className="wrap">
         <header className="sh" data-scene="header">
           <p className="hunk" aria-hidden="true">
-            <b>@@</b>
-            <span>{meta.number}</span>
+            <b>{meta.number}</b>
             <span className="file">{meta.file}</span>
-            <b>@@</b>
             <i />
           </p>
           <h2 id={headingId}>{meta.label}</h2>

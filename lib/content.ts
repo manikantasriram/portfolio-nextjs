@@ -51,7 +51,7 @@ export const experience: Role[] = [
   {
     company: "Cendyn",
     title: "Software Engineer, HTML Specialist",
-    dates: "Apr 2023 – Apr 2026",
+    dates: "Apr 2023 – Jul 2026",
     location: "Hyderabad, India",
     ref: { label: "main", tone: "main" },
     commits: [

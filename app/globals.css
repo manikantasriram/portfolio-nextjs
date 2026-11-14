@@ -726,7 +726,7 @@
   .sh {
     margin-bottom: clamp(32px, 5vw, 56px);
   }
-  /* git-diff hunk header: @@ 02 experience.log @@ ───── */
+  /* section header: 02 experience.log ───── */
   .hunk {
     display: flex;
     align-items: center;
@@ -1379,6 +1379,26 @@
       inset -7px -9px 16px var(--osh),
       inset 5px 6px 10px var(--ohi),
       0 20px 24px -12px var(--odrop);
+  }
+  /* With GSAP running (html[data-fx]), it owns the orb's transform; CSS keeps only the shadow. */
+  html[data-fx] .orb {
+    transform: none;
+    transition: box-shadow 0.4s;
+    will-change: transform;
+  }
+  .orb .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--acc);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sg h3 .skey {
+    transition: color 0.3s;
+  }
+  .sg.on h3 .skey {
+    color: var(--acc);
   }
   .bd {
     display: grid;
