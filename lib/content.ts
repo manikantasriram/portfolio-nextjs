@@ -2,7 +2,7 @@
  * Single source of truth for all professional content, copied verbatim from the original site.
  *
  * Each fact lives in exactly one export and is shown in exactly one section:
- *   hero        name (lib/site.ts), role, location, tagline
+ *   hero        name (lib/site.ts), tagline
  *   about       tenure, background and development philosophy (`about` + `approach`)
  *   experience  employers, titles, dates, achievements
  *   projects    project names, descriptions, stacks
@@ -14,8 +14,6 @@
  */
 
 export const hero = {
-  role: "Full stack developer",
-  location: "Hyderabad, India",
   /** The middle phrase is underlined. */
   tagline: ["Pixel-perfect interfaces.", "Rock-solid APIs.", "One developer who ships it all."],
 } as const;

@@ -53,14 +53,6 @@ export function Hero() {
               <Letters text={site.lastName} from={site.firstName.length} />
             </span>
           </h1>
-          <p className="role">
-            <span>
-              <b aria-hidden="true">{"//"}</b> {hero.role}
-            </span>
-            <span>
-              <b aria-hidden="true">{"//"}</b> {hero.location}
-            </span>
-          </p>
         </div>
 
         <div className="hgrid">

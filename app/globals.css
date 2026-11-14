@@ -508,22 +508,6 @@
     font-weight: inherit;
     will-change: transform;
   }
-  /* role and location sit beside the name as code comments */
-  .role {
-    display: grid;
-    gap: 2px;
-    padding-bottom: 1.1em;
-    font: var(--fs-sm) / 1.6 var(--f-mono);
-    color: var(--mute);
-  }
-  .role span {
-    display: block;
-  }
-  .role b {
-    color: var(--acc);
-    font-weight: 400;
-    margin-right: 4px;
-  }
   .hgrid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
@@ -534,9 +518,6 @@
     .hgrid {
       grid-template-columns: minmax(0, 1fr);
       gap: 40px;
-    }
-    .role {
-      padding-bottom: 0;
     }
   }
   .lead {
@@ -1760,12 +1741,6 @@
   /* the name: letters rise out of a mask, one after another */
   .name b {
     animation: rise 0.95s var(--ease) calc(var(--i) * 30ms + 0.12s) backwards;
-  }
-  .role span {
-    animation: slide-in 0.7s var(--ease) 0.55s backwards;
-  }
-  .role span + span {
-    animation-delay: 0.65s;
   }
   /*
    * The tagline is the largest text in the hero, so it is the page's LCP element. Chrome does not
