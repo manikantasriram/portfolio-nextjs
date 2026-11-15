@@ -47,7 +47,8 @@ export function JsonLd() {
         mainEntity: { "@id": personId },
         about: { "@id": personId },
         primaryImageOfPage: { "@type": "ImageObject", url: `${site.url}${site.ogImage}` },
-        dateModified: new Date().toISOString().slice(0, 10),
+        // Google's ProfilePage wants a full ISO 8601 date-time with a timezone, e.g. 2026-11-15T13:30:00.000Z
+        dateModified: new Date().toISOString(),
       },
       {
         "@type": "WebSite",
