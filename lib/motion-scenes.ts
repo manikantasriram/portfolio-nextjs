@@ -192,7 +192,76 @@ const scrubScenes = {
   },
 };
 
-export function attach(scene: keyof typeof scrubScenes, el: HTMLElement) {
+/**
+ * The photo reel. On wide screens it pins, centred on screen (so it adds no space of its own),
+ * and scrolling down carries the track sideways:
+ *  - the counter ("03 / 16") and a thin progress line follow the journey
+ *  - each picture drifts inside its frame as it crosses the screen (parallax)
+ *  - each frame tilts up from a slight lean as it arrives
+ * Phones keep the native swipe strip. Only transforms are animated, all scrubbed.
+ * Filtering changes the reel's length; components/photos.tsx fires a resize so the pin re-measures.
+ */
+function photos(reel: HTMLElement) {
+  if (!window.matchMedia("(min-width: 901px)").matches) return;
+  const track = reel.querySelector<HTMLElement>(".reel-track");
+  if (!track) return;
+  const now = reel.querySelector<HTMLElement>(".reel-now");
+  const bar = reel.querySelector<HTMLElement>(".reel-bar i");
+  reel.classList.add("pinned");
+
+  const distance = () => Math.max(0, track.scrollWidth - document.documentElement.clientWidth);
+  const visible = () => $$(".shot:not([data-hidden])", track);
+
+  const travel = gsap.to(track, {
+    x: () => -distance(),
+    ease: "none",
+    scrollTrigger: {
+      trigger: reel,
+      // centred between the top bar (64px) and the status bar (28px), not the raw window
+      start: "center center+=18",
+      end: () => `+=${distance()}`,
+      pin: true,
+      scrub: 0.7,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        if (bar) bar.style.transform = `scaleX(${self.progress})`;
+        if (now) {
+          const count = visible().length;
+          now.textContent = String(Math.min(count, Math.round(self.progress * (count - 1)) + 1)).padStart(2, "0");
+        }
+      },
+    },
+  });
+
+  $$(".shot", track).forEach((shot) => {
+    const frame = shot.querySelector<HTMLElement>(".frame");
+    const img = frame?.querySelector<HTMLImageElement>(":scope > img");
+    if (!frame || !img) return;
+    gsap.fromTo(
+      img,
+      { xPercent: -6, scale: 1.14 },
+      {
+        xPercent: 6,
+        scale: 1.14,
+        ease: "none",
+        scrollTrigger: { trigger: shot, containerAnimation: travel, start: "left right", end: "right left", scrub: true },
+      },
+    );
+    gsap.fromTo(
+      frame,
+      { rotate: 2.5, y: 24 },
+      {
+        rotate: 0,
+        y: 0,
+        ease: "none",
+        scrollTrigger: { trigger: shot, containerAnimation: travel, start: "left right", end: "left 55%", scrub: true },
+      },
+    );
+  });
+}
+
+export function attach(scene: keyof typeof scrubScenes | "photos", el: HTMLElement) {
+  if (scene === "photos") return photos(el);
   scrubScenes[scene](el);
 }
 
@@ -353,5 +422,6 @@ export function start(): () => void {
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     gsap.globalTimeline.getChildren(true, true, true).forEach((tween) => tween.kill());
     gsap.set("[data-scene], [data-scene] *, .hero-top, .hero-grid, [data-magnetic]", { clearProps: "all" });
+    $$(".reel.pinned").forEach((reel) => reel.classList.remove("pinned"));
   };
 }

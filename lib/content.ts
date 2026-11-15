@@ -251,3 +251,158 @@ export const education = {
   dates: "2016 – 2020",
   location: "Tadepalligudem, India",
 };
+
+/**
+ * To add a photo:
+ *  1. put the original in /public/images/photos/full/<slug>.jpg (shown in the reel at its own
+ *     proportions, and served as-is for download)
+ *  2. add an entry below; `full` is the original's pixel size
+ * Everything else (reel, filters, viewer page, sitemap, prev/next) picks it up automatically.
+ */
+export interface Photo {
+  slug: string;
+  title: string;
+  /** Genre: drives the filter chips and the frame label. */
+  tag: string;
+  caption: string;
+  alt: string;
+  full: { width: number; height: number };
+}
+
+/** Off the clock: photography, with a short caption for each frame. */
+export const photography = {
+  intro:
+    "Photography is where I slow down. Away from the screen, a camera teaches me to wait for the light, look twice and fall for what most people walk past: the pattern hiding in a plastic chair, the patience of a pigeon, a temple tower glowing against the night. Every frame here is a moment that made me stop, breathe and press the shutter.",
+  instagram: { handle: "travelwithmanik", url: "https://instagram.com/travelwithmanik" },
+  /** Order is the order in the reel. */
+  photos: [
+    {
+      slug: "charminar",
+      title: "Charminar, after dark",
+      tag: "architecture",
+      caption: "Four minarets and one clock. Four centuries of Hyderabad, holding still for a second.",
+      alt: "Charminar in Hyderabad lit up at night against a deep blue sky, seen from below",
+      full: { width: 1170, height: 1560 },
+    },
+    {
+      slug: "macaw",
+      title: "Red-and-green macaw",
+      tag: "birds",
+      caption: "Every colour turned all the way up. Nature never worried about a design system.",
+      alt: "A red-and-green macaw with turquoise wings perched on a wooden bar inside an aviary",
+      full: { width: 1000, height: 2000 },
+    },
+    {
+      slug: "night-train",
+      title: "Night train",
+      tag: "street",
+      caption: "Fans in perfect rows, people in every shape of tired. Symmetry finds you anywhere.",
+      alt: "Inside a train coach at night, rows of ceiling fans above blue seats and resting passengers",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "three-pandas",
+      title: "Three pandas",
+      tag: "still life",
+      caption: "Two bodybuilders and one point guard, posing on a mirror floor. Reflections double the drama.",
+      alt: "Three toy pandas, two flexing and one holding a basketball, reflected on a glossy floor",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "raja-gopuram",
+      title: "Raja Gopuram",
+      tag: "architecture",
+      caption: "Arunachaleswarar Temple, lit tier by tier, like a page that loads from the bottom up.",
+      alt: "The towering Raja Gopuram of Arunachaleswarar Temple outlined in lights at night",
+      full: { width: 1500, height: 2000 },
+    },
+    {
+      slug: "jumping-spider",
+      title: "Jumping spider",
+      tag: "macro",
+      caption: "Half a centimetre of curiosity on a grey sleeve, with every big black eye on me.",
+      alt: "A tiny pale jumping spider with large black eyes on grey fabric, pink blur behind",
+      full: { width: 1000, height: 2000 },
+    },
+    {
+      slug: "ambedkar-statue",
+      title: "Dr. B. R. Ambedkar statue",
+      tag: "architecture",
+      caption: "Lit gold against a black sky, one hand pointing ahead. Some subjects ask you to look up.",
+      alt: "A giant statue of Dr. B. R. Ambedkar lit gold at night, holding a book and pointing upward",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "chai",
+      title: "Chai, from above",
+      tag: "still life",
+      caption: "A cup of tea at the centre of a plastic chair's pattern. Grids aren't only a CSS thing.",
+      alt: "Top-down view of a frothy cup of tea in the centre of a plastic chair's lattice pattern",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "between-trains",
+      title: "Between two trains",
+      tag: "street",
+      caption: "A sliver of gravel between two trains, both heading somewhere. The quiet before the whistle.",
+      alt: "A narrow strip of gravel between a passenger train and a goods train under a hazy sky",
+      full: { width: 1000, height: 2000 },
+    },
+    {
+      slug: "ganesh",
+      title: "Ganesh, festival scale",
+      tag: "devotion",
+      caption: "Craning my neck to fit him in the frame: garlands, gold and a blessing hand the size of a door.",
+      alt: "A towering, brightly painted Ganesh idol draped in marigold garlands, seen from below",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "signature-spider",
+      title: "Signature spider",
+      tag: "macro",
+      caption: "It weaves its own zigzags into the web. Every builder leaves a signature.",
+      alt: "Close-up of a yellow and black signature spider in its web, with zigzag silk bands",
+      full: { width: 1500, height: 2000 },
+    },
+    {
+      slug: "looking-up",
+      title: "Looking up",
+      tag: "nature",
+      caption: "Stand at the trunk and look straight up: the branches burst like a firework. Perspective is free.",
+      alt: "Looking straight up a tree trunk to branches spreading out like a starburst of green leaves",
+      full: { width: 1000, height: 2000 },
+    },
+    {
+      slug: "reclining-vishnu",
+      title: "Reclining Vishnu",
+      tag: "devotion",
+      caption: "Stone that never moves, water that never stops. Good contrast is everything.",
+      alt: "Black stone statue of a reclining Vishnu with marigold garlands, in a green temple pond",
+      full: { width: 1500, height: 2000 },
+    },
+    {
+      slug: "window-guest",
+      title: "Window guest",
+      tag: "birds",
+      caption: "Grey feathers on chipped white bars, coral feet holding on. The city's most patient visitor.",
+      alt: "A grey pigeon with coral-red feet perched on a white window grill",
+      full: { width: 1125, height: 2000 },
+    },
+    {
+      slug: "wings",
+      title: "Wings, up close",
+      tag: "macro",
+      caption: "Ink-black and ice-blue, resting in an open palm. A pattern no stylesheet could fake.",
+      alt: "A black butterfly with pale blue, black-spotted hind wings resting on an open palm",
+      full: { width: 1000, height: 2000 },
+    },
+    {
+      slug: "painted-mountain",
+      title: "Painted mountain",
+      tag: "travel",
+      caption: "A mountain built for thrills at Wonderla, its rock grain drawn line by line. Even built stone earns a second look.",
+      alt: "Sculpted rock waterfall with ridged orange stone and a rail track under the Wonderla sign",
+      full: { width: 1500, height: 2000 },
+    },
+  ] satisfies Photo[],
+};

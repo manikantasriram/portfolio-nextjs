@@ -1501,6 +1501,571 @@
     }
   }
 
+  /* ---------- off the clock: a horizontal reel of photos ---------- */
+  #photos {
+    overflow-x: clip; /* the reel runs edge to edge */
+  }
+  .reel {
+    /* one shared frame height; each photo's width follows its own proportions */
+    --fh: min(56vh, 540px);
+    position: relative;
+  }
+  /* the intro reads straight on from the heading, so it sits closer than other sections' content */
+  #photos .sh {
+    margin-bottom: clamp(18px, 2.2vw, 28px);
+  }
+  .shots-intro {
+    max-width: 36em;
+    margin-bottom: clamp(18px, 2vw, 24px);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--mute);
+  }
+  .reel-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-bottom: clamp(18px, 2.6vh, 28px);
+  }
+  /* filters read like a shell command: $ ls ~/photos --tag [all] [macro] ... */
+  .fl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .fl-cmd {
+    margin-right: 6px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--c);
+    white-space: nowrap;
+  }
+  .fl-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--mute);
+    background: transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      color 0.25s,
+      background-color 0.25s,
+      border-color 0.25s,
+      transform 0.4s var(--ease);
+  }
+  .fl-chip sup {
+    font-size: 0.72em;
+    color: var(--c);
+  }
+  .fl-chip:hover {
+    color: var(--ink);
+    border-color: color-mix(in srgb, var(--acc) 45%, transparent);
+    transform: translateY(-2px);
+  }
+  .fl-chip[aria-pressed="true"] {
+    color: var(--bg);
+    background: var(--acc);
+    border-color: var(--acc);
+  }
+  .fl-chip[aria-pressed="true"] sup {
+    color: inherit;
+    opacity: 0.75;
+  }
+  .fl-chip:focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 2px;
+  }
+  /* "03 / 16" and a hairline that fills as the reel travels (only while pinned) */
+  .reel-count {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--c);
+  }
+  .reel.pinned .reel-count {
+    display: flex;
+  }
+  .reel-now {
+    color: var(--ink);
+  }
+  .reel-bar {
+    position: relative;
+    width: 72px;
+    height: 1px;
+    margin-left: 4px;
+    overflow: hidden;
+    background: var(--line);
+  }
+  .reel-bar i {
+    position: absolute;
+    inset: 0;
+    background: var(--acc);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  /* the track breaks out of the text column and runs edge to edge; the first frame lines up with the text */
+  .reel-track {
+    --edge: max(24px, calc(50vw - 520px + 32px));
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(28px, 4vw, 64px);
+    margin-inline: calc(50% - 50vw);
+    padding: 4px var(--edge) 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .reel-track::-webkit-scrollbar {
+    display: none;
+  }
+  /*
+   * pinned (wide screens with GSAP): the page's scroll drives the track sideways. The reel pins
+   * centred on screen, so it adds no space of its own; the frame height leaves room for the
+   * filters above and the caption below on any laptop screen.
+   */
+  .reel.pinned {
+    --fh: clamp(220px, calc(100vh - 400px), 520px);
+  }
+  /* while pinned, the filters stay on one line (swipe or scroll it sideways) to save height */
+  .reel.pinned .reel-tools {
+    flex-wrap: nowrap;
+  }
+  .reel.pinned .fl {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+  }
+  .reel.pinned .fl::-webkit-scrollbar {
+    display: none;
+  }
+  .reel.pinned .reel-count {
+    flex: none;
+  }
+  .reel.pinned .reel-track {
+    overflow: visible;
+    scroll-snap-type: none;
+    will-change: transform;
+  }
+  .shot {
+    flex: none;
+    scroll-snap-align: start;
+  }
+  .shot[data-hidden] {
+    display: none;
+  }
+  .shot-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+  }
+  .shot figure {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+  .frame {
+    position: relative;
+    overflow: hidden;
+    height: var(--fh);
+    aspect-ratio: var(--ar, 4 / 5);
+    border-radius: 14px;
+    background: var(--line);
+  }
+  .frame > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.9s var(--ease);
+  }
+  .open {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: #0a101d;
+    background: rgba(255, 255, 255, 0.88);
+    opacity: 0;
+    translate: 0 -6px;
+    transition:
+      opacity 0.3s,
+      translate 0.45s var(--ease);
+  }
+  /* viewfinder brackets: they lock onto the frame on hover or focus */
+  .vf {
+    position: absolute;
+    inset: 14px;
+    pointer-events: none;
+    opacity: 0;
+    scale: 1.08;
+    transition:
+      opacity 0.3s,
+      scale 0.5s var(--ease);
+  }
+  .vf i {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #fff;
+  }
+  .vf i:nth-child(1) {
+    top: 0;
+    left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-top-left-radius: 6px;
+  }
+  .vf i:nth-child(2) {
+    top: 0;
+    right: 0;
+    border-left: 0;
+    border-bottom: 0;
+    border-top-right-radius: 6px;
+  }
+  .vf i:nth-child(3) {
+    bottom: 0;
+    left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom-left-radius: 6px;
+  }
+  .vf i:nth-child(4) {
+    bottom: 0;
+    right: 0;
+    border-left: 0;
+    border-top: 0;
+    border-bottom-right-radius: 6px;
+  }
+  .shot-link:hover .vf,
+  .shot-link:focus-visible .vf {
+    opacity: 1;
+    scale: 1;
+  }
+  .shot-link:hover .frame > img,
+  .shot-link:focus-visible .frame > img {
+    scale: 1.04;
+  }
+  .shot-link:hover .open,
+  .shot-link:focus-visible .open {
+    opacity: 1;
+    translate: none;
+  }
+  .shot-link:focus-visible .frame {
+    box-shadow: 0 0 0 2px var(--acc);
+  }
+  /* the caption never widens the frame: it takes the frame's width */
+  .shot figcaption {
+    display: grid;
+    gap: 5px;
+    width: 0;
+    min-width: 100%;
+    padding: 16px 2px 0;
+  }
+  .cap-n {
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--acc);
+  }
+  .shot figcaption b {
+    font: 600 var(--fs-md) / 1.3 var(--f-head);
+    letter-spacing: -0.01em;
+    transition: color 0.25s;
+  }
+  .shot-link:hover figcaption b {
+    color: var(--acc);
+  }
+  .cap-t {
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+    color: var(--mute);
+  }
+  /* the reel ends on a quiet card: one line, one handle, one arrow */
+  .reel-end {
+    flex: none;
+    display: flex;
+    align-items: center;
+    height: var(--fh);
+    padding: 0 clamp(24px, 8vw, 120px) 0 clamp(8px, 2vw, 24px);
+    scroll-snap-align: end;
+  }
+  .reel-end a {
+    display: grid;
+    gap: 12px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .end-k {
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--c);
+  }
+  .end-h {
+    padding-bottom: 6px;
+    font: 600 clamp(1.75rem, 2.4vw + 0.9rem, 3rem) / 1.05 var(--f-head);
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    background: linear-gradient(var(--acc), var(--acc)) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.7s var(--ease);
+  }
+  .end-go {
+    color: var(--acc);
+    transition: transform 0.5s var(--ease);
+  }
+  .reel-end a:hover .end-h,
+  .reel-end a:focus-visible .end-h {
+    background-size: 100% 1px;
+  }
+  .reel-end a:hover .end-go,
+  .reel-end a:focus-visible .end-go {
+    transform: translate(5px, -5px);
+  }
+  .reel-end a:focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+  .shots-hint {
+    margin-top: 14px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--c);
+    text-align: right;
+  }
+  .reel.pinned .shots-hint {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .reel {
+      --fh: min(50vh, 440px);
+    }
+  }
+  @media (max-width: 600px) {
+    .reel {
+      --fh: min(56vh, 400px);
+    }
+    .fl {
+      flex-wrap: nowrap;
+      margin: 0 -24px;
+      padding: 0 24px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .fl::-webkit-scrollbar {
+      display: none;
+    }
+    .reel-track {
+      gap: 18px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .frame > img,
+    .vf {
+      transition: none;
+    }
+    .shot-link:hover .frame > img,
+    .shot-link:focus-visible .frame > img {
+      scale: none;
+    }
+  }
+
+  /* ---------- photo viewer: /photos/<slug> ---------- */
+  .pv {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .pv-bar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px clamp(16px, 3vw, 32px);
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--mute);
+  }
+  .pv-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--acc);
+  }
+  .pv-path {
+    flex: 1;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pv-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+    padding: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 32px);
+  }
+  .pv-stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+  }
+  .pv-stage a {
+    display: block;
+    cursor: zoom-in;
+  }
+  .pv-stage img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 140px);
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+    animation: pv-in 0.8s var(--ease) both;
+  }
+  @keyframes pv-in {
+    from {
+      opacity: 0;
+      scale: 0.97;
+      filter: grayscale(1);
+    }
+  }
+  .pv-info {
+    display: grid;
+    gap: 14px;
+    align-content: center;
+  }
+  .pv-tag {
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--acc);
+  }
+  .pv-info h1 {
+    font-size: clamp(2rem, 3vw + 1rem, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+  .pv-cap {
+    color: var(--mute);
+    font-size: 1.0625rem;
+    max-width: 30em;
+  }
+  .pv-meta {
+    display: grid;
+    gap: 6px;
+    margin: 6px 0;
+    padding: 14px 0;
+    border-block: 1px solid var(--line);
+    font: var(--fs-xs) / 1.4 var(--f-mono);
+  }
+  .pv-meta div {
+    display: flex;
+    gap: 12px;
+  }
+  .pv-meta dt {
+    width: 88px;
+    color: var(--c);
+  }
+  .pv-meta dd {
+    color: var(--ink);
+  }
+  .pv-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pv-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .pv-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: var(--fs-sm);
+    color: var(--ink);
+    transition:
+      border-color 0.25s,
+      transform 0.4s var(--ease);
+  }
+  .pv-nav a[rel="next"] {
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .pv-nav a:hover {
+    border-color: var(--acc);
+    transform: translateY(-2px);
+  }
+  .pv-nav small {
+    display: block;
+    font: var(--fs-xs) / 1.4 var(--f-mono);
+    color: var(--c);
+  }
+  .pv-ig {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    font-size: var(--fs-sm);
+    color: var(--mute);
+  }
+  .pv-ig b {
+    color: var(--acc);
+    font-weight: 500;
+  }
+  .pv-keys {
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--c);
+  }
+  @media (max-width: 860px) {
+    .pv-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pv-stage img {
+      max-height: 72dvh;
+    }
+    .pv-keys {
+      display: none;
+    }
+  }
+  @media (max-width: 480px) {
+    .pv-path {
+      display: none;
+    }
+    .pv-bar {
+      justify-content: space-between;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pv-stage img {
+      animation: none;
+    }
+  }
+
   /* ---------- education ---------- */
   .edu {
     display: grid;
@@ -1909,6 +2474,33 @@
   }
   html[data-js] [data-line].in {
     scale: 1 1;
+  }
+
+  /* photos "develop" like a print in a darkroom: grey and faint, then full colour */
+  html[data-js] .shot img {
+    filter: grayscale(1) brightness(1.25) contrast(0.85);
+    transition:
+      filter 1.6s ease 0.25s,
+      scale 0.9s var(--ease);
+  }
+  html[data-js] .shot.in img {
+    filter: none;
+  }
+  /* the caption follows the picture in, a beat later */
+  html[data-js] .shot figcaption {
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 0.7s var(--ease) 0.35s,
+      translate 0.7s var(--ease) 0.35s;
+  }
+  html[data-js] .shot.in figcaption {
+    opacity: 1;
+    translate: none;
+  }
+  /* while GSAP Flip re-flows the reel, it owns opacity and position */
+  html[data-js] .reel-track.flipping .shot {
+    transition: none;
   }
 
   html[data-js] [data-pop] {

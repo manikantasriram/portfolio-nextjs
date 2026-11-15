@@ -1,4 +1,4 @@
-import { education, skillGroups } from "@/lib/content";
+import { education, photography, skillGroups } from "@/lib/content";
 import { site } from "@/lib/site";
 
 const personId = `${site.url}/#person`;
@@ -34,7 +34,7 @@ export function JsonLd() {
           name: education.school,
           address: { "@type": "PostalAddress", addressLocality: "Tadepalligudem", addressCountry: "IN" },
         },
-        sameAs: [site.github, site.linkedin],
+        sameAs: [site.github, site.linkedin, photography.instagram.url],
       },
       {
         "@type": "ProfilePage",

@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Motion } from "@/components/motion";
 import { Nav } from "@/components/nav";
+import { PhotoSheet } from "@/components/photos";
 import { ProjectList } from "@/components/projects";
 import { Section } from "@/components/section";
 import { SkillsGrid } from "@/components/skills";
@@ -53,6 +54,10 @@ export default function Home() {
               <p className="meta">{education.location}</p>
             </div>
           </article>
+        </Section>
+
+        <Section id="photos" comment="// what I see when I step away from the screen">
+          <PhotoSheet />
         </Section>
 
         <Section id="contact" comment={`// ${contact.availability}`}>
