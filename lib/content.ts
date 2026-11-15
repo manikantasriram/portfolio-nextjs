@@ -251,6 +251,28 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
   },
 ];
 
+/** Tools that appear in project stacks but not in the Skills section. */
+const stackOnlyIcons: Record<string, SkillIcon> = {
+  "TanStack Query": badge("TQ", "#fff", "#FF4154", true),
+  Redis: badge("Rd", "#fff", "#DC382D", true),
+  "LLM API": badge("AI", "#fff", "#7C3AED", true),
+};
+
+/** The logo for a tool named in a project's stack: the Skills icon if there is one, else a badge. */
+export function stackIcon(name: string): SkillIcon {
+  for (const group of skillGroups) {
+    const skill = group.skills.find((s) => s.name === name);
+    if (skill) return skill.icon;
+  }
+  const initials = name
+    .replace(/[^A-Za-z ]/g, "")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2);
+  return stackOnlyIcons[name] ?? badge(initials || "?", "#fff", "#55627D", true);
+}
+
 export const education = {
   school: "Sri Vasavi Engineering College",
   degree: "Bachelor of Technology, Electronics and Communications Engineering",

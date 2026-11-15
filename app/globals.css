@@ -1276,18 +1276,99 @@
     color: var(--mute);
     max-width: 40em;
   }
-  .chips {
+  /*
+   * Tech stack as overlapping round logos. Hover (mouse), tap (touch) or Tab (keyboard) to a logo:
+   * it lifts in front of the others and its name appears above it. The name is always in the page
+   * for screen readers; it's only hidden visually until revealed.
+   */
+  .stack {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
+    row-gap: 10px;
+    margin-top: 34px; /* room for the name label above */
+    padding-left: 10px;
   }
-  .chip {
+  .tech {
+    position: relative;
+    margin-left: -10px;
+    border-radius: 50%;
+    outline: none;
+    cursor: default;
+  }
+  .tech-orb {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 24%, var(--o1), var(--o2) 80%);
+    /* the ring in the page colour is what separates overlapping logos */
+    box-shadow:
+      0 0 0 3px var(--bg),
+      inset -3px -4px 8px var(--osh),
+      0 8px 14px -10px var(--odrop);
+    transition:
+      transform 0.45s var(--ease),
+      box-shadow 0.3s,
+      opacity 0.25s;
+  }
+  .tech-orb > img,
+  .tech-orb > svg,
+  .tech-orb > .bd {
+    width: 24px;
+    height: 24px;
+  }
+  .tech-orb > .bd {
+    border-radius: 6px;
+    font-size: 0.66rem;
+  }
+  .tech-orb > .bd.small {
+    font-size: 0.54rem;
+  }
+  .tech-name {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    padding: 5px 9px;
+    border-radius: 7px;
+    white-space: nowrap;
     font: var(--fs-xs) / 1 var(--f-mono);
-    padding: 7px 11px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--acc) 9%, transparent);
-    color: var(--ink);
+    color: var(--bg);
+    background: var(--ink);
+    pointer-events: none;
+    opacity: 0;
+    translate: -50% 6px;
+    transition:
+      opacity 0.2s,
+      translate 0.35s var(--ease);
+  }
+  /* little pointer under the label */
+  .tech-name::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    translate: -50% 0;
+    border: 5px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .tech:hover,
+  .tech:focus,
+  .tech:focus-within {
+    z-index: 20 !important; /* in front of its neighbours (overrides the stacking order) */
+  }
+  .tech:hover .tech-orb,
+  .tech:focus .tech-orb {
+    transform: translateY(-4px) scale(1.12);
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--acc),
+      0 12px 18px -10px var(--odrop);
+  }
+  .tech:hover .tech-name,
+  .tech:focus .tech-name {
+    opacity: 1;
+    translate: -50% 0;
   }
   @media (hover: hover) {
     .prow:hover h3 {
@@ -1297,27 +1378,19 @@
     .plist:hover .prow:not(:hover) {
       opacity: 0.45;
     }
-    /* tech stack chips: the hovered one lifts and takes the accent, the rest fade back */
-    .pbody .chip {
-      transition:
-        transform 0.45s var(--ease),
-        opacity 0.3s,
-        color 0.25s,
-        background-color 0.25s,
-        box-shadow 0.3s;
-    }
-    .pbody .chip:hover {
-      transform: translateY(-3px);
-      color: var(--acc);
-      background: color-mix(in srgb, var(--acc) 16%, transparent);
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 35%, transparent);
-    }
-    .pbody .chips:hover .chip:not(:hover) {
-      opacity: 0.5;
+    /* the logos you're not pointing at step back, so the one in front stands out */
+    .stack:hover .tech:not(:hover) .tech-orb {
+      opacity: 0.55;
     }
   }
-  @media (hover: hover) and (prefers-reduced-motion: reduce) {
-    .pbody .chip:hover {
+  @media (prefers-reduced-motion: reduce) {
+    .tech,
+    .tech-orb,
+    .tech-name {
+      transition: none;
+    }
+    .tech:hover .tech-orb,
+    .tech:focus .tech-orb {
       transform: none;
     }
   }
@@ -1411,105 +1484,28 @@
     display: grid;
     grid-template-columns: var(--gutter) minmax(0, 1fr);
     gap: 12px 32px;
-    padding: 24px 0;
+    padding: 14px 0 18px;
   }
   .sg h3 {
-    padding-top: 30px;
+    padding-top: 43px; /* level with the middle of the logos */
     font: 400 var(--fs-sm) / 1.4 var(--f-mono);
     letter-spacing: 0;
     color: var(--p);
     overflow-wrap: anywhere;
   }
-  .tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-    gap: 8px 12px;
+  /* Skills reuse the project stack (.stack / .tech) at the same size; only the spacing differs */
+  .stack-lg {
+    margin-top: 0;
+    padding-top: 30px; /* room for the name label above */
+    row-gap: 14px;
   }
-  .tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 4px;
-    font-size: var(--fs-xs);
-    line-height: 1.25;
-    text-align: center;
-    color: var(--mute);
-    perspective: 520px;
-    transition: color 0.25s;
-  }
-  .tile:hover {
-    color: var(--ink);
-  }
-  .orb {
-    --rx: 0deg;
-    --ry: 0deg;
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 32% 24%, var(--o1), var(--o2) 78%);
-    box-shadow:
-      inset -7px -9px 16px var(--osh),
-      inset 5px 6px 10px var(--ohi),
-      0 14px 20px -12px var(--odrop);
-    transform: rotateX(var(--rx)) rotateY(var(--ry));
-    transform-style: preserve-3d;
-    transition:
-      transform 0.55s var(--ease),
-      box-shadow 0.4s;
-  }
-  .orb::before {
-    content: "";
-    position: absolute;
-    top: 7%;
-    left: 15%;
-    width: 42%;
-    height: 26%;
-    border-radius: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
-    transform: rotate(-24deg);
-    pointer-events: none;
-  }
-  [data-theme="dark"] .orb::before {
-    opacity: 0.3;
-  }
-  .orb > img,
-  .orb > svg,
-  .orb > .bd {
-    width: 28px;
-    height: 28px;
-    position: relative;
-    transform: translateZ(14px);
-  }
-  .tile:hover .orb {
-    transform: translateY(-4px) rotateX(var(--rx)) rotateY(var(--ry));
-    box-shadow:
-      inset -7px -9px 16px var(--osh),
-      inset 5px 6px 10px var(--ohi),
-      0 20px 24px -12px var(--odrop);
-  }
-  /* With GSAP running (html[data-fx]), it owns the orb's transform; CSS keeps only the shadow. */
-  html[data-fx] .orb {
-    transform: none;
-    transition: box-shadow 0.4s;
-    will-change: transform;
-  }
-  .orb .ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 1px solid var(--acc);
-    opacity: 0;
-    pointer-events: none;
+  /* the group's key lights up while one of its tools is pointed at or focused */
+  .sg:has(.tech:hover) h3 .skey,
+  .sg:has(.tech:focus) h3 .skey {
+    color: var(--acc);
   }
   .sg h3 .skey {
     transition: color 0.3s;
-  }
-  .sg.on h3 .skey {
-    color: var(--acc);
   }
   .bd {
     display: grid;
@@ -1528,13 +1524,11 @@
   @media (max-width: 720px) {
     .sg {
       grid-template-columns: minmax(0, 1fr);
+      row-gap: 0; /* the stack already has room above it for the name label */
       padding: 20px 0 16px;
     }
     .sg h3 {
       padding-top: 0;
-    }
-    .tiles {
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     }
   }
 

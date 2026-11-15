@@ -84,10 +84,10 @@ const enterScenes = {
     }
   },
 
-  /** A project row: the rule draws, the index slides in, the title rises, chips pop. */
+  /** A project row: the rule draws, the index slides in, the title rises, stack icons pop. */
   project(row: HTMLElement) {
     const title = row.querySelector<HTMLElement>("h3");
-    gsap.set($$(".pidx, .pbody > p, .chip", row), { opacity: 0 });
+    gsap.set($$(".pidx, .pbody > p, .tech", row), { opacity: 0 });
     if (title) gsap.set(title, { opacity: 0 });
     gsap.set(row, { opacity: 1 });
 
@@ -97,9 +97,9 @@ const enterScenes = {
       .fromTo($$(".pidx", row), { x: -12 }, { opacity: 1, x: 0, duration: 0.7 }, 0.1)
       .fromTo($$(".pbody > p", row), { y: 18 }, { opacity: 1, y: 0, duration: 0.9 }, 0.35)
       .fromTo(
-        $$(".chip", row),
+        $$(".tech", row),
         { y: 10, scale: 0.9 },
-        // Cleared afterwards so the CSS hover on chips can take over.
+        // Cleared afterwards so the CSS hover on the stack icons can take over.
         { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.045, clearProps: "opacity,transform" },
         0.55,
       );
@@ -287,89 +287,7 @@ function heroParallax() {
   gsap.to($$(".hero-grid", hero), { yPercent: 12, ease: "none", scrollTrigger: leave });
 }
 
-/**
- * Skills hover, pointer devices only. Only transform and opacity are animated, so every frame
- * stays on the compositor:
- *   - the orb lifts with a soft spring and tilts toward the pointer
- *   - the logo gives a small wobble and a thin ring ripples out once
- *   - the other tools in the group fade back, and the group's key lights up
- * Returns a cleanup function that restores the original markup and styles.
- */
-function skillHover() {
-  const off: (() => void)[] = [];
-  const listen = <K extends keyof HTMLElementEventMap>(
-    el: HTMLElement,
-    type: K,
-    fn: (e: HTMLElementEventMap[K]) => void,
-  ) => {
-    el.addEventListener(type, fn);
-    off.push(() => el.removeEventListener(type, fn));
-  };
-  const root = document.documentElement;
-  root.setAttribute("data-fx", "");
-  const touched: HTMLElement[] = [];
-  const rings: HTMLElement[] = [];
-
-  $$(".sg").forEach((group) => {
-    const list = group.querySelector<HTMLElement>(".tiles");
-    const tiles = $$("[data-tilt]", group);
-    if (!list || !tiles.length) return;
-
-    tiles.forEach((tile) => {
-      const orb = tile.querySelector<HTMLElement>(".orb");
-      const mark = orb?.firstElementChild as HTMLElement | null;
-      if (!orb || !mark) return;
-      const ring = document.createElement("i");
-      ring.className = "ring";
-      ring.setAttribute("aria-hidden", "true");
-      orb.append(ring);
-      rings.push(ring);
-      touched.push(orb, mark, tile);
-      gsap.set(mark, { z: 14 });
-
-      const rx = gsap.quickTo(orb, "rotationX", { duration: 0.6, ease: "power3.out" });
-      const ry = gsap.quickTo(orb, "rotationY", { duration: 0.6, ease: "power3.out" });
-
-      listen(tile, "pointerenter", () => {
-        group.classList.add("on");
-        gsap.to(tiles, { opacity: (_, t) => (t === tile ? 1 : 0.45), duration: 0.35, overwrite: "auto" });
-        gsap.to(orb, { y: -6, scale: 1.06, duration: 0.5, ease: "back.out(2.6)", overwrite: "auto" });
-        gsap.fromTo(
-          mark,
-          { rotation: 0 },
-          { keyframes: { rotation: [0, -10, 7, 0] }, duration: 0.6, ease: "power1.out", overwrite: "auto" },
-        );
-        gsap.fromTo(ring, { scale: 0.92, opacity: 0.55 }, { scale: 1.5, opacity: 0, duration: 0.8, ease: "power2.out" });
-      });
-      listen(tile, "pointermove", (e) => {
-        const r = tile.getBoundingClientRect();
-        ry(((e.clientX - r.left) / r.width - 0.5) * 26);
-        rx(-((e.clientY - r.top) / r.height - 0.5) * 26);
-      });
-      listen(tile, "pointerleave", () => {
-        rx(0);
-        ry(0);
-        gsap.to(orb, { y: 0, scale: 1, duration: 0.9, ease: "elastic.out(1, 0.55)", overwrite: "auto" });
-      });
-    });
-
-    listen(list, "pointerleave", () => {
-      group.classList.remove("on");
-      gsap.to(tiles, { opacity: 1, duration: 0.4, overwrite: "auto", clearProps: "opacity" });
-    });
-  });
-
-  return () => {
-    off.forEach((fn) => fn());
-    gsap.killTweensOf([...touched, ...rings]);
-    gsap.set(touched, { clearProps: "all" });
-    rings.forEach((ring) => ring.parentNode?.removeChild(ring));
-    $$(".sg.on").forEach((g) => g.classList.remove("on"));
-    root.removeAttribute("data-fx");
-  };
-}
-
-/** Pointer-only polish: magnetic buttons and skill hover. Returns a cleanup function. */
+/** Pointer-only polish: magnetic buttons. Returns a cleanup function. */
 function interactions() {
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return () => {};
   const off: (() => void)[] = [];
@@ -396,8 +314,6 @@ function interactions() {
       yTo(0);
     });
   });
-
-  off.push(skillHover());
 
   return () => off.forEach((fn) => fn());
 }
