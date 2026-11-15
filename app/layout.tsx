@@ -75,6 +75,8 @@ export const metadata: Metadata = {
     images: [site.ogImage],
   },
   formatDetection: { telephone: false },
+  // Google Search Console ownership check (renders <meta name="google-site-verification">)
+  verification: { google: "fUTZGYZEQnm_M990WsXkmx_NhukeEbEzxTjY2Hjwcmk" },
 };
 
 export const viewport: Viewport = {
