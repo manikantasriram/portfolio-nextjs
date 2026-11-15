@@ -35,7 +35,7 @@ export default function Home() {
           </Suspense>
         </Section>
 
-        <Section id="projects" comment="// full stack projects, currently in progress">
+        <Section id="projects" comment="// full stack projects, one live and one in progress">
           <ProjectList />
         </Section>
 

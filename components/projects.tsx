@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/content";
 
 /** Projects as a typographic index: large titles on a ruled list, no cards. */
@@ -15,7 +16,7 @@ export function ProjectList() {
           <h3>{p.name}</h3>
           <div className="pbody">
             {p.status && (
-              <p className="pstatus">
+              <p className="pstatus" data-status={p.status}>
                 <i aria-hidden="true" />
                 {p.status}
               </p>
@@ -28,6 +29,20 @@ export function ProjectList() {
                 </li>
               ))}
             </ul>
+            {p.links && (
+              <p className="plinks">
+                {p.links.demo && (
+                  <a href={p.links.demo} target="_blank" rel="noopener noreferrer">
+                    Live demo <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                  </a>
+                )}
+                {p.links.code && (
+                  <a href={p.links.code} target="_blank" rel="noopener noreferrer">
+                    Source code <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                  </a>
+                )}
+              </p>
+            )}
           </div>
         </li>
       ))}

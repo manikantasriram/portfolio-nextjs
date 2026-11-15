@@ -1207,7 +1207,7 @@
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
   }
-  /* "in progress" badge on projects that are still being built */
+  /* status badge: "live" (deployed) or "in progress" (still being built) */
   .pstatus {
     display: inline-flex;
     align-items: center;
@@ -1224,6 +1224,39 @@
     height: 6px;
     border-radius: 50%;
     background: currentColor;
+  }
+  .pstatus[data-status="live"] {
+    color: var(--ok);
+    background: color-mix(in srgb, var(--ok) 11%, transparent);
+  }
+  /* live demo / source code links under a project */
+  .plinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 18px;
+  }
+  .plinks a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--acc);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .plinks a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .plinks svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.3s var(--ease);
+  }
+  .plinks a:hover svg {
+    transform: translate(2px, -2px);
   }
   .pidx b {
     color: var(--acc);

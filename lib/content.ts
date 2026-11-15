@@ -117,17 +117,23 @@ export interface Project {
   name: string;
   description: string;
   stack: string[];
-  /** Shown as a badge. "in progress" means the project is still being built, not shipped. */
-  status?: "in progress";
+  /** Shown as a badge: "live" is deployed and usable; "in progress" is still being built. */
+  status?: "live" | "in progress";
+  /** Where to see it running and read the code. */
+  links?: { demo?: string; code?: string };
 }
 
 export const projects: Project[] = [
   {
     name: "Hotel Rate & Booking Manager",
     description:
-      "A full stack app for managing hotels, room types, rate plans and bookings. Planned scope: sortable, filterable data grids, optimistic updates, JWT auth with role-based access and a documented REST API, deployed with Docker Compose.",
+      "A full stack app for managing hotels, room types, rate plans and bookings, with admin and staff roles. Sortable, filterable data grids, optimistic updates, JWT auth and a documented REST API. Availability checks the busiest night of each stay, and a database row lock stops two people booking the last room.",
     stack: ["React", "TypeScript", "TanStack Query", "FastAPI", "PostgreSQL", "Docker"],
-    status: "in progress",
+    status: "live",
+    links: {
+      demo: "https://hotel-booking-manager.vercel.app",
+      code: "https://github.com/manikantasriram/hotel-booking-manager",
+    },
   },
   {
     name: "AI Email Template Assistant",
