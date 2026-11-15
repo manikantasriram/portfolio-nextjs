@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { photography } from "@/lib/content";
 
 /*
@@ -15,6 +15,8 @@ import { photography } from "@/lib/content";
  *  - tag filters re-flow the reel with GSAP Flip, loaded on demand
  *  - a frame opens /photos/<slug> in a new tab: the original, full size, downloadable
  *  - the reel ends on a quiet card that points to Instagram
+ *  - phones and tablets get a control bar (previous / "03 / 16" + progress / next), the frame in
+ *    front stays bright while the rest step back, and a one-time nudge shows the strip can be swiped
  */
 
 type FlipKit = {
@@ -49,19 +51,146 @@ export function PhotoSheet() {
   }, [photos]);
 
   const shownCount = photos.filter((p) => tag === "all" || p.tag === tag).length;
+  /** Index of the frame in front of the strip (phones and tablets); shownCount = the Instagram card. */
+  const [active, setActive] = useState(0);
+
+  /** Every stop along the strip: the visible frames, then the Instagram card. */
+  const stops = useCallback(() => {
+    const track = trackRef.current;
+    return track ? [...track.querySelectorAll<HTMLElement>(".shot:not([data-hidden]), .reel-end")] : [];
+  }, []);
+
+  /** Works out which frame is in front from the strip's scroll position. */
+  const measureActive = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const edge = track.getBoundingClientRect().left + (parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0);
+    const list = stops();
+    let best = 0;
+    let nearest = Infinity;
+    list.forEach((el, i) => {
+      const d = Math.abs(el.getBoundingClientRect().left - edge);
+      if (d < nearest) [nearest, best] = [d, i];
+    });
+    // The last frames of a long strip can't reach the left edge, so "scrolled to the end" means the
+    // last stop. (A short set that fits without scrolling stays on its first frame.)
+    const max = track.scrollWidth - track.clientWidth;
+    if (max > 4 && track.scrollLeft >= max - 4) best = list.length - 1;
+    setActive(best);
+  }, [stops]);
+
+  // Follow the scroll position, so swipes, buttons and keys always agree.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measureActive);
+    };
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [measureActive]);
+
+  /** Moves the strip one frame forward or back. */
+  const go = (step: number) => {
+    const track = trackRef.current;
+    const list = stops();
+    const target = list[Math.max(0, Math.min(list.length - 1, active + step))];
+    if (!track || !target) return;
+    const edge = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+    const left = track.scrollLeft + target.getBoundingClientRect().left - track.getBoundingClientRect().left - edge;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    track.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
+  };
+
+  // The first time the strip is seen on a phone or tablet, it slides a little and back:
+  // a wordless hint that it can be swiped. Once per visit, never with reduced motion.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !("IntersectionObserver" in window)) return;
+    if (!window.matchMedia("(max-width: 900px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer = 0;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        if (track.scrollLeft > 4) return; // already swiping: no need to teach it
+        timer = window.setTimeout(() => {
+          track.classList.add("nudge");
+          timer = window.setTimeout(() => track.classList.remove("nudge"), 1300);
+        }, 450);
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(track);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  /** True while a filter change is cross-fading the pinned desktop reel. */
+  const swapping = useRef(false);
 
   const pick = (next: string) => {
     if (next === tag) return;
     const track = trackRef.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setActive(0);
+    // Pinned desktop reel: fade out, swap the set, re-measure, fade back in at frame 01.
+    // (Re-flowing frames inside a moving, pinned track would fight the scroll position.)
+    if (track?.closest(".reel.pinned")) {
+      swapping.current = true;
+      track.classList.add("swapping");
+      window.setTimeout(() => setTag(next), reduce ? 0 : 220);
+      return;
+    }
+    // Swipe strip: frames glide into their new places (GSAP Flip). Snapping is paused while the
+    // set changes; otherwise the browser keeps the previously snapped item (say, the Instagram
+    // card at the end) in view instead of starting the new set at frame 01.
     if (kit && track && !reduce) flipState.current = kit.Flip.getState(track.querySelectorAll(".shot"));
+    if (track) {
+      track.style.scrollSnapType = "none";
+      track.scrollLeft = 0;
+    }
     setTag(next);
   };
 
+  /** Back to frame 01 with snapping restored, once the new set has settled. */
+  const settleStrip = useCallback(
+    (track: HTMLElement) => {
+      track.scrollLeft = 0;
+      requestAnimationFrame(() => {
+        track.scrollLeft = 0;
+        track.style.scrollSnapType = "";
+        measureActive(); // no scroll event fires when already at 0, so re-check explicitly
+      });
+    },
+    [measureActive],
+  );
+
   useLayoutEffect(() => {
-    const state = flipState.current;
     const track = trackRef.current;
-    if (!state || !kit || !track) return;
+    if (swapping.current && track) {
+      swapping.current = false;
+      track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
+      track.closest(".reel")?.dispatchEvent(new CustomEvent("reel:change"));
+      requestAnimationFrame(() => track.classList.remove("swapping"));
+      return;
+    }
+    if (!track) return;
+    const strip = !track.closest(".reel.pinned");
+    if (strip) track.scrollLeft = 0;
+    const state = flipState.current;
+    if (!state || !kit) {
+      if (strip && track.style.scrollSnapType) settleStrip(track); // no animation: settle now
+      return;
+    }
     flipState.current = null;
     const { gsap, Flip } = kit;
     const frames = track.querySelectorAll<HTMLElement>(".shot");
@@ -77,11 +206,13 @@ export function PhotoSheet() {
         track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
         gsap.set(frames, { clearProps: "opacity,transform" });
         track.classList.remove("flipping");
-        // the reel changed length: let ScrollTrigger re-measure the pin
-        window.dispatchEvent(new Event("resize"));
+        if (strip) settleStrip(track);
+        track.closest(".reel")?.dispatchEvent(new CustomEvent("reel:change"));
       },
     });
-  }, [tag]);
+  }, [tag, settleStrip]);
+
+  let slot = 0;
 
   return (
     <>
@@ -128,12 +259,14 @@ export function PhotoSheet() {
         <ul ref={trackRef} className="reel-track" aria-label="Photographs">
           {photos.map((p, i) => {
             const on = tag === "all" || p.tag === tag;
+            const at = on ? slot++ : -1;
             return (
               <li
                 key={p.slug}
                 className="shot"
                 data-reveal=""
                 data-hidden={on ? undefined : ""}
+                data-active={at === active ? "" : undefined}
                 style={{ "--ar": `${p.full.width} / ${p.full.height}` } as React.CSSProperties}
               >
                 <a
@@ -177,7 +310,7 @@ export function PhotoSheet() {
             );
           })}
 
-          <li className="reel-end" data-reveal="">
+          <li className="reel-end" data-reveal="" data-active={active >= shownCount ? "" : undefined}>
             <a href={instagram.url} target="_blank" rel="noopener noreferrer me">
               <span className="end-k">more on Instagram</span>
               <span className="end-h">@{instagram.handle}</span>
@@ -185,9 +318,34 @@ export function PhotoSheet() {
             </a>
           </li>
         </ul>
-        <p className="shots-hint" aria-hidden="true">
-          swipe →
-        </p>
+
+        {/* phones and tablets: thumb-sized controls under the strip, with where-am-I progress */}
+        <div className="reel-nav" role="group" aria-label="Browse photos">
+          <button
+            type="button"
+            className="rn-btn"
+            onClick={() => go(-1)}
+            disabled={active === 0}
+            aria-label="Previous photo"
+          >
+            <ArrowLeft size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
+          <p className="rn-count" aria-hidden="true">
+            <b>{pad(Math.min(active + 1, shownCount))}</b> / {pad(shownCount)}
+            <i className="rn-bar">
+              <i style={{ transform: `scaleX(${Math.min(active + 1, shownCount) / shownCount})` }} />
+            </i>
+          </p>
+          <button
+            type="button"
+            className="rn-btn"
+            onClick={() => go(1)}
+            disabled={active >= shownCount}
+            aria-label="Next photo"
+          >
+            <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </>
   );

@@ -233,6 +233,17 @@ function photos(reel: HTMLElement) {
     },
   });
 
+  // A filter changed the reel's length (components/photos.tsx fires "reel:change"). A fake window
+  // resize would be ignored by ScrollTrigger, so re-measure directly, then, if the reader was
+  // inside the pinned stretch, bring them back to its start so the new set begins at frame 01.
+  const pin = travel.scrollTrigger;
+  reel.addEventListener("reel:change", () => {
+    if (!pin) return;
+    const inside = window.scrollY >= pin.start - 2;
+    ScrollTrigger.refresh();
+    if (inside) window.scrollTo({ top: pin.start, behavior: "instant" });
+  });
+
   $$(".shot", track).forEach((shot) => {
     const frame = shot.querySelector<HTMLElement>(".frame");
     const img = frame?.querySelector<HTMLImageElement>(":scope > img");

@@ -450,7 +450,7 @@
   .hero {
     position: relative;
     isolation: isolate;
-    padding: clamp(40px, 7vw, 88px) 0 clamp(48px, 7vw, 88px);
+    padding: clamp(32px, 6vw, 80px) 0 clamp(40px, 5vw, 64px);
   }
   .hero-grid {
     --mx: 72%;
@@ -709,8 +709,12 @@
   }
 
   /* ---------- sections ---------- */
+  /*
+   * Vertical rhythm (8px grid). Between two sections = 2 x section padding (88-160px), about
+   * 2.5-3x the heading-to-content gap, so sections read as separate blocks without drifting apart.
+   */
   .sec {
-    padding: clamp(56px, 8vw, 104px) 0;
+    padding: clamp(44px, 6vw, 80px) 0;
   }
   /*
    * First paint only: sections below the fold are skipped until they near the viewport.
@@ -724,14 +728,14 @@
     contain-intrinsic-size: auto 900px;
   }
   .sh {
-    margin-bottom: clamp(32px, 5vw, 56px);
+    margin-bottom: clamp(28px, 4vw, 48px);
   }
   /* section header: 02 experience.log ───── */
   .hunk {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: clamp(20px, 3vw, 32px);
+    margin-bottom: clamp(14px, 2vw, 24px);
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
     white-space: nowrap;
@@ -950,7 +954,7 @@
   }
   .g-row {
     position: relative;
-    padding: 0 0 60px var(--pad);
+    padding: 0 0 56px var(--pad);
   }
   .node {
     position: absolute;
@@ -1156,7 +1160,7 @@
       --pad: 50px;
     }
     .g-row {
-      padding-bottom: 48px;
+      padding-bottom: 40px;
     }
     .cmt {
       grid-template-columns: auto 1fr;
@@ -1176,7 +1180,7 @@
     grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1.1fr);
     column-gap: 32px;
     align-items: start;
-    padding: 40px 0 46px;
+    padding: 40px 0;
     transition: opacity 0.4s;
   }
   /* accent line sweeps across the row's top rule on hover */
@@ -1288,7 +1292,7 @@
     .prow {
       grid-template-columns: 48px minmax(0, 1fr);
       column-gap: 20px;
-      padding: 32px 0 36px;
+      padding: 32px 0;
     }
     .pbody {
       grid-column: 2;
@@ -1374,7 +1378,7 @@
     display: grid;
     grid-template-columns: var(--gutter) minmax(0, 1fr);
     gap: 12px 32px;
-    padding: 26px 0 22px;
+    padding: 24px 0;
   }
   .sg h3 {
     padding-top: 30px;
@@ -1491,7 +1495,7 @@
   @media (max-width: 720px) {
     .sg {
       grid-template-columns: minmax(0, 1fr);
-      padding: 22px 0 14px;
+      padding: 20px 0 16px;
     }
     .sg h3 {
       padding-top: 0;
@@ -1512,11 +1516,11 @@
   }
   /* the intro reads straight on from the heading, so it sits closer than other sections' content */
   #photos .sh {
-    margin-bottom: clamp(18px, 2.2vw, 28px);
+    margin-bottom: clamp(24px, 2.6vw, 32px);
   }
   .shots-intro {
     max-width: 36em;
-    margin-bottom: clamp(18px, 2vw, 24px);
+    margin-bottom: clamp(24px, 2.6vw, 32px);
     font-size: 1.125rem;
     line-height: 1.6;
     color: var(--mute);
@@ -1527,7 +1531,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px 24px;
-    margin-bottom: clamp(18px, 2.6vh, 28px);
+    margin-bottom: clamp(16px, 1.6vw, 20px);
   }
   /* filters read like a shell command: $ ls ~/photos --tag [all] [macro] ... */
   .fl {
@@ -1634,30 +1638,32 @@
    * filters above and the caption below on any laptop screen.
    */
   .reel.pinned {
-    --fh: clamp(220px, calc(100vh - 400px), 520px);
+    /* leaves room for a second line of filter chips above and the caption below */
+    --fh: clamp(220px, calc(100vh - 440px), 500px);
   }
-  /* while pinned, the filters stay on one line (swipe or scroll it sideways) to save height */
+  /* every filter stays visible: chips wrap, and the counter keeps its place on the right */
   .reel.pinned .reel-tools {
     flex-wrap: nowrap;
+    align-items: flex-start;
   }
   .reel.pinned .fl {
     flex: 1;
     min-width: 0;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
-  }
-  .reel.pinned .fl::-webkit-scrollbar {
-    display: none;
   }
   .reel.pinned .reel-count {
     flex: none;
+    padding-top: 9px;
   }
   .reel.pinned .reel-track {
     overflow: visible;
     scroll-snap-type: none;
     will-change: transform;
+    transition: opacity 0.3s ease;
+  }
+  /* a filter change on the pinned reel: a short cross-fade while the set swaps */
+  .reel.pinned .reel-track.swapping {
+    opacity: 0;
+    transition-duration: 0.2s;
   }
   .shot {
     flex: none;
@@ -1841,33 +1847,117 @@
     outline-offset: 6px;
     border-radius: 4px;
   }
-  .shots-hint {
-    margin-top: 14px;
+  /*
+   * Phones and tablets (and any screen without the pinned reel): a control bar under the strip.
+   *  - previous / next: 44px targets in the thumb zone, one frame per tap
+   *  - "03 / 16" with a progress line: you always know where you are and how much is left
+   */
+  .reel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px; /* the strip already ends below the longest caption */
+  }
+  .reel.pinned .reel-nav {
+    display: none;
+  }
+  .rn-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color 0.25s,
+      color 0.25s,
+      opacity 0.25s,
+      transform 0.3s var(--ease);
+  }
+  .rn-btn:hover:not(:disabled) {
+    border-color: var(--acc);
+    color: var(--acc);
+  }
+  .rn-btn:active:not(:disabled) {
+    transform: scale(0.92);
+  }
+  .rn-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .rn-btn:focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 2px;
+  }
+  .rn-count {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
-    text-align: right;
   }
-  .reel.pinned .shots-hint {
-    display: none;
+  .rn-count b {
+    min-width: 2ch;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .rn-bar {
+    position: relative;
+    width: clamp(64px, 28vw, 160px);
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  .rn-bar i {
+    position: absolute;
+    inset: 0;
+    background: var(--acc);
+    transform-origin: 0 50%;
+    transition: transform 0.45s var(--ease);
+  }
+  /* the frame in front stays bright, the rest step back: one clear focal point */
+  .reel:not(.pinned) .shot figure,
+  .reel:not(.pinned) .reel-end a {
+    transition: opacity 0.4s var(--ease);
+  }
+  .reel:not(.pinned) .shot:not([data-active]) figure,
+  .reel:not(.pinned) .reel-end:not([data-active]) a {
+    opacity: 0.45;
+  }
+  /* one-time nudge: the strip slides a little and back, so it reads as swipeable */
+  @keyframes reel-nudge {
+    0%,
+    100% {
+      translate: 0;
+    }
+    45% {
+      translate: -56px;
+    }
+  }
+  .reel-track.nudge > li {
+    animation: reel-nudge 1.2s var(--ease) both;
   }
   @media (max-width: 900px) {
     .reel {
-      --fh: min(50vh, 440px);
+      --fh: min(52vh, 460px);
     }
   }
   @media (max-width: 600px) {
     .reel {
-      --fh: min(56vh, 400px);
+      /* capped by width too, so even the widest photo leaves the next one peeking in */
+      --fh: min(54vh, 104vw, 420px);
     }
-    .fl {
-      flex-wrap: nowrap;
-      margin: 0 -24px;
-      padding: 0 24px 4px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .fl::-webkit-scrollbar {
+    /* all filters on view (no hidden sideways scroll); the decorative prompt makes room */
+    .fl-cmd {
       display: none;
+    }
+    .fl-chip {
+      padding: 8px 12px; /* a comfortable tap target */
     }
     .reel-track {
       gap: 18px;
@@ -2072,7 +2162,7 @@
     grid-template-columns: var(--gutter) minmax(0, 1fr);
     gap: 12px 32px;
     border-top: 1px solid var(--line);
-    padding-top: 26px;
+    padding-top: 24px;
   }
   .edu-when {
     padding-top: 0.45em;
@@ -2099,7 +2189,7 @@
 
   /* ---------- contact ---------- */
   .contact .kick {
-    margin-bottom: 6px;
+    margin-bottom: 10px; /* same label-to-headline step as the hero's $ whoami */
   }
   .big-mask {
     overflow: hidden;
@@ -2162,6 +2252,7 @@
   /* ---------- footer: the session ends ---------- */
   .footer {
     padding: 32px 0 40px;
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
     color: var(--mute);
     font-size: var(--fs-sm);
     border-top: 1px solid var(--line);
@@ -2334,6 +2425,9 @@
   @media (min-width: 721px) {
     .sb {
       display: flex;
+    }
+    .footer {
+      padding-bottom: 60px; /* 28px status bar + 32px */
     }
   }
 }
