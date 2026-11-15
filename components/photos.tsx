@@ -12,29 +12,12 @@ import { photography } from "@/lib/content";
  *  - every frame keeps its true proportions: same height, natural width, nothing cropped
  *  - captions sit under each photo, never on top of it
  *  - frames "develop" from grey to colour as they arrive (CSS)
- *  - tag filters re-flow the reel with GSAP Flip, loaded on demand
+ *  - tag filters swap the set with a short cross-fade (no frame ever overlaps another)
  *  - a frame opens /photos/<slug> in a new tab: the original, full size, downloadable
  *  - the reel ends on a quiet card that points to Instagram
  *  - phones and tablets get a control bar (previous / "03 / 16" + progress / next), the frame in
  *    front stays bright while the rest step back, and a one-time nudge shows the strip can be swiped
  */
-
-type FlipKit = {
-  gsap: typeof import("gsap").gsap;
-  Flip: typeof import("gsap/Flip").Flip;
-};
-let kit: FlipKit | null = null;
-let kitLoading: Promise<FlipKit> | null = null;
-
-/** GSAP + Flip, fetched the first time someone reaches for the filters. */
-function loadFlip() {
-  kitLoading ??= Promise.all([import("gsap"), import("gsap/Flip")]).then(([g, f]) => {
-    g.gsap.registerPlugin(f.Flip);
-    kit = { gsap: g.gsap, Flip: f.Flip };
-    return kit;
-  });
-  return kitLoading;
-}
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -42,7 +25,6 @@ export function PhotoSheet() {
   const { intro, photos, instagram } = photography;
   const [tag, setTag] = useState("all");
   const trackRef = useRef<HTMLUListElement>(null);
-  const flipState = useRef<ReturnType<FlipKit["Flip"]["getState"]> | null>(null);
 
   const tags = useMemo(() => {
     const counts = new Map<string, number>();
@@ -134,83 +116,46 @@ export function PhotoSheet() {
     };
   }, []);
 
-  /** True while a filter change is cross-fading the pinned desktop reel. */
+  /** True while a filter change is cross-fading the reel. */
   const swapping = useRef(false);
 
+  /**
+   * Changing the filter: the reel fades out, the set swaps, it starts again at frame 01 and fades
+   * back in. Every frame (and the Instagram card) stays in normal layout the whole time, so
+   * nothing can slide under or over anything else mid-change.
+   */
   const pick = (next: string) => {
     if (next === tag) return;
     const track = trackRef.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setActive(0);
-    // Pinned desktop reel: fade out, swap the set, re-measure, fade back in at frame 01.
-    // (Re-flowing frames inside a moving, pinned track would fight the scroll position.)
-    if (track?.closest(".reel.pinned")) {
-      swapping.current = true;
-      track.classList.add("swapping");
-      window.setTimeout(() => setTag(next), reduce ? 0 : 220);
-      return;
-    }
-    // Swipe strip: frames glide into their new places (GSAP Flip). Snapping is paused while the
-    // set changes; otherwise the browser keeps the previously snapped item (say, the Instagram
-    // card at the end) in view instead of starting the new set at frame 01.
-    if (kit && track && !reduce) flipState.current = kit.Flip.getState(track.querySelectorAll(".shot"));
-    if (track) {
-      track.style.scrollSnapType = "none";
-      track.scrollLeft = 0;
-    }
-    setTag(next);
+    if (!track) return setTag(next);
+    swapping.current = true;
+    track.classList.add("swapping");
+    window.setTimeout(() => setTag(next), reduce ? 0 : 200);
   };
-
-  /** Back to frame 01 with snapping restored, once the new set has settled. */
-  const settleStrip = useCallback(
-    (track: HTMLElement) => {
-      track.scrollLeft = 0;
-      requestAnimationFrame(() => {
-        track.scrollLeft = 0;
-        track.style.scrollSnapType = "";
-        measureActive(); // no scroll event fires when already at 0, so re-check explicitly
-      });
-    },
-    [measureActive],
-  );
 
   useLayoutEffect(() => {
     const track = trackRef.current;
-    if (swapping.current && track) {
-      swapping.current = false;
-      track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
+    if (!swapping.current || !track) return;
+    swapping.current = false;
+    track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
+    if (track.closest(".reel.pinned")) {
+      // pinned desktop reel: re-measure the pin and return to its start (lib/motion-scenes.ts)
       track.closest(".reel")?.dispatchEvent(new CustomEvent("reel:change"));
-      requestAnimationFrame(() => track.classList.remove("swapping"));
-      return;
+    } else {
+      // swipe strip: snapping is paused for a moment, otherwise the browser would keep the
+      // previously snapped item (say, the Instagram card) in view instead of frame 01
+      track.style.scrollSnapType = "none";
+      track.scrollLeft = 0;
     }
-    if (!track) return;
-    const strip = !track.closest(".reel.pinned");
-    if (strip) track.scrollLeft = 0;
-    const state = flipState.current;
-    if (!state || !kit) {
-      if (strip && track.style.scrollSnapType) settleStrip(track); // no animation: settle now
-      return;
-    }
-    flipState.current = null;
-    const { gsap, Flip } = kit;
-    const frames = track.querySelectorAll<HTMLElement>(".shot");
-    track.classList.add("flipping");
-    Flip.from(state, {
-      targets: frames,
-      duration: 0.7,
-      ease: "power3.inOut",
-      absolute: true,
-      onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.2 }),
-      onLeave: (els) => gsap.to(els, { opacity: 0, y: 30, duration: 0.3 }),
-      onComplete: () => {
-        track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
-        gsap.set(frames, { clearProps: "opacity,transform" });
-        track.classList.remove("flipping");
-        if (strip) settleStrip(track);
-        track.closest(".reel")?.dispatchEvent(new CustomEvent("reel:change"));
-      },
+    requestAnimationFrame(() => {
+      track.scrollLeft = track.closest(".reel.pinned") ? track.scrollLeft : 0;
+      track.style.scrollSnapType = "";
+      measureActive(); // no scroll event fires when already at 0, so re-check explicitly
+      track.classList.remove("swapping");
     });
-  }, [tag, settleStrip]);
+  }, [tag, measureActive]);
 
   let slot = 0;
 
@@ -225,9 +170,6 @@ export function PhotoSheet() {
             className="fl"
             role="group"
             aria-label="Filter photos by subject"
-            onPointerEnter={loadFlip}
-            onFocus={loadFlip}
-            onTouchStart={loadFlip}
           >
             <span className="fl-cmd" aria-hidden="true">
               $ ls ~/photos --tag

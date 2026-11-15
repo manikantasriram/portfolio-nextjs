@@ -1658,10 +1658,12 @@
     overflow: visible;
     scroll-snap-type: none;
     will-change: transform;
+  }
+  /* a filter change: a short cross-fade while the set swaps (any screen size) */
+  .reel-track {
     transition: opacity 0.3s ease;
   }
-  /* a filter change on the pinned reel: a short cross-fade while the set swaps */
-  .reel.pinned .reel-track.swapping {
+  .reel-track.swapping {
     opacity: 0;
     transition-duration: 0.2s;
   }
@@ -2591,10 +2593,6 @@
   html[data-js] .shot.in figcaption {
     opacity: 1;
     translate: none;
-  }
-  /* while GSAP Flip re-flows the reel, it owns opacity and position */
-  html[data-js] .reel-track.flipping .shot {
-    transition: none;
   }
 
   html[data-js] [data-pop] {
