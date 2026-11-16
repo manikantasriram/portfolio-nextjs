@@ -5,7 +5,7 @@
  *    (`content-visibility: auto` in globals.css, switched on by the `data-lazy` mark that
  *    layout.tsx sets before paint). Right after the page has loaded they are rendered for real,
  *    one per idle moment, so the work never blocks input. Anything that needs exact positions
- *    (a click on an in-page link, the command palette) renders them all first.
+ *    (a click on an in-page link) renders them all first.
  *
  * 2. Jump checking. A smooth scroll to a section can be cut short, for example when the animation
  *    library measures the page just as the scroll starts. For a few seconds after a jump we check

@@ -70,7 +70,7 @@ export function hasStoredTheme(): boolean {
   }
 }
 
-/** Notifies when <html data-theme> changes (from any toggle or the palette). */
+/** Notifies when <html data-theme> changes (from any toggle). */
 export function subscribeTheme(callback: () => void) {
   const observer = new MutationObserver(callback);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });

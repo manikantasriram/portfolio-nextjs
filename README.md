@@ -113,7 +113,7 @@ shown in exactly one section.
 | `lib/site.ts`    | Name, email, GitHub and LinkedIn links, resume path, and the section map            |
 
 The section map in `lib/site.ts` (id, label, "file name", order) drives the nav, the section
-headers, the status bar and the command palette.
+headers and the status bar.
 
 Static files are in `public/`:
 
@@ -147,7 +147,6 @@ components/
   experience.tsx        commit graph with a branch lane and a commit-type filter
   projects.tsx          ruled, typographic project index
   skills.tsx            skill groups laid out like a JSON file
-  command-palette.tsx   Ctrl/Cmd+K palette
   theme-toggle.tsx      dark/light toggle
   status-bar.tsx        editor-style status bar (desktop)
   json-ld.tsx           Person + ProfilePage + WebSite structured data
@@ -157,7 +156,7 @@ lib/
   motion-scenes.ts    the GSAP scroll scenes (lazy chunk)
   lazy-sections.ts    idle-time rendering of sections below the fold
   scroll-store.ts     shared scroll state (active section, progress)
-  theme.ts  actions.ts
+  theme.ts            theme read, apply and change events
 ```
 
 ## How the animation layer works
@@ -209,7 +208,6 @@ npx lighthouse http://localhost:3000 --view
 
 - **Dark / light theme.** Follows the OS on a first visit, then remembers the choice. The switch
   animates as a circular reveal where the browser supports the View Transitions API.
-- **Command palette.** `Ctrl/Cmd + K` or `/`.
 - **Commit graph.** `main` and a freelance branch draw as you scroll; filter commits by
   `feat`, `perf`, `fix`.
 

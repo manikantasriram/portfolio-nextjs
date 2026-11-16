@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Mono, DM_Sans, Space_Grotesk } from "next/font/google";
-import { CommandPaletteProvider } from "@/components/command-palette";
 import { JsonLd } from "@/components/json-ld";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -115,7 +114,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLd />
       </head>
       <body>
-        <CommandPaletteProvider>{children}</CommandPaletteProvider>
+        {children}
       </body>
     </html>
   );

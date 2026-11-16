@@ -10,7 +10,7 @@
  *   education   degree
  *   contact     availability, email and profiles (lib/site.ts)
  *
- * Components, the command palette and JSON-LD all read from here.
+ * Components and JSON-LD all read from here.
  */
 
 export const hero = {

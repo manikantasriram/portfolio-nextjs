@@ -1,26 +1,19 @@
 "use client";
 
-import { Search } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useCommandPalette } from "@/components/command-palette";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { startLazySections } from "@/lib/lazy-sections";
 import { subscribeScroll, useActiveSection } from "@/lib/scroll-store";
 import { navLinks } from "@/lib/site";
 
-const subscribeNothing = () => () => {};
-const isMacPlatform = () => /Mac|iPhone|iPad/.test(navigator.userAgent);
-
 export function Nav() {
   const [open, setOpen] = useState(false);
   const section = useActiveSection();
-  const { open: openPalette } = useCommandPalette();
   const navRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const pillRef = useRef<HTMLLIElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
-  const isMac = useSyncExternalStore(subscribeNothing, isMacPlatform, () => false);
 
   // Reading progress and the "stuck" border are written straight to the DOM on each scroll
   // frame, so the nav never re-renders while scrolling.
@@ -102,11 +95,6 @@ export function Nav() {
               </li>
             ))}
           </ul>
-          <button type="button" className="kbtn" onClick={openPalette} aria-haspopup="dialog">
-            <Search size={14} strokeWidth={2} aria-hidden="true" />
-            <span>Search</span>
-            <kbd aria-label={isMac ? "Command K" : "Control K"}>{isMac ? "⌘ K" : "Ctrl K"}</kbd>
-          </button>
           <ThemeToggle />
           <button
             ref={burgerRef}

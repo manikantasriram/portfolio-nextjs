@@ -124,8 +124,7 @@
   h4 {
     font: 700 var(--fs-md) / 1.4 var(--f-body);
   }
-  code,
-  kbd {
+  code {
     font-family: var(--f-mono);
   }
   :focus-visible {
@@ -367,38 +366,6 @@
   .burger[aria-expanded="true"] i:last-child {
     top: 20px;
     transform: rotate(-45deg);
-  }
-  .kbtn {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    padding: 0 12px 0 14px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface);
-    color: var(--mute);
-    font: var(--fs-xs) var(--f-mono);
-    transition:
-      border-color 0.2s,
-      color 0.2s;
-  }
-  .kbtn:hover {
-    border-color: var(--acc);
-    color: var(--ink);
-  }
-  @media (min-width: 1100px) {
-    .kbtn {
-      display: inline-flex;
-    }
-  }
-  kbd {
-    font-size: 0.72rem;
-    padding: 2px 6px;
-    border-radius: 5px;
-    border: 1px solid var(--line);
-    background: var(--bg);
-    color: var(--mute);
   }
   @media (max-width: 860px) {
     .burger {
@@ -2317,101 +2284,6 @@
   }
   .footer a:hover span {
     transform: translateY(-3px);
-  }
-
-  /* ---------- command palette ---------- */
-  .pal {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    display: grid;
-    align-items: start;
-    justify-items: center;
-    padding: 12vh 16px 16px;
-    background: color-mix(in srgb, var(--ink) 40%, transparent);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-  }
-  .pal {
-    animation: pal-fade 0.2s linear;
-  }
-  .pal-b {
-    animation: pal-drop 0.4s var(--ease);
-  }
-  @keyframes pal-fade {
-    from {
-      opacity: 0;
-    }
-  }
-  @keyframes pal-drop {
-    from {
-      transform: translateY(-14px) scale(0.97);
-    }
-  }
-  .pal-b {
-    width: min(560px, 100%);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    box-shadow: 0 32px 64px -24px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-  }
-  .pal-i {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 18px;
-    border-bottom: 1px solid var(--line);
-    font-family: var(--f-mono);
-    color: var(--acc);
-  }
-  .pal-i input {
-    flex: 1;
-    min-width: 0;
-    min-height: 54px;
-    border: 0;
-    background: none;
-    color: var(--ink);
-    font: 1rem var(--f-mono);
-    outline: none;
-  }
-  .pal-i input::placeholder {
-    color: var(--c);
-  }
-  .pal-l {
-    padding: 8px;
-    margin: 0;
-    max-height: min(50vh, 340px);
-    overflow: auto;
-  }
-  .pal-l li {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: var(--fs-sm);
-  }
-  .pal-l li small {
-    font: var(--fs-xs) var(--f-mono);
-    color: var(--c);
-    white-space: nowrap;
-  }
-  .pal-l li[aria-selected="true"] {
-    background: color-mix(in srgb, var(--acc) 12%, transparent);
-  }
-  .pal-l li.none {
-    color: var(--mute);
-    cursor: default;
-  }
-  .pal-h {
-    padding: 10px 18px;
-    border-top: 1px solid var(--line);
-    font: var(--fs-xs) var(--f-mono);
-    color: var(--c);
   }
 
   /* ---------- status bar (desktop) ---------- */
