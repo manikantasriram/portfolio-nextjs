@@ -215,6 +215,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "Python", icon: icon("python") },
       { name: "FastAPI", icon: icon("fastapi") },
       { name: "PostgreSQL", icon: icon("postgresql") },
+      { name: "GraphQL", icon: icon("graphql") },
       { name: "Docker", icon: icon("docker") },
     ],
   },
@@ -223,6 +224,8 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
     skills: [
       { name: "Git", icon: icon("git") },
       { name: "GitHub", icon: icon("github", true) },
+      { name: "Vercel", icon: icon("vercel", true) },
+      { name: "Netlify", icon: icon("netlify") },
       { name: "Jest", icon: icon("jest") },
       { name: "Pytest", icon: icon("pytest") },
       { name: "Jira", icon: icon("jira") },
@@ -245,7 +248,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
     title: "AI tools",
     skills: [
       { name: "Claude", icon: { kind: "inline", mark: "claude" } },
-      { name: "ChatGPT", icon: badge("GPT", "#fff", "#10A37F", true) },
+      { name: "ChatGPT", icon: icon("chatgpt", true) },
       { name: "Cursor", icon: { kind: "inline", mark: "cursor" } },
     ],
   },
