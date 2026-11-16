@@ -300,7 +300,7 @@ export interface Photo {
   full: { width: number; height: number };
 }
 
-/** Off the clock: photography, with a short caption for each frame. */
+/** Off the Clock: photography, with a short caption for each frame. */
 export const photography = {
   intro:
     "Photography is where I slow down. Away from the screen, a camera teaches me to wait for the light, look twice and fall for what most people walk past: the pattern hiding in a plastic chair, the patience of a pigeon, a temple tower glowing against the night. Every frame here is a moment that made me stop, breathe and press the shutter.",

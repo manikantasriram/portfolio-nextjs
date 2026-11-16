@@ -5,7 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { photography } from "@/lib/content";
 
 /*
- * Off the clock: a horizontal reel of photos.
+ * Off the Clock: a horizontal reel of photos.
  *  - phones, or before GSAP arrives: a native swipe strip that snaps frame by frame
  *  - wide screens with GSAP: the reel pins (centred, adding no space of its own) and scrolling
  *    down travels sideways through it (the "photos" scene in lib/motion-scenes.ts)

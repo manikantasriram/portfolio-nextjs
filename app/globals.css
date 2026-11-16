@@ -279,7 +279,17 @@
     min-height: 44px;
     padding: 0 12px;
     border-radius: 999px;
+    white-space: nowrap;
     transition: color 0.2s;
+  }
+  /* narrow desktops: tighter links so all seven fit on one line beside the name */
+  @media (min-width: 861px) and (max-width: 1023px) {
+    .links {
+      gap: 0;
+    }
+    .links a {
+      padding: 0 7px;
+    }
   }
   .links a:hover,
   .links a[aria-current="true"] {

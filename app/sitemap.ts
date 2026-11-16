@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       images: [`${site.url}${site.photo}`, `${site.url}${site.ogImage}`],
     },
-    // one page per photo, opened from the "Off the clock" sheet
+    // one page per photo, opened from the "Off the Clock" sheet
     ...photography.photos.map((p) => ({
       url: `${site.url}/photos/${p.slug}`,
       lastModified: new Date(),

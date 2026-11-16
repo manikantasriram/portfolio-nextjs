@@ -33,7 +33,7 @@ export const sections = [
   { id: "projects", label: "Projects", file: "projects.tsx", inNav: true },
   { id: "skills", label: "Skills", file: "skills.json", inNav: true },
   { id: "education", label: "Education", file: "education.md", inNav: true },
-  { id: "photos", label: "Off the clock", file: "photos.raw", inNav: false },
+  { id: "photos", label: "Off the Clock", file: "photos.raw", inNav: true },
   { id: "contact", label: "Contact", file: "contact.sh", inNav: true },
 ] as const;
 
