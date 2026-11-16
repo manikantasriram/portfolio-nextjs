@@ -256,8 +256,8 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
 
 /** Tools that appear in project stacks but not in the Skills section. */
 const stackOnlyIcons: Record<string, SkillIcon> = {
-  "TanStack Query": badge("TQ", "#fff", "#FF4154", true),
-  Redis: badge("Rd", "#fff", "#DC382D", true),
+  "TanStack Query": icon("tanstack"),
+  Redis: icon("redis"),
   "LLM API": badge("AI", "#fff", "#7C3AED", true),
 };
 
