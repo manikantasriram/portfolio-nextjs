@@ -71,9 +71,9 @@ export default async function PhotoPage({ params }: Params) {
       <div className="pv-body">
         <figure className="pv-stage">
           <a href={fullSrc(slug)} target="_blank" rel="noopener" title="Open the original at 100%">
-            {/* eslint-disable-next-line @next/next/no-img-element -- the original file, served as-is */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- full-resolution WebP copy; the link opens the original JPEG */}
             <img
-              src={fullSrc(slug)}
+              src={`/images/photos/view/${slug}.webp`}
               width={p.full.width}
               height={p.full.height}
               alt={p.alt}

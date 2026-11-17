@@ -15,7 +15,7 @@ icons from Lucide. It exports to plain static files and is set up to deploy on *
 | Animation | CSS for the hero and simple reveals; GSAP 3 (ScrollTrigger, SplitText), lazy-loaded, for scroll scenes |
 | Icons     | `lucide-react`                                                       |
 | Fonts     | Space Grotesk, DM Sans, DM Mono via `next/font` (self-hosted)        |
-| Hosting   | Vercel (static). A Netlify config is kept as an alternative          |
+| Hosting   | Vercel (static)                                                      |
 
 ## Requirements
 
@@ -87,7 +87,7 @@ resolved at build time in `next.config.ts`:
    (Vercel → Project → Settings → Environment Variables, e.g. `https://yourdomain.com`).
 2. Otherwise, on Vercel, the project's production domain (`VERCEL_PROJECT_PRODUCTION_URL`,
    provided automatically, e.g. `your-project.vercel.app`).
-3. Otherwise `https://manikantasriram.netlify.app`, the original address (local builds).
+3. Otherwise `https://manikantasriram.vercel.app`, the live address (local builds).
 
 ### After the first deploy
 
@@ -95,12 +95,6 @@ resolved at build time in `next.config.ts`:
 - Check both "Download resume" buttons.
 - In Google Search Console, add the new domain as a property (the verification file is already
   served) and submit the sitemap.
-- The old Netlify site still serves the previous version. Once Vercel is live, take it down or
-  redirect it to the new domain so search engines see a single site.
-
-### Netlify (alternative)
-
-`netlify.toml` is still valid: build command `npm run build`, publish directory `out`.
 
 ## Editing content
 

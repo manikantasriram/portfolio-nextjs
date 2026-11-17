@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Section } from "@/components/section";
 import { about, approach } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -31,11 +30,16 @@ export function About() {
             <span>480 × 480</span>
           </figcaption>
           <div className="portrait-img">
-            <Image
+            {/* static export has no image optimiser, so the two sizes are listed by hand */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={site.photo}
+              srcSet="/images/manikanta-sriram-240.webp 240w, /images/manikanta-sriram-480.webp 480w"
               width={480}
               height={480}
               sizes="(max-width: 720px) 60vw, 300px"
+              loading="lazy"
+              decoding="async"
               alt="Manikanta Sriram, full stack developer in Hyderabad, in a navy blazer"
             />
           </div>

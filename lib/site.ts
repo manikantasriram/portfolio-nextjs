@@ -1,7 +1,7 @@
 /** Identity, links and the section map. Professional content lives in lib/content.ts. */
 export const site = {
-  /** Resolved in next.config.ts (custom domain, Vercel production domain, or the Netlify address). */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://manikantasriram.netlify.app",
+  /** Resolved in next.config.ts (custom domain, or the Vercel production domain). */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://manikantasriram.vercel.app",
   name: "Manikanta Sriram",
   firstName: "Manikanta",
   lastName: "Sriram",

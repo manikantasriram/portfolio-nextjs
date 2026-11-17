@@ -285,9 +285,9 @@ export const education = {
 
 /**
  * To add a photo:
- *  1. put the original in /public/images/photos/full/<slug>.jpg (shown in the reel at its own
- *     proportions, and served as-is for download)
- *  2. add an entry below; `full` is the original's pixel size
+ *  1. put the original in /public/images/photos/full/<slug>.jpg (served as-is for download)
+ *  2. run `npm run photos` to make the web-sized copies the reel and photo page show
+ *  3. add an entry below; `full` is the original's pixel size
  * Everything else (reel, filters, viewer page, sitemap, prev/next) picks it up automatically.
  */
 export interface Photo {

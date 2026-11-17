@@ -4,13 +4,13 @@ import type { NextConfig } from "next";
  * The site's public address, used for the canonical URL, Open Graph tags, sitemap and JSON-LD.
  *  1. NEXT_PUBLIC_SITE_URL, if you set it (use this for a custom domain)
  *  2. on Vercel, the project's production domain (set automatically at build time)
- *  3. otherwise the original Netlify address
+ *  3. otherwise the live Vercel address (local builds)
  */
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://manikantasriram.netlify.app")
+    : "https://manikantasriram.vercel.app")
 ).replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {

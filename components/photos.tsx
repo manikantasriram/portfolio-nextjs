@@ -220,9 +220,10 @@ export function PhotoSheet() {
                 >
                   <figure>
                     <div className="frame">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- static export: originals served as-is */}
+                      {/* eslint-disable-next-line @next/next/no-img-element -- static export: web-sized copies from `npm run photos` */}
                       <img
-                        src={`/images/photos/full/${p.slug}.jpg`}
+                        src={`/images/photos/reel/${p.slug}-560.webp`}
+                        srcSet={`/images/photos/reel/${p.slug}-560.webp 1x, /images/photos/reel/${p.slug}-1080.webp 2x`}
                         width={p.full.width}
                         height={p.full.height}
                         alt={p.alt}
