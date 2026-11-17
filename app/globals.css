@@ -673,15 +673,16 @@
     font-style: italic;
   }
   @media (max-width: 560px) {
+    /* 12px is the smallest readable code size; on the narrowest phones the card scrolls sideways */
     .code {
-      font-size: clamp(0.6rem, 2.9vw, 0.75rem);
+      font-size: 0.75rem;
     }
     .code .l::before {
       width: 1.4em;
       margin-right: 0.9em;
     }
     .editor .out {
-      font-size: clamp(0.66rem, 3.2vw, 0.8125rem);
+      font-size: 0.75rem;
     }
   }
 
@@ -869,7 +870,7 @@
   }
   .gf span[aria-hidden] {
     color: var(--c);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
   }
   .gf:hover {
     border-color: var(--t);
@@ -976,7 +977,8 @@
     padding: 6px 10px;
     border-radius: 999px;
     background: color-mix(in srgb, var(--col) 12%, transparent);
-    color: var(--col);
+    /* 30% ink keeps the label at 5.3:1 or more on its tinted pill, in both themes */
+    color: color-mix(in srgb, var(--col) 70%, var(--ink));
     margin-bottom: 14px;
   }
   .ref.branch {
@@ -1193,7 +1195,8 @@
     padding: 5px 10px;
     border-radius: 999px;
     font: var(--fs-xs) / 1 var(--f-mono);
-    color: var(--warn);
+    /* a fifth of the ink colour keeps the text at 5:1 or more on its tinted pill, in both themes */
+    color: color-mix(in srgb, var(--warn) 80%, var(--ink));
     background: color-mix(in srgb, var(--warn) 11%, transparent);
   }
   .pstatus i {
@@ -1203,7 +1206,7 @@
     background: currentColor;
   }
   .pstatus[data-status="live"] {
-    color: var(--ok);
+    color: color-mix(in srgb, var(--ok) 80%, var(--ink));
     background: color-mix(in srgb, var(--ok) 11%, transparent);
   }
   /* live demo / source code links under a project */
@@ -1569,7 +1572,7 @@
       transform 0.4s var(--ease);
   }
   .fl-chip sup {
-    font-size: 0.72em;
+    font-size: 0.75rem;
     color: var(--c);
   }
   .fl-chip:hover {
@@ -1584,7 +1587,6 @@
   }
   .fl-chip[aria-pressed="true"] sup {
     color: inherit;
-    opacity: 0.75;
   }
   .fl-chip:focus-visible {
     outline: 2px solid var(--acc);
@@ -1927,12 +1929,11 @@
     transition: transform 0.45s var(--ease);
   }
   /* the frame in front stays bright, the rest step back: one clear focal point */
-  .reel:not(.pinned) .shot figure,
-  .reel:not(.pinned) .reel-end a {
+  .reel:not(.pinned) .shot .frame {
     transition: opacity 0.4s var(--ease);
   }
-  .reel:not(.pinned) .shot:not([data-active]) figure,
-  .reel:not(.pinned) .reel-end:not([data-active]) a {
+  /* only the picture steps back: caption text keeps full contrast (WCAG 1.4.3) */
+  .reel:not(.pinned) .shot:not([data-active]) .frame {
     opacity: 0.45;
   }
   /* one-time nudge: the strip slides a little and back, so it reads as swipeable */
@@ -2310,7 +2311,7 @@
     padding: 0 16px;
     background: var(--surface);
     border-top: 1px solid var(--line);
-    font: 0.72rem/1 var(--f-mono);
+    font: 0.75rem/1 var(--f-mono);
     color: var(--mute);
     user-select: none;
     transition:

@@ -244,6 +244,19 @@ function photos(reel: HTMLElement) {
     if (inside) window.scrollTo({ top: pin.start, behavior: "instant" });
   });
 
+  // Keyboard users: the browser can't scroll a pinned, transformed track to a focused photo, so
+  // jump the page to the point where that photo sits in the middle of the screen (WCAG 2.4.11).
+  track.addEventListener("focusin", (e) => {
+    const item = (e.target as HTMLElement).closest<HTMLElement>(".shot, .reel-end");
+    const total = distance();
+    if (!pin || !item || total <= 0) return;
+    const left = item.getBoundingClientRect().left - track.getBoundingClientRect().left;
+    const x = Math.min(total, Math.max(0, left + item.offsetWidth / 2 - document.documentElement.clientWidth / 2));
+    const progress = x / total;
+    window.scrollTo({ top: pin.start + progress * (pin.end - pin.start), behavior: "instant" });
+    travel.progress(progress); // land now instead of waiting for the scrub to catch up
+  });
+
   $$(".shot", track).forEach((shot) => {
     const frame = shot.querySelector<HTMLElement>(".frame");
     const img = frame?.querySelector<HTMLImageElement>(":scope > img");
