@@ -71,9 +71,13 @@ export default async function PhotoPage({ params }: Params) {
       <div className="pv-body">
         <figure className="pv-stage">
           <a href={fullSrc(slug)} target="_blank" rel="noopener" title="Open the original at 100%">
-            {/* eslint-disable-next-line @next/next/no-img-element -- full-resolution WebP copy; the link opens the original JPEG */}
+            {/* Phones get the 1080px-tall copy, large screens the full-resolution WebP; the link opens the original JPEG.
+                The image is limited by the viewport's height, so `sizes` is that height times the aspect ratio. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`/images/photos/view/${slug}.webp`}
+              srcSet={`/images/photos/reel/${slug}-1080.webp ${Math.round((p.full.width * 1080) / p.full.height)}w, /images/photos/view/${slug}.webp ${p.full.width}w`}
+              sizes={`(max-width: 860px) min(calc(72vh * ${(p.full.width / p.full.height).toFixed(3)}), calc(100vw - 32px)), min(calc((100vh - 140px) * ${(p.full.width / p.full.height).toFixed(3)}), 60vw)`}
               width={p.full.width}
               height={p.full.height}
               alt={p.alt}
