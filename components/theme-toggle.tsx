@@ -8,7 +8,7 @@ export function ThemeToggle() {
   // null during prerender; the real theme is read from <html> after hydration.
   const theme = useSyncExternalStore(subscribeTheme, getTheme, () => null);
 
-  // Follow OS theme changes until the visitor picks a theme themselves.
+  // follow the OS theme until the user picks one
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
@@ -30,7 +30,7 @@ export function ThemeToggle() {
       aria-pressed={theme === null ? undefined : theme === "dark"}
       title="Toggle light and dark theme"
     >
-      {/* Both icons render; CSS shows the right one from <html data-theme>, so nothing flips on hydration. */}
+      {/* render both icons and let CSS pick, so nothing flips on hydration */}
       <Sun className="sun" size={18} strokeWidth={1.8} aria-hidden="true" />
       <Moon className="moon" size={18} strokeWidth={1.8} aria-hidden="true" />
     </button>

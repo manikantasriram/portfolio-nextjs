@@ -4,7 +4,6 @@ import { SkillMark } from "./skill-mark";
 /** JSON-style key for a group title: "Backend and data" -> "backend_and_data". */
 const key = (title: string) => title.toLowerCase().replace(/\s+/g, "_");
 
-/** Skills laid out like a JSON file: each group is a key, its tools an overlapping stack of logos. */
 export function SkillsGrid() {
   return (
     <div className="sgroups">
@@ -17,7 +16,6 @@ export function SkillsGrid() {
             </span>
             <span className="sr-only">{group.title}</span>
           </h3>
-          {/* overlapping logos, like the project stacks; hover, tap or Tab to one to reveal its name */}
           <ul className="stack stack-lg" aria-label={group.title}>
             {group.skills.map((s, j) => (
               <li

@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 const personId = `${site.url}/#person`;
 const websiteId = `${site.url}/#website`;
 
-/** Person + ProfilePage + WebSite structured data, built only from facts shown on the page. */
+/** Person, ProfilePage and WebSite structured data. */
 export function JsonLd() {
   const graph = {
     "@context": "https://schema.org",
@@ -47,7 +47,7 @@ export function JsonLd() {
         mainEntity: { "@id": personId },
         about: { "@id": personId },
         primaryImageOfPage: { "@type": "ImageObject", url: `${site.url}${site.ogImage}` },
-        // Google's ProfilePage wants a full ISO 8601 date-time with a timezone, e.g. 2026-11-15T13:30:00.000Z
+        // Google wants a full ISO 8601 date-time here
         dateModified: new Date().toISOString(),
       },
       {

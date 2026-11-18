@@ -1,6 +1,5 @@
-/** Identity, links and the section map. Professional content lives in lib/content.ts. */
 export const site = {
-  /** Resolved in next.config.ts (custom domain, or the Vercel production domain). */
+  /** See next.config.ts */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://manikantasriram.vercel.app",
   name: "Manikanta Sriram",
   firstName: "Manikanta",
@@ -22,11 +21,7 @@ export const site = {
   photo: "/images/manikanta-sriram-480.webp",
 };
 
-/**
- * The page as a workspace: every section is a "file".
- * Order here is the order on the page; the nav, section headers and status bar all
- * read from this one list.
- */
+/** Sections in page order. The nav, section headers and status bar all read from this. */
 export const sections = [
   { id: "about", label: "About", file: "about.md", inNav: true },
   { id: "experience", label: "Experience", file: "experience.log", inNav: true },

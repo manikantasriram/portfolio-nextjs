@@ -11,7 +11,7 @@ const count = (f: Filter) =>
 
 interface Line {
   d: string;
-  /** Vertical extent inside the list, in px. The scroll animation draws between these. */
+  /** Top/bottom in px; the scroll animation draws between them. */
   top: number;
   bottom: number;
 }
@@ -21,9 +21,8 @@ interface Geometry {
   height: number;
   /** Dashed HEAD → first commit segment. */
   pending: string;
-  /** The main branch, top to bottom. */
   main: Line;
-  /** Side branches that fork from main and merge back into it. */
+  /** Side branches that fork from main and merge back. */
   branches: Line[];
 }
 
@@ -114,13 +113,7 @@ function RoleEntry({ role, filter }: { role: Role; filter: Filter }) {
   );
 }
 
-/**
- * Experience as a `git log --graph`. The graph is a real one: `main` runs top to bottom and the
- * freelance work forks off into its own lane, then merges back.
- *
- * This component only draws the graph. The scroll animation (lines drawing, nodes lighting up)
- * is the "graph" scene in lib/motion-scenes.ts, which reads each path's data-top / data-bottom.
- */
+/** Experience as a git log --graph. The animation is the "graph" scene in motion-scenes.ts. */
 export function ExperienceGraph() {
   const [filter, setFilter] = useState<Filter>("all");
   const [geo, setGeo] = useState<Geometry | null>(null);
@@ -129,8 +122,7 @@ export function ExperienceGraph() {
   useLayoutEffect(() => {
     const list = listRef.current;
     if (!list) return;
-    // ResizeObserver reports once the list has been laid out, and again whenever it resizes.
-    // (No eager measurement: while the section is off-screen it has no layout to read yet.)
+    // ResizeObserver fires after layout and on resize (off-screen sections have no layout yet).
     const ro = new ResizeObserver(() => setGeo(measure(list)));
     ro.observe(list);
     return () => ro.disconnect();

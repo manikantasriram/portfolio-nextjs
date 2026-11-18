@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     images: [site.ogImage],
   },
   formatDetection: { telephone: false },
-  // Google Search Console ownership check (renders <meta name="google-site-verification">)
+  // Search Console verification
   verification: { google: "fUTZGYZEQnm_M990WsXkmx_NhukeEbEzxTjY2Hjwcmk" },
 };
 
@@ -89,15 +89,9 @@ export const viewport: Viewport = {
 };
 
 /**
- * Runs before first paint.
- * 1. Applies the saved theme, or the OS preference on a first visit, so the wrong theme never flashes.
- * 2. Marks the document as scripted (`data-js`) so CSS can hold animated elements back until they
- *    are revealed. If the animation layer has not started after 4 s, the mark is removed and
- *    everything simply shows.
- * 3. Marks it `data-lazy` so sections below the fold are skipped on the first paint; they are
- *    rendered during idle time right after load (lib/lazy-sections.ts). Skipped when the URL
- *    points at a section (#skills), so deep links land exactly. The first click anywhere also
- *    switches it off, so a nav link clicked before the page has hydrated still lands exactly.
+ * Runs before first paint: applies the saved (or OS) theme, sets data-js so CSS can hold back animated
+ * elements (dropped after 4s as a fallback), and sets data-lazy unless the URL has a hash or the user
+ * clicks before hydration.
  */
 const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.dataset.theme=t;d.style.colorScheme=t;d.dataset.js="1";if(!location.hash){d.dataset.lazy="1";addEventListener("click",function(){delete d.dataset.lazy},{capture:true,once:true})}setTimeout(function(){if(!window.__motionReady){delete d.dataset.js;delete d.dataset.lazy}},4000)})()`;
 

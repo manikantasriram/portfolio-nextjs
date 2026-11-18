@@ -10,11 +10,7 @@ export interface ScrollState {
   progress: number;
 }
 
-/**
- * One scroll listener for the whole page (nav, status bar, ...), throttled to a frame.
- * Per-frame values are pushed to subscribers directly, so nothing re-renders while scrolling;
- * React only re-renders when the active section changes.
- */
+/** One rAF-throttled scroll listener for the whole page. React only re-renders when the active section changes. */
 let state: ScrollState = { section: "home", progress: 0 };
 const listeners = new Set<(s: ScrollState) => void>();
 let targets: HTMLElement[] = [];

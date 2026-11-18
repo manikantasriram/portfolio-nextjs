@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { SkillIcon } from "@/lib/content";
 
-/** A tool's logo: an SVG file, a lettered badge, or a small inline mark. Used by Skills and Projects. */
+/** Tool logo: SVG file, lettered badge or inline mark. */
 export function SkillMark({ icon, size = 28 }: { icon: SkillIcon; size?: number }) {
   switch (icon.kind) {
     case "icon":

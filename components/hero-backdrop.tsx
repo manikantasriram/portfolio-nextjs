@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** A faint dot grid behind the hero, lit by a soft spotlight that follows the pointer. */
+/** Dot grid behind the hero with a spotlight that follows the pointer. */
 export function HeroBackdrop() {
   const ref = useRef<HTMLDivElement>(null);
 

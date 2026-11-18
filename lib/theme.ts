@@ -17,7 +17,7 @@ export function setTheme(theme: Theme) {
   try {
     localStorage.setItem(STORAGE_KEY, theme);
   } catch {
-    /* storage blocked (private mode): the theme still applies for this visit */
+    /* storage blocked (private mode) */
   }
 }
 
@@ -26,10 +26,7 @@ interface ViewTransitionLike {
   finished: Promise<void>;
 }
 
-/**
- * Switches theme. Where the View Transitions API is available (and motion is allowed), the new
- * theme is revealed as a circle growing from `origin` (the toggle button).
- */
+/** Switches theme, with a circular reveal from `origin` where View Transitions are supported. */
 export function toggleTheme(origin?: { x: number; y: number }) {
   const next: Theme = getTheme() === "dark" ? "light" : "dark";
   const root = document.documentElement;
@@ -47,7 +44,7 @@ export function toggleTheme(origin?: { x: number; y: number }) {
   const y = origin?.y ?? 32;
   const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
-  // Colour transitions are paused so the "new" snapshot is taken in its final colours.
+  // pause colour transitions so the new snapshot is captured in its final colours
   root.classList.add("theme-switching");
   const transition = doc.startViewTransition(() => setTheme(next));
   transition.ready

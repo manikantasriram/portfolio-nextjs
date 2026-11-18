@@ -2,7 +2,6 @@ import { ArrowUpRight } from "lucide-react";
 import { projects, stackIcon } from "@/lib/content";
 import { SkillMark } from "./skill-mark";
 
-/** Projects as a typographic index: large titles on a ruled list, no cards. */
 export function ProjectList() {
   const total = String(projects.length).padStart(2, "0");
   return (
@@ -23,7 +22,6 @@ export function ProjectList() {
               </p>
             )}
             <p>{p.description}</p>
-            {/* overlapping logos; hover, tap or Tab to one to reveal its name */}
             <ul className="stack" aria-label={`${p.name} tech stack`}>
               {p.stack.map((t, j) => (
                 <li key={t} className="tech" tabIndex={0} style={{ zIndex: p.stack.length - j }}>

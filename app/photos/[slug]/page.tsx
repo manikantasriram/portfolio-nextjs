@@ -42,7 +42,6 @@ function sizeOf(slug: string) {
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} KB`;
 }
 
-/** One photo, full size, opened from the photo sheet in a new tab. */
 export default async function PhotoPage({ params }: Params) {
   const { slug } = await params;
   const { photos, instagram } = photography;
@@ -71,8 +70,7 @@ export default async function PhotoPage({ params }: Params) {
       <div className="pv-body">
         <figure className="pv-stage">
           <a href={fullSrc(slug)} target="_blank" rel="noopener" title="Open the original at 100%">
-            {/* Phones get the 1080px-tall copy, large screens the full-resolution WebP; the link opens the original JPEG.
-                The image is limited by the viewport's height, so `sizes` is that height times the aspect ratio. */}
+            {/* height-limited image, so `sizes` is the viewport height times the aspect ratio */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`/images/photos/view/${slug}.webp`}

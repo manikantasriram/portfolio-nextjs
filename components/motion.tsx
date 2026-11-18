@@ -17,16 +17,9 @@ const SCRUB_SCENES = ["graph", "statement", "photos"];
 const INTENT_EVENTS = ["pointerdown", "pointermove", "touchstart", "keydown", "wheel", "scroll"] as const;
 
 /**
- * Starts the page's motion without making the first paint wait for an animation library.
- *
- *  - The hero entrance is pure CSS and needs nothing from here.
- *  - Elements marked `data-reveal`, `data-stagger` + `data-item`, `data-line` or `data-pop` are
- *    plain CSS transitions: an IntersectionObserver adds the `in` class when they scroll into view.
- *  - Elements marked `data-scene` get a richer GSAP animation. GSAP lives in its own chunk
- *    (lib/motion-scenes.ts) and is only downloaded once the visitor first interacts with the page.
- *    If a scene scrolls into view before GSAP has arrived, it falls back to the CSS reveal.
- *
- * With `prefers-reduced-motion: reduce` nothing here runs and nothing is hidden.
+ * CSS reveals via IntersectionObserver for data-reveal / data-stagger / data-line / data-pop.
+ * data-scene elements get GSAP scenes, loaded after the first interaction; until then they fall back
+ * to the CSS reveal. Does nothing with reduced motion.
  */
 export function Motion() {
   useEffect(() => {
@@ -34,7 +27,7 @@ export function Motion() {
     const root = document.documentElement;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduce.matches) {
-      delete root.dataset.js; // CSS only holds elements back while this mark is present
+      delete root.dataset.js; // CSS only hides elements while this is set
       return;
     }
 
@@ -42,7 +35,6 @@ export function Motion() {
     let disposeScenes: (() => void) | undefined;
     let requested = false;
     let stopped = false;
-    /** Scroll-linked scenes that came into view before GSAP was ready. */
     const waiting = new Set<HTMLElement>();
 
     /** Runs `run` once the page has not scrolled for a quarter of a second. */
@@ -70,8 +62,7 @@ export function Motion() {
       stopListeningForIntent();
       import("@/lib/motion-scenes")
         .then((loaded) => {
-          // Starting ScrollTrigger mid-scroll would cancel a smooth jump to a section (the first
-          // click on a nav link is often what triggers this download), so wait for a quiet moment.
+          // Starting ScrollTrigger mid-scroll cancels a smooth nav jump, so wait until scrolling stops.
           whenScrollSettles(() => {
             if (stopped) return;
             disposeScenes = loaded.start();
@@ -81,7 +72,7 @@ export function Motion() {
           });
         })
         .catch(() => {
-          delete root.dataset.js; // could not load: show everything instead
+          delete root.dataset.js; // failed to load, just show everything
         });
     }
     INTENT_EVENTS.forEach((type) => window.addEventListener(type, requestScenes, { passive: true }));
@@ -89,7 +80,7 @@ export function Motion() {
     const reveal = (el: HTMLElement) => {
       const scene = el.dataset.scene;
       if (scene && SCRUB_SCENES.includes(scene)) {
-        // follows the scroll position, so it needs GSAP: attach now, or as soon as it arrives
+        // scroll-linked, needs GSAP
         if (scenes) scenes.attach(scene as ScrubScene, el);
         else {
           waiting.add(el);
@@ -98,11 +89,10 @@ export function Motion() {
       } else if (scene && scenes) {
         scenes.enter(scene as EnterScene, el);
       } else if (el.hasAttribute("data-stagger")) {
-        // children cascade: each one starts a beat after the previous
         el.querySelectorAll<HTMLElement>("[data-item]").forEach((item, i) => {
           item.style.transitionDelay = `${i * 55}ms`;
           item.classList.add("in");
-          // drop the delay afterwards so it doesn't slow down hover transitions
+          // remove the delay so it doesn't slow down hover transitions
           setTimeout(() => (item.style.transitionDelay = ""), 1400 + i * 55);
         });
       } else {
@@ -132,7 +122,7 @@ export function Motion() {
       io.disconnect();
       disposeScenes?.();
     };
-    // If the visitor switches reduced motion on mid-visit, stop and show everything.
+    // reduced motion switched on mid-visit: stop and show everything
     const onReduceChange = () => {
       if (!reduce.matches) return;
       stop();

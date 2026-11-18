@@ -5,13 +5,13 @@ import { useEffect, useRef } from "react";
 import { subscribeScroll, useActiveSection } from "@/lib/scroll-store";
 import { sections } from "@/lib/site";
 
-/** Editor-style status bar (desktop only): the open "file" and scroll position as a line number. */
+/** Editor-style status bar (desktop only). */
 export function StatusBar() {
   const section = useActiveSection();
   const lineRef = useRef<HTMLSpanElement>(null);
   const file = sections.find((s) => s.id === section)?.file ?? "main.py";
 
-  // The line number changes on every scroll frame, so it is written to the DOM directly.
+  // updated in the DOM directly on every scroll frame
   useEffect(
     () =>
       subscribeScroll(({ progress }) => {

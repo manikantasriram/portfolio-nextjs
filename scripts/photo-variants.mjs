@@ -1,15 +1,8 @@
 /**
- * Makes the web-sized copies of every photo. Run it after adding or replacing a photo:
- *
- *   npm run photos
- *
- * From each original in public/images/photos/full/<slug>.jpg it writes:
- *   public/images/photos/reel/<slug>-560.webp    the reel at 1x (frames are at most 540px tall)
- *   public/images/photos/reel/<slug>-1080.webp   the reel on high-density screens
- *   public/images/photos/view/<slug>.webp        the photo page, full resolution, near-lossless
- * and the portrait at 240px for small screens.
- *
- * The originals are never changed: "open original" and the download button still serve them.
+ * Generates the web-sized photo copies. Run `npm run photos` after adding a photo.
+ *   reel/<slug>-560.webp, reel/<slug>-1080.webp   reel at 1x / 2x
+ *   view/<slug>.webp                              photo page, full resolution
+ * Also writes a 240px portrait. Originals in full/ are left untouched.
  */
 import { mkdir, readdir } from "node:fs/promises";
 import { join } from "node:path";

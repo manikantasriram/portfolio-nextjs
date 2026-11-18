@@ -1,17 +1,4 @@
-/**
- * Single source of truth for all professional content, copied verbatim from the original site.
- *
- * Each fact lives in exactly one export and is shown in exactly one section:
- *   hero        name (lib/site.ts), tagline
- *   about       tenure, background and development philosophy (`about` + `approach`)
- *   experience  employers, titles, dates, achievements
- *   projects    project names, descriptions, stacks
- *   skills      tools
- *   education   degree
- *   contact     availability, email and profiles (lib/site.ts)
- *
- * Components and JSON-LD all read from here.
- */
+/** All the page content in one place. Components and JSON-LD read from here. */
 
 export const hero = {
   /** The middle phrase is underlined. */
@@ -117,9 +104,8 @@ export interface Project {
   name: string;
   description: string;
   stack: string[];
-  /** Shown as a badge: "live" is deployed and usable; "in progress" is still being built. */
+  /** "live" = deployed, "in progress" = still being built. */
   status?: "live" | "in progress";
-  /** Where to see it running and read the code. */
   links?: { demo?: string; code?: string };
 }
 
@@ -172,10 +158,9 @@ export const approach = [
 ];
 
 /**
- * Skill icon sources:
- * - `icon`: an SVG in /public/skills (extracted from the original site's sprite)
- * - `badge`: a two-letter product badge, drawn in CSS with the brand colours
- * - `inline`: a small hand-drawn mark (kept from the original site)
+ * icon:   SVG in /public/skills
+ * badge:  two-letter badge drawn in CSS
+ * inline: small inline SVG mark
  */
 export type SkillIcon =
   | { kind: "icon"; file: string; invert?: boolean }
@@ -284,28 +269,23 @@ export const education = {
 };
 
 /**
- * To add a photo:
- *  1. put the original in /public/images/photos/full/<slug>.jpg (served as-is for download)
- *  2. run `npm run photos` to make the web-sized copies the reel and photo page show
- *  3. add an entry below; `full` is the original's pixel size
- * Everything else (reel, filters, viewer page, sitemap, prev/next) picks it up automatically.
+ * Adding a photo: put the original in public/images/photos/full/<slug>.jpg, run `npm run photos`,
+ * then add an entry here (`full` is the original's pixel size).
  */
 export interface Photo {
   slug: string;
   title: string;
-  /** Genre: drives the filter chips and the frame label. */
+  /** Used for the filter chips and the frame label. */
   tag: string;
   caption: string;
   alt: string;
   full: { width: number; height: number };
 }
 
-/** Frames: photography, with a short caption for each frame. */
 export const photography = {
   intro:
     "Photography is where I slow down. Away from the screen, a camera teaches me to wait for the light, look twice and fall for what most people walk past: the pattern hiding in a plastic chair, the patience of a pigeon, a temple tower glowing against the night. Every frame here is a moment that made me stop, breathe and press the shutter.",
   instagram: { handle: "travelwithmanik", url: "https://instagram.com/travelwithmanik" },
-  /** Order is the order in the reel. */
   photos: [
     {
       slug: "charminar",

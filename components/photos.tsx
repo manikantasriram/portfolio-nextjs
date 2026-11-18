@@ -5,18 +5,8 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { photography } from "@/lib/content";
 
 /*
- * Frames: a horizontal reel of photos.
- *  - phones, or before GSAP arrives: a native swipe strip that snaps frame by frame
- *  - wide screens with GSAP: the reel pins (centred, adding no space of its own) and scrolling
- *    down travels sideways through it (the "photos" scene in lib/motion-scenes.ts)
- *  - every frame keeps its true proportions: same height, natural width, nothing cropped
- *  - captions sit under each photo, never on top of it
- *  - frames "develop" from grey to colour as they arrive (CSS)
- *  - tag filters swap the set with a short cross-fade (no frame ever overlaps another)
- *  - a frame opens /photos/<slug> in a new tab: the original, full size, downloadable
- *  - the reel ends on a quiet card that points to Instagram
- *  - phones and tablets get a control bar (previous / "03 / 16" + progress / next), the frame in
- *    front stays bright while the rest step back, and a one-time nudge shows the strip can be swiped
+ * Photo reel. A native snap strip on phones (and until GSAP loads); on wide screens it pins and
+ * scrolls sideways ("photos" scene in motion-scenes.ts). Each frame opens /photos/<slug>.
  */
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -33,16 +23,14 @@ export function PhotoSheet() {
   }, [photos]);
 
   const shownCount = photos.filter((p) => tag === "all" || p.tag === tag).length;
-  /** Index of the frame in front of the strip (phones and tablets); shownCount = the Instagram card. */
+  /** Active frame on touch screens; shownCount means the Instagram card. */
   const [active, setActive] = useState(0);
 
-  /** Every stop along the strip: the visible frames, then the Instagram card. */
   const stops = useCallback(() => {
     const track = trackRef.current;
     return track ? [...track.querySelectorAll<HTMLElement>(".shot:not([data-hidden]), .reel-end")] : [];
   }, []);
 
-  /** Works out which frame is in front from the strip's scroll position. */
   const measureActive = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -54,14 +42,12 @@ export function PhotoSheet() {
       const d = Math.abs(el.getBoundingClientRect().left - edge);
       if (d < nearest) [nearest, best] = [d, i];
     });
-    // The last frames of a long strip can't reach the left edge, so "scrolled to the end" means the
-    // last stop. (A short set that fits without scrolling stays on its first frame.)
+    // The last few frames can't reach the left edge, so treat "scrolled to the end" as the last stop.
     const max = track.scrollWidth - track.clientWidth;
     if (max > 4 && track.scrollLeft >= max - 4) best = list.length - 1;
     setActive(best);
   }, [stops]);
 
-  // Follow the scroll position, so swipes, buttons and keys always agree.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -77,7 +63,6 @@ export function PhotoSheet() {
     };
   }, [measureActive]);
 
-  /** Moves the strip one frame forward or back. */
   const go = (step: number) => {
     const track = trackRef.current;
     const list = stops();
@@ -89,8 +74,7 @@ export function PhotoSheet() {
     track.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
   };
 
-  // The first time the strip is seen on a phone or tablet, it slides a little and back:
-  // a wordless hint that it can be swiped. Once per visit, never with reduced motion.
+  // One-time swipe hint per visit (skipped with reduced motion).
   useEffect(() => {
     const track = trackRef.current;
     if (!track || !("IntersectionObserver" in window)) return;
@@ -101,7 +85,7 @@ export function PhotoSheet() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         io.disconnect();
-        if (track.scrollLeft > 4) return; // already swiping: no need to teach it
+        if (track.scrollLeft > 4) return; // already swiping
         timer = window.setTimeout(() => {
           track.classList.add("nudge");
           timer = window.setTimeout(() => track.classList.remove("nudge"), 1300);
@@ -116,14 +100,9 @@ export function PhotoSheet() {
     };
   }, []);
 
-  /** True while a filter change is cross-fading the reel. */
   const swapping = useRef(false);
 
-  /**
-   * Changing the filter: the reel fades out, the set swaps, it starts again at frame 01 and fades
-   * back in. Every frame (and the Instagram card) stays in normal layout the whole time, so
-   * nothing can slide under or over anything else mid-change.
-   */
+  /** Fade out, swap the set, reset to the first frame, fade back in. */
   const pick = (next: string) => {
     if (next === tag) return;
     const track = trackRef.current;
@@ -141,18 +120,17 @@ export function PhotoSheet() {
     swapping.current = false;
     track.querySelectorAll(".shot:not([data-hidden])").forEach((el) => el.classList.add("in"));
     if (track.closest(".reel.pinned")) {
-      // pinned desktop reel: re-measure the pin and return to its start (lib/motion-scenes.ts)
+      // pinned reel: re-measure and go back to the start
       track.closest(".reel")?.dispatchEvent(new CustomEvent("reel:change"));
     } else {
-      // swipe strip: snapping is paused for a moment, otherwise the browser would keep the
-      // previously snapped item (say, the Instagram card) in view instead of frame 01
+      // pause snapping briefly, otherwise the browser keeps the old snapped item in view
       track.style.scrollSnapType = "none";
       track.scrollLeft = 0;
     }
     requestAnimationFrame(() => {
       track.scrollLeft = track.closest(".reel.pinned") ? track.scrollLeft : 0;
       track.style.scrollSnapType = "";
-      measureActive(); // no scroll event fires when already at 0, so re-check explicitly
+      measureActive(); // no scroll event if we're already at 0
       track.classList.remove("swapping");
     });
   }, [tag, measureActive]);
@@ -220,7 +198,7 @@ export function PhotoSheet() {
                 >
                   <figure>
                     <div className="frame">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- static export: web-sized copies from `npm run photos` */}
+                      {/* eslint-disable-next-line @next/next/no-img-element -- static export, images are pre-sized */}
                       <img
                         src={`/images/photos/reel/${p.slug}-560.webp`}
                         srcSet={`/images/photos/reel/${p.slug}-560.webp 1x, /images/photos/reel/${p.slug}-1080.webp 2x`}
@@ -262,7 +240,7 @@ export function PhotoSheet() {
           </li>
         </ul>
 
-        {/* phones and tablets: thumb-sized controls under the strip, with where-am-I progress */}
+        {/* touch controls */}
         <div className="reel-nav" role="group" aria-label="Browse photos">
           <button
             type="button"

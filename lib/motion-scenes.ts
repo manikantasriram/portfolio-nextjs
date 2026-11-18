@@ -1,11 +1,4 @@
-/**
- * The GSAP scenes. This module is loaded on demand (see components/motion.tsx), so GSAP is
- * never part of the first-load JavaScript.
- *
- *   enter(scene, el)   one-shot animation as an element scrolls into view
- *   attach(scene, el)  animation that follows the scroll position (ScrollTrigger scrub)
- *   start()            page-wide extras: hero parallax, magnetic buttons, tilting orbs
- */
+/** GSAP scenes. Loaded on demand from motion.tsx so GSAP stays out of the first-load bundle. */
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -35,10 +28,10 @@ function riseLines(el: HTMLElement, { delay = 0, stagger = 0.09, duration = 1 } 
   });
 }
 
-/* ------------------------------------------------------- one-shot scenes */
+// one-shot scenes
 
 const enterScenes = {
-  /** 02 experience.log ──── the rule draws out, the title rises letter by letter. */
+  /** Section header: the rule draws in, the title rises letter by letter. */
   header(header: HTMLElement) {
     const title = header.querySelector<HTMLElement>("h2");
     const comment = header.querySelector<HTMLElement>(".cm");
@@ -84,7 +77,7 @@ const enterScenes = {
     }
   },
 
-  /** A project row: the rule draws, the index slides in, the title rises, stack icons pop. */
+  /** Project row: rule, index, title, then the stack icons. */
   project(row: HTMLElement) {
     const title = row.querySelector<HTMLElement>("h3");
     gsap.set($$(".pidx, .pbody > p, .tech", row), { opacity: 0 });
@@ -99,14 +92,14 @@ const enterScenes = {
       .fromTo(
         $$(".tech", row),
         { y: 10, scale: 0.9 },
-        // Cleared afterwards so the CSS hover on the stack icons can take over.
+        // clear these so the CSS hover works afterwards
         { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.045, clearProps: "opacity,transform" },
         0.55,
       );
     if (title) riseLines(title, { delay: 0.15 });
   },
 
-  /** The portrait is unveiled top to bottom, and settles as it crosses the viewport. */
+  /** Portrait reveal plus a little parallax. */
   portrait(portrait: HTMLElement) {
     gsap.fromTo(
       portrait,
@@ -124,7 +117,6 @@ const enterScenes = {
     );
   },
 
-  /** The contact email rises out of a mask. */
   email(mask: HTMLElement) {
     const email = mask.querySelector(".big");
     gsap.set(mask, { opacity: 1 });
@@ -136,12 +128,12 @@ export function enter(scene: keyof typeof enterScenes, el: HTMLElement) {
   enterScenes[scene](el);
 }
 
-/* ---------------------------------------------------- scroll-linked scenes */
+// scroll-linked scenes
 
 const scrubScenes = {
-  /** Branch lines draw themselves as the playhead moves down the log; nodes light up as it passes. */
+  /** Draws the branch lines with the scroll and lights up nodes as they pass. */
   graph(list: HTMLElement) {
-    // Each path carries its vertical extent (data-top / data-bottom), kept current by React.
+    // data-top / data-bottom are kept in sync by experience.tsx
     $$<SVGPathElement>(".g-line", list).forEach((path) => {
       gsap.fromTo(
         path,
@@ -149,7 +141,7 @@ const scrubScenes = {
         {
           strokeDashoffset: 0,
           ease: "none",
-          autoRound: false, // the path is 1 unit long, so whole-pixel rounding would snap it
+          autoRound: false, // path is 1 unit long, rounding would snap it
           scrollTrigger: {
             trigger: list,
             start: () => `top+=${path.dataset.top} ${PLAYHEAD}`,
@@ -170,10 +162,7 @@ const scrubScenes = {
     });
   },
 
-  /**
-   * The background statement "reads itself": words go from muted to full ink as you scroll.
-   * Each word is a <span class="w"> rendered on the server; CSS does the colour transition.
-   */
+  /** Words go from muted to full ink as you scroll. */
   statement(statement: HTMLElement) {
     const words = $$(".w", statement);
     let lit = 0;
@@ -193,13 +182,8 @@ const scrubScenes = {
 };
 
 /**
- * The photo reel. On wide screens it pins, centred on screen (so it adds no space of its own),
- * and scrolling down carries the track sideways:
- *  - the counter ("03 / 16") and a thin progress line follow the journey
- *  - each picture drifts inside its frame as it crosses the screen (parallax)
- *  - each frame tilts up from a slight lean as it arrives
- * Phones keep the native swipe strip. Only transforms are animated, all scrubbed.
- * Filtering changes the reel's length; components/photos.tsx fires a resize so the pin re-measures.
+ * Photo reel. On wide screens it pins and vertical scroll moves the track sideways, with a counter,
+ * progress bar and a bit of parallax/tilt per frame. Phones keep the native swipe strip.
  */
 function photos(reel: HTMLElement) {
   if (!window.matchMedia("(min-width: 901px)").matches) return;
@@ -217,7 +201,7 @@ function photos(reel: HTMLElement) {
     ease: "none",
     scrollTrigger: {
       trigger: reel,
-      // centred between the top bar (64px) and the status bar (28px), not the raw window
+      // centre between the 64px nav and the 28px status bar
       start: "center center+=18",
       end: () => `+=${distance()}`,
       pin: true,
@@ -233,9 +217,8 @@ function photos(reel: HTMLElement) {
     },
   });
 
-  // A filter changed the reel's length (components/photos.tsx fires "reel:change"). A fake window
-  // resize would be ignored by ScrollTrigger, so re-measure directly, then, if the reader was
-  // inside the pinned stretch, bring them back to its start so the new set begins at frame 01.
+  // The filter changed the reel's length. ScrollTrigger ignores synthetic resize events, so refresh
+  // here and jump back to the start of the pin if we're inside it.
   const pin = travel.scrollTrigger;
   reel.addEventListener("reel:change", () => {
     if (!pin) return;
@@ -244,8 +227,7 @@ function photos(reel: HTMLElement) {
     if (inside) window.scrollTo({ top: pin.start, behavior: "instant" });
   });
 
-  // Keyboard users: the browser can't scroll a pinned, transformed track to a focused photo, so
-  // jump the page to the point where that photo sits in the middle of the screen (WCAG 2.4.11).
+  // The browser can't scroll a pinned, transformed track to the focused photo, so move the page there.
   track.addEventListener("focusin", (e) => {
     const item = (e.target as HTMLElement).closest<HTMLElement>(".shot, .reel-end");
     const total = distance();
@@ -254,7 +236,7 @@ function photos(reel: HTMLElement) {
     const x = Math.min(total, Math.max(0, left + item.offsetWidth / 2 - document.documentElement.clientWidth / 2));
     const progress = x / total;
     window.scrollTo({ top: pin.start + progress * (pin.end - pin.start), behavior: "instant" });
-    travel.progress(progress); // land now instead of waiting for the scrub to catch up
+    travel.progress(progress); // don't wait for the scrub
   });
 
   $$(".shot", track).forEach((shot) => {
@@ -289,9 +271,9 @@ export function attach(scene: keyof typeof scrubScenes | "photos", el: HTMLEleme
   scrubScenes[scene](el);
 }
 
-/* ------------------------------------------------------- page-wide extras */
+// page-wide extras
 
-/** Leaving the hero: the name and the dot grid drift a little slower than the page. */
+/** Hero name and dot grid scroll a little slower than the page. */
 function heroParallax() {
   const hero = document.querySelector<HTMLElement>(".hero");
   if (!hero) return;
@@ -300,7 +282,7 @@ function heroParallax() {
   gsap.to($$(".hero-grid", hero), { yPercent: 12, ease: "none", scrollTrigger: leave });
 }
 
-/** Pointer-only polish: magnetic buttons. Returns a cleanup function. */
+/** Magnetic buttons (fine pointers only). Returns a cleanup. */
 function interactions() {
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return () => {};
   const off: (() => void)[] = [];
@@ -313,7 +295,6 @@ function interactions() {
     off.push(() => el.removeEventListener(type, fn));
   };
 
-  // Buttons lean toward the pointer and spring back.
   $$("[data-magnetic]").forEach((el) => {
     const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
@@ -332,27 +313,22 @@ function interactions() {
 }
 
 /**
- * Registers the plugins, starts the page-wide extras and returns a function that tears every
- * scene down again. Must be called before enter() or attach().
- *
- * ScrollTrigger measures the page by briefly resetting the scroll position, which would cancel a
- * native smooth scroll. So this is only called while the page is not scrolling (see motion.tsx),
- * and later re-measurements use the "safe" refresh, which waits for scrolling to end.
+ * Registers the plugins, starts the page-wide effects and returns a teardown.
+ * ScrollTrigger resets the scroll while measuring, which cancels a smooth scroll, so motion.tsx only
+ * calls this when the page is idle, and later refreshes use the safe variant.
  */
 export function start(): () => void {
   gsap.registerPlugin(ScrollTrigger, SplitText);
   heroParallax();
   const stopInteractions = interactions();
 
-  // Sections below the fold are rendered progressively after load (lib/lazy-sections.ts), and
-  // web fonts change text metrics. Re-measure the scroll positions when either happens.
+  // Lazy sections and web fonts both shift the layout, so re-measure when they settle.
   let timer = 0;
   const refresh = () => {
     window.clearTimeout(timer);
     timer = window.setTimeout(() => ScrollTrigger.refresh(true), 200);
   };
   document.addEventListener("contentvisibilityautostatechange", refresh, true);
-  // Only needed if web fonts are still arriving; usually they loaded long before this runs.
   if (document.fonts && document.fonts.status !== "loaded") document.fonts.ready.then(refresh);
 
   return () => {

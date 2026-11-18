@@ -1,11 +1,6 @@
 import type { NextConfig } from "next";
 
-/**
- * The site's public address, used for the canonical URL, Open Graph tags, sitemap and JSON-LD.
- *  1. NEXT_PUBLIC_SITE_URL, if you set it (use this for a custom domain)
- *  2. on Vercel, the project's production domain (set automatically at build time)
- *  3. otherwise the live Vercel address (local builds)
- */
+/** NEXT_PUBLIC_SITE_URL, else Vercel's production domain, else the default vercel.app address. */
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -14,12 +9,11 @@ const siteUrl = (
 ).replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
-  // Fully static site: `next build` writes plain HTML/CSS/JS to `out/`.
-  // Vercel detects this and serves it from its CDN (headers live in vercel.json).
+  // Static export to out/; headers are in vercel.json.
   output: "export",
   env: { NEXT_PUBLIC_SITE_URL: siteUrl },
   images: {
-    // No image server in a static export. Photos are pre-sized in /public/images.
+    // no image optimiser in a static export
     unoptimized: true,
   },
   poweredByHeader: false,

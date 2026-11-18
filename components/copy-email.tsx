@@ -3,7 +3,6 @@
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
-/** Copies the email address and confirms it, visually and to screen readers. */
 export function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false);
 

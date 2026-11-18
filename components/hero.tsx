@@ -6,7 +6,6 @@ import { site } from "@/lib/site";
 /** One token of the main.py listing: [text, syntax class]. */
 type Token = [text: string, cls?: string];
 
-/** main.py: a short, readable profile. Every value matches the rest of the page. */
 const mainPy: Token[][] = [
   [["# products, end to end", "cc"]],
   [["developer = {"]],
@@ -27,10 +26,7 @@ const Letters = ({ text, from }: { text: string; from: number }) =>
     </b>
   ));
 
-/**
- * The hero is server-rendered and its entrance is pure CSS (see "hero entrance" in globals.css),
- * so the name paints with the first frame instead of waiting for JavaScript.
- */
+/** Server-rendered with a CSS-only entrance so the name paints without waiting for JS. */
 export function Hero() {
   const [first, marked, last] = hero.tagline;
 

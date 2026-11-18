@@ -15,8 +15,7 @@ export function Nav() {
   const barRef = useRef<HTMLSpanElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
 
-  // Reading progress and the "stuck" border are written straight to the DOM on each scroll
-  // frame, so the nav never re-renders while scrolling.
+  // progress bar and border are updated in the DOM directly to avoid re-renders while scrolling
   useEffect(
     () =>
       subscribeScroll(({ progress }) => {
@@ -26,10 +25,9 @@ export function Nav() {
     [],
   );
 
-  // Sections below the fold are rendered during idle time after load (see lib/lazy-sections.ts).
   useEffect(() => startLazySections(), []);
 
-  // The highlight behind the active link: position it here, CSS transitions do the gliding.
+  // position the active-link highlight; CSS handles the transition
   useLayoutEffect(() => {
     const list = listRef.current;
     const pill = pillRef.current;

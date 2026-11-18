@@ -2,10 +2,6 @@ import { Section } from "@/components/section";
 import { about, approach } from "@/lib/content";
 import { site } from "@/lib/site";
 
-/**
- * Background and development philosophy.
- * Employment detail is in Experience, tools are in Skills.
- */
 export function About() {
   return (
     <Section id="about" comment="// background and development philosophy">
@@ -14,7 +10,7 @@ export function About() {
           <p className="tenure" data-reveal="">
             <b aria-hidden="true">#</b> {about.tenure}
           </p>
-          {/* each word is its own span so the scroll scene can light them up one by one */}
+          {/* one span per word for the scroll highlight */}
           <p className="statement" data-scene="statement">
             {about.background.split(" ").map((word, i) => (
               <span key={i} className="w">
@@ -30,7 +26,7 @@ export function About() {
             <span>480 × 480</span>
           </figcaption>
           <div className="portrait-img">
-            {/* static export has no image optimiser, so the two sizes are listed by hand */}
+            {/* no image optimiser in a static export, so the srcset is written by hand */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={site.photo}
@@ -46,7 +42,6 @@ export function About() {
         </figure>
       </div>
 
-      {/* about.md continues with a second-level heading, the way a markdown file would */}
       <h3 className="subhead" data-reveal="">
         <b aria-hidden="true">##</b> How I build
       </h3>

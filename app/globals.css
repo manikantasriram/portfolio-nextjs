@@ -3,7 +3,7 @@
 /* Theme is driven by <html data-theme="light|dark">, set before paint by the inline script in layout.tsx. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* ---------- design tokens (palette and type unchanged from the original site) ---------- */
+/* Tokens */
 :root {
   --bg: #f6f8fb;
   --surface: #fff;
@@ -40,7 +40,7 @@
   --d3: clamp(1.6rem, 2.4vw + 0.8rem, 2.6rem);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --r: 16px;
-  /* left column shared by Skills and Education so their content lines up */
+  /* shared left column for Skills and Education */
   --gutter: 220px;
   color-scheme: light;
 }
@@ -87,7 +87,7 @@
   --font-mono: var(--f-mono);
 }
 
-/* ---------- base ---------- */
+/* Base */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -226,7 +226,7 @@
     top: 12px;
   }
 
-  /* ---------- nav ---------- */
+  /* Nav */
   .nav {
     position: sticky;
     top: 0;
@@ -282,7 +282,7 @@
     white-space: nowrap;
     transition: color 0.2s;
   }
-  /* narrow desktops: tighter links so all seven fit on one line beside the name */
+  /* 861-1023px: tighten the links so all seven fit next to the name */
   @media (min-width: 861px) and (max-width: 1023px) {
     .links {
       gap: 0;
@@ -295,7 +295,7 @@
   .links a[aria-current="true"] {
     color: var(--ink);
   }
-  /* the highlight that glides between links: nav.tsx sets its box, CSS animates the move */
+  /* active-link highlight; nav.tsx sets its position */
   .links .pill {
     position: absolute;
     left: 0;
@@ -423,7 +423,7 @@
     }
   }
 
-  /* ---------- hero ---------- */
+  /* Hero */
   .hero {
     position: relative;
     isolation: isolate;
@@ -443,7 +443,7 @@
     opacity: 0.7;
   }
   @media (max-width: 900px) {
-    /* single column: keep the grid up in the corner, away from body text */
+    /* keep the grid out from behind the text */
     .hero-grid {
       --mx: 100%;
       --my: 0%;
@@ -468,7 +468,6 @@
     gap: 18px 36px;
     margin-bottom: clamp(32px, 4.5vw, 52px);
   }
-  /* the name is the hero: set large, tight, on two masked lines */
   .name {
     font-size: var(--d1);
     line-height: 0.94;
@@ -579,7 +578,7 @@
     }
   }
 
-  /* editor card */
+  /* code card */
   .editor {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -673,7 +672,7 @@
     font-style: italic;
   }
   @media (max-width: 560px) {
-    /* 12px is the smallest readable code size; on the narrowest phones the card scrolls sideways */
+    /* don't go below 12px; the card scrolls sideways on tiny screens instead */
     .code {
       font-size: 0.75rem;
     }
@@ -686,20 +685,11 @@
     }
   }
 
-  /* ---------- sections ---------- */
-  /*
-   * Vertical rhythm (8px grid). Between two sections = 2 x section padding (88-160px), about
-   * 2.5-3x the heading-to-content gap, so sections read as separate blocks without drifting apart.
-   */
+  /* Sections */
   .sec {
     padding: clamp(44px, 6vw, 80px) 0;
   }
-  /*
-   * First paint only: sections below the fold are skipped until they near the viewport.
-   * lib/lazy-sections.ts then renders them one by one in idle time (adding `.ready`) and
-   * finally removes `data-lazy`, so in normal use every section is fully laid out.
-   * 900px is just the placeholder height while a section is still skipped.
-   */
+  /* Below-the-fold sections skip rendering until lazy-sections.ts marks them ready. 900px is just a placeholder height. */
   html[data-lazy] .sec:not(.ready),
   html[data-lazy] .footer:not(.ready) {
     content-visibility: auto;
@@ -708,7 +698,7 @@
   .sh {
     margin-bottom: clamp(28px, 4vw, 48px);
   }
-  /* section header: 02 experience.log ───── */
+  /* section header */
   .hunk {
     display: flex;
     align-items: center;
@@ -745,7 +735,7 @@
     max-width: 100%;
   }
 
-  /* ---------- about: a statement and a portrait ---------- */
+  /* About */
   .about {
     display: grid;
     grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.8fr);
@@ -767,7 +757,6 @@
     letter-spacing: -0.02em;
     text-wrap: pretty;
   }
-  /* "## How I build": the second heading inside about.md */
   .subhead {
     margin: clamp(56px, 8vw, 96px) 0 clamp(24px, 3.5vw, 36px);
     font-size: clamp(1.5rem, 1.6vw + 1rem, 2rem);
@@ -781,7 +770,6 @@
     vertical-align: 0.18em;
     letter-spacing: 0;
   }
-  /* the photo, framed like an image open in the editor */
   .portrait {
     width: 100%;
     max-width: 320px;
@@ -826,7 +814,7 @@
     }
   }
 
-  /* ---------- experience: a real commit graph ---------- */
+  /* Experience (commit graph) */
   .gfilter {
     display: flex;
     flex-wrap: wrap;
@@ -919,7 +907,7 @@
   .g-track.branch {
     stroke: color-mix(in srgb, var(--br) 24%, var(--line));
   }
-  /* the coloured lines are drawn by scroll (stroke-dashoffset 1 -> 0) */
+  /* drawn on scroll via stroke-dashoffset */
   .g-main,
   .g-branch {
     stroke-dasharray: 1;
@@ -952,7 +940,7 @@
     left: calc(var(--l1) - 7.5px);
     border-color: var(--br);
   }
-  /* lit once the scroll playhead has passed the commit */
+  /* lit once scrolled past */
   .node.on {
     background: var(--acc);
     box-shadow: 0 0 0 5px color-mix(in srgb, var(--acc) 16%, transparent);
@@ -977,7 +965,7 @@
     padding: 6px 10px;
     border-radius: 999px;
     background: color-mix(in srgb, var(--col) 12%, transparent);
-    /* 30% ink keeps the label at 5.3:1 or more on its tinted pill, in both themes */
+    /* mix in some ink so the label stays readable on the tinted pill */
     color: color-mix(in srgb, var(--col) 70%, var(--ink));
     margin-bottom: 14px;
   }
@@ -1053,11 +1041,8 @@
   .cmt .msg {
     color: var(--ink);
   }
-  /*
-   * Hover, same language as Skills: the hovered commit steps forward with an accent bar,
-   * its siblings fade back and the role's node glows. Transform and opacity only.
-   */
-  /* The row itself is owned by the scroll reveal ([data-item]), so the hover moves its contents. */
+  /* Hover: highlight the commit, fade its siblings. Transforms and opacity only. */
+  /* [data-item] belongs to the scroll reveal, so hover animates the children instead */
   @media (hover: hover) {
     .cmt {
       position: relative;
@@ -1116,7 +1101,7 @@
     font: var(--fs-xs) / 1.6 var(--f-mono);
     color: var(--c);
   }
-  /* wide screens: role details stay pinned while its commits scroll past */
+  /* wide screens: keep the role details sticky */
   @media (min-width: 900px) {
     .g-row:not(.head):not(.root) {
       display: grid;
@@ -1149,7 +1134,7 @@
     }
   }
 
-  /* ---------- projects: a ruled, typographic index ---------- */
+  /* Projects */
   .plist {
     border-bottom: 1px solid var(--line);
   }
@@ -1162,7 +1147,6 @@
     padding: 40px 0;
     transition: opacity 0.4s;
   }
-  /* accent line sweeps across the row's top rule on hover */
   .prow::before {
     content: "";
     position: absolute;
@@ -1186,7 +1170,7 @@
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
   }
-  /* status badge: "live" (deployed) or "in progress" (still being built) */
+  /* status badge */
   .pstatus {
     display: inline-flex;
     align-items: center;
@@ -1195,7 +1179,7 @@
     padding: 5px 10px;
     border-radius: 999px;
     font: var(--fs-xs) / 1 var(--f-mono);
-    /* a fifth of the ink colour keeps the text at 5:1 or more on its tinted pill, in both themes */
+    /* mix in some ink so the text stays readable on the tinted pill */
     color: color-mix(in srgb, var(--warn) 80%, var(--ink));
     background: color-mix(in srgb, var(--warn) 11%, transparent);
   }
@@ -1209,7 +1193,6 @@
     color: color-mix(in srgb, var(--ok) 80%, var(--ink));
     background: color-mix(in srgb, var(--ok) 11%, transparent);
   }
-  /* live demo / source code links under a project */
   .plinks {
     display: flex;
     flex-wrap: wrap;
@@ -1256,16 +1239,12 @@
     color: var(--mute);
     max-width: 40em;
   }
-  /*
-   * Tech stack as overlapping round logos. Hover (mouse), tap (touch) or Tab (keyboard) to a logo:
-   * it lifts in front of the others and its name appears above it. The name is always in the page
-   * for screen readers; it's only hidden visually until revealed.
-   */
+  /* Tech stack: overlapping logos. Names stay in the DOM for screen readers and only show on hover/focus. */
   .stack {
     display: flex;
     flex-wrap: wrap;
     row-gap: 10px;
-    margin-top: 34px; /* room for the name label above */
+    margin-top: 34px; /* space for the label */
     padding-left: 10px;
   }
   .tech {
@@ -1282,7 +1261,7 @@
     height: 48px;
     border-radius: 50%;
     background: radial-gradient(circle at 32% 24%, var(--o1), var(--o2) 80%);
-    /* the ring in the page colour is what separates overlapping logos */
+    /* page-coloured ring separates the overlapping logos */
     box-shadow:
       0 0 0 3px var(--bg),
       inset -3px -4px 8px var(--osh),
@@ -1322,7 +1301,7 @@
       opacity 0.2s,
       translate 0.35s var(--ease);
   }
-  /* little pointer under the label */
+  /* label arrow */
   .tech-name::after {
     content: "";
     position: absolute;
@@ -1335,7 +1314,7 @@
   .tech:hover,
   .tech:focus,
   .tech:focus-within {
-    z-index: 20 !important; /* in front of its neighbours (overrides the stacking order) */
+    z-index: 20 !important; /* above its neighbours */
   }
   .tech:hover .tech-orb,
   .tech:focus .tech-orb {
@@ -1358,7 +1337,6 @@
     .plist:hover .prow:not(:hover) {
       opacity: 0.45;
     }
-    /* the logos you're not pointing at step back, so the one in front stands out */
     .stack:hover .tech:not(:hover) .tech-orb {
       opacity: 0.55;
     }
@@ -1400,7 +1378,7 @@
     }
   }
 
-  /* ---------- approach ---------- */
+  /* Approach */
   .appr {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1458,7 +1436,7 @@
     }
   }
 
-  /* ---------- skills: keys on the left, tools on the right ---------- */
+  /* Skills */
   .sg {
     position: relative;
     display: grid;
@@ -1467,19 +1445,19 @@
     padding: 14px 0 18px;
   }
   .sg h3 {
-    padding-top: 43px; /* level with the middle of the logos */
+    padding-top: 43px; /* lines up with the middle of the logos */
     font: 400 var(--fs-sm) / 1.4 var(--f-mono);
     letter-spacing: 0;
     color: var(--p);
     overflow-wrap: anywhere;
   }
-  /* Skills reuse the project stack (.stack / .tech) at the same size; only the spacing differs */
+  /* reuses .stack / .tech from Projects */
   .stack-lg {
     margin-top: 0;
     padding-top: 30px; /* room for the name label above */
     row-gap: 14px;
   }
-  /* the group's key lights up while one of its tools is pointed at or focused */
+  /* highlight the key while one of its tools is hovered or focused */
   .sg:has(.tech:hover) h3 .skey,
   .sg:has(.tech:focus) h3 .skey {
     color: var(--acc);
@@ -1504,7 +1482,7 @@
   @media (max-width: 720px) {
     .sg {
       grid-template-columns: minmax(0, 1fr);
-      row-gap: 0; /* the stack already has room above it for the name label */
+      row-gap: 0;
       padding: 20px 0 16px;
     }
     .sg h3 {
@@ -1512,16 +1490,15 @@
     }
   }
 
-  /* ---------- off the clock: a horizontal reel of photos ---------- */
+  /* Photos reel */
   #photos {
-    overflow-x: clip; /* the reel runs edge to edge */
+    overflow-x: clip;
   }
   .reel {
-    /* one shared frame height; each photo's width follows its own proportions */
+    /* same height for every frame, width follows the photo */
     --fh: min(56vh, 540px);
     position: relative;
   }
-  /* the intro reads straight on from the heading, so it sits closer than other sections' content */
   #photos .sh {
     margin-bottom: clamp(24px, 2.6vw, 32px);
   }
@@ -1540,7 +1517,6 @@
     gap: 16px 24px;
     margin-bottom: clamp(16px, 1.6vw, 20px);
   }
-  /* filters read like a shell command: $ ls ~/photos --tag [all] [macro] ... */
   .fl {
     display: flex;
     flex-wrap: wrap;
@@ -1592,7 +1568,7 @@
     outline: 2px solid var(--acc);
     outline-offset: 2px;
   }
-  /* "03 / 16" and a hairline that fills as the reel travels (only while pinned) */
+  /* counter + progress line (pinned only) */
   .reel-count {
     display: none;
     align-items: center;
@@ -1621,7 +1597,7 @@
     transform: scaleX(0);
     transform-origin: 0 50%;
   }
-  /* the track breaks out of the text column and runs edge to edge; the first frame lines up with the text */
+  /* track breaks out of the column; first frame lines up with the text */
   .reel-track {
     --edge: max(24px, calc(50vw - 520px + 32px));
     display: flex;
@@ -1638,16 +1614,10 @@
   .reel-track::-webkit-scrollbar {
     display: none;
   }
-  /*
-   * pinned (wide screens with GSAP): the page's scroll drives the track sideways. The reel pins
-   * centred on screen, so it adds no space of its own; the frame height leaves room for the
-   * filters above and the caption below on any laptop screen.
-   */
+  /* Pinned reel (desktop + GSAP). Frame height leaves room for the filters and caption on laptop screens. */
   .reel.pinned {
-    /* leaves room for a second line of filter chips above and the caption below */
     --fh: clamp(220px, calc(100vh - 440px), 500px);
   }
-  /* every filter stays visible: chips wrap, and the counter keeps its place on the right */
   .reel.pinned .reel-tools {
     flex-wrap: nowrap;
     align-items: flex-start;
@@ -1665,7 +1635,7 @@
     scroll-snap-type: none;
     will-change: transform;
   }
-  /* a filter change: a short cross-fade while the set swaps (any screen size) */
+  /* filter change cross-fade */
   .reel-track {
     transition: opacity 0.3s ease;
   }
@@ -1724,7 +1694,7 @@
       opacity 0.3s,
       translate 0.45s var(--ease);
   }
-  /* viewfinder brackets: they lock onto the frame on hover or focus */
+  /* corner brackets on hover/focus */
   .vf {
     position: absolute;
     inset: 14px;
@@ -1786,7 +1756,7 @@
   .shot-link:focus-visible .frame {
     box-shadow: 0 0 0 2px var(--acc);
   }
-  /* the caption never widens the frame: it takes the frame's width */
+  /* caption can't widen the frame */
   .shot figcaption {
     display: grid;
     gap: 5px;
@@ -1811,7 +1781,7 @@
     line-height: 1.55;
     color: var(--mute);
   }
-  /* the reel ends on a quiet card: one line, one handle, one arrow */
+  /* end card */
   .reel-end {
     flex: none;
     display: flex;
@@ -1855,17 +1825,13 @@
     outline-offset: 6px;
     border-radius: 4px;
   }
-  /*
-   * Phones and tablets (and any screen without the pinned reel): a control bar under the strip.
-   *  - previous / next: 44px targets in the thumb zone, one frame per tap
-   *  - "03 / 16" with a progress line: you always know where you are and how much is left
-   */
+  /* Touch / non-pinned: prev/next controls under the strip */
   .reel-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-top: 8px; /* the strip already ends below the longest caption */
+    margin-top: 8px;
   }
   .reel.pinned .reel-nav {
     display: none;
@@ -1928,15 +1894,15 @@
     transform-origin: 0 50%;
     transition: transform 0.45s var(--ease);
   }
-  /* the frame in front stays bright, the rest step back: one clear focal point */
+  /* dim everything except the active frame */
   .reel:not(.pinned) .shot .frame {
     transition: opacity 0.4s var(--ease);
   }
-  /* only the picture steps back: caption text keeps full contrast (WCAG 1.4.3) */
+  /* dim the image only so caption contrast stays intact */
   .reel:not(.pinned) .shot:not([data-active]) .frame {
     opacity: 0.45;
   }
-  /* one-time nudge: the strip slides a little and back, so it reads as swipeable */
+  /* one-time swipe hint */
   @keyframes reel-nudge {
     0%,
     100% {
@@ -1956,15 +1922,14 @@
   }
   @media (max-width: 600px) {
     .reel {
-      /* capped by width too, so even the widest photo leaves the next one peeking in */
+      /* capped by width too so the next photo peeks in */
       --fh: min(54vh, 104vw, 420px);
     }
-    /* all filters on view (no hidden sideways scroll); the decorative prompt makes room */
     .fl-cmd {
       display: none;
     }
     .fl-chip {
-      padding: 8px 12px; /* a comfortable tap target */
+      padding: 8px 12px;
     }
     .reel-track {
       gap: 18px;
@@ -1981,7 +1946,7 @@
     }
   }
 
-  /* ---------- photo viewer: /photos/<slug> ---------- */
+  /* Photo page */
   .pv {
     min-height: 100dvh;
     display: grid;
@@ -2163,7 +2128,7 @@
     }
   }
 
-  /* ---------- education ---------- */
+  /* Education */
   .edu {
     display: grid;
     grid-template-columns: var(--gutter) minmax(0, 1fr);
@@ -2194,9 +2159,9 @@
     }
   }
 
-  /* ---------- contact ---------- */
+  /* Contact */
   .contact .kick {
-    margin-bottom: 10px; /* same label-to-headline step as the hero's $ whoami */
+    margin-bottom: 10px;
   }
   .big-mask {
     overflow: hidden;
@@ -2214,7 +2179,7 @@
     transition: color 0.3s;
     padding-bottom: 4px;
   }
-  /* underline drawn with a scaled pseudo-element, so the hover is compositor-only */
+  /* underline via a scaled pseudo-element so the hover stays on the compositor */
   .big::after {
     content: "";
     position: absolute;
@@ -2242,7 +2207,7 @@
     margin-top: 36px;
   }
 
-  /* ---------- 404 ---------- */
+  /* 404 */
   .nf {
     display: flex;
     flex-direction: column;
@@ -2256,7 +2221,7 @@
     letter-spacing: -0.035em;
   }
 
-  /* ---------- footer: the session ends ---------- */
+  /* Footer */
   .footer {
     padding: 32px 0 40px;
     padding-bottom: max(40px, env(safe-area-inset-bottom));
@@ -2297,7 +2262,7 @@
     transform: translateY(-3px);
   }
 
-  /* ---------- status bar (desktop) ---------- */
+  /* Status bar (desktop) */
   .sb {
     display: none;
     position: fixed;
@@ -2344,15 +2309,9 @@
   }
 }
 
-/*
- * ---------- motion ----------
- * Everything below applies only when the visitor has not asked for reduced motion.
- */
+/* Motion (all skipped with prefers-reduced-motion) */
 @media (prefers-reduced-motion: no-preference) {
-  /*
-   * Hero entrance: pure CSS, so it starts with the first paint and needs no JavaScript.
-   * `backwards` fill means each element rests in its normal state once its animation ends.
-   */
+  /* Hero entrance: CSS only so it runs on first paint */
   @keyframes fade {
     from {
       opacity: 0;
@@ -2403,14 +2362,10 @@
   .kick .cmd {
     animation: type 0.4s steps(6) 0.1s backwards;
   }
-  /* the name: letters rise out of a mask, one after another */
   .name b {
     animation: rise 0.95s var(--ease) calc(var(--i) * 30ms + 0.12s) backwards;
   }
-  /*
-   * The tagline is the largest text in the hero, so it is the page's LCP element. Chrome does not
-   * credit a paint while opacity is exactly 0, so this fade starts a hair above it.
-   */
+  /* The tagline is the LCP element. Chrome ignores paints at opacity 0, so start just above it. */
   @keyframes lead-in {
     from {
       opacity: 0.01;
@@ -2429,7 +2384,6 @@
   .hero .cta > * + * {
     animation-delay: 0.53s;
   }
-  /* the editor tilts up into place, then main.py appears line by line */
   .editor {
     transform-origin: 50% 100%;
     animation: editor-in 1s var(--ease) 0.3s backwards;
@@ -2438,7 +2392,6 @@
     animation: slide-in 0.45s var(--ease) calc(0.7s + var(--i) * 60ms) backwards;
   }
 
-  /* mobile menu: links cascade in when it opens */
   @keyframes menu-in {
     from {
       opacity: 0;
@@ -2452,11 +2405,8 @@
   }
 
   /*
-   * Scroll reveals. These rules only apply while scripts are running (html[data-js], set before
-   * first paint in layout.tsx). Hidden elements use opacity, never `visibility` or `display`,
-   * so they stay in the accessibility tree and in the heading outline.
-   *
-   * Tier 1: CSS transitions. components/motion.tsx adds `.in` when an element scrolls into view.
+   * Scroll reveals, only while html[data-js] is set. motion.tsx adds .in on enter.
+   * Hidden with opacity (not visibility/display) so content stays in the accessibility tree.
    */
   html[data-js] [data-reveal],
   html[data-js] [data-item] {
@@ -2482,7 +2432,7 @@
     scale: 1 1;
   }
 
-  /* photos "develop" like a print in a darkroom: grey and faint, then full colour */
+  /* photos fade in from greyscale */
   html[data-js] .shot img {
     filter: grayscale(1) brightness(1.25) contrast(0.85);
     transition:
@@ -2492,7 +2442,6 @@
   html[data-js] .shot.in img {
     filter: none;
   }
-  /* the caption follows the picture in, a beat later */
   html[data-js] .shot figcaption {
     opacity: 0;
     translate: 0 12px;
@@ -2513,11 +2462,7 @@
     scale: 1;
   }
 
-  /*
-   * Tier 2: starting states for the GSAP scenes in lib/motion-scenes.ts.
-   * If GSAP has not been downloaded yet when one of these scrolls into view, it gets `.in`
-   * like everything else and simply fades in.
-   */
+  /* Starting states for the GSAP scenes. If GSAP hasn't loaded yet they just get .in like the rest. */
   html[data-js] .sh > *,
   html[data-js] [data-scene="project"],
   html[data-js] [data-scene="portrait"],
@@ -2567,7 +2512,7 @@
   }
 }
 
-/* ---------- theme switch: circular reveal (View Transitions API) ---------- */
+/* Theme switch: circular reveal with View Transitions */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

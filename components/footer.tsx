@@ -1,6 +1,5 @@
 import { site } from "@/lib/site";
 
-/** The session ends the way a terminal does. */
 export function Footer() {
   return (
     <footer className="footer">

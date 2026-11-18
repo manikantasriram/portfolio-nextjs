@@ -7,11 +7,7 @@ interface SectionProps {
   children: React.ReactNode;
 }
 
-/**
- * A page section, opened by a file-tab style header:
- *   02 experience.log ────────────
- * The number, file name and title come from the section map in lib/site.ts.
- */
+/** Section with a file-tab header; number, file name and title come from lib/site.ts. */
 export function Section({ id, comment, children }: SectionProps) {
   const meta = sectionMeta(id);
   const headingId = `${id}-title`;

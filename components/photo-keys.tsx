@@ -2,10 +2,7 @@
 
 import { useEffect } from "react";
 
-/**
- * Keyboard browsing on a photo page: ← previous, → next, Esc back to the sheet.
- * Plain page loads on purpose: each photo page is a standalone static file.
- */
+/** ← / → for previous/next photo, Esc to go back. */
 export function PhotoKeys({ prev, next, back }: { prev: string; next: string; back: string }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

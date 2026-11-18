@@ -29,7 +29,7 @@ export default function Home() {
         <About />
 
         <Section id="experience" comment="// git log --graph, newest first">
-          {/* its own Suspense boundary, so React hydrates this larger island as a separate task */}
+          {/* separate Suspense boundary so it hydrates as its own task */}
           <Suspense>
             <ExperienceGraph />
           </Suspense>

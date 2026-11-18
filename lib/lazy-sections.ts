@@ -1,16 +1,7 @@
 /**
- * Two small jobs that keep in-page navigation exact.
- *
- * 1. Progressive rendering. On first paint, sections outside the viewport are skipped
- *    (`content-visibility: auto` in globals.css, switched on by the `data-lazy` mark that
- *    layout.tsx sets before paint). Right after the page has loaded they are rendered for real,
- *    one per idle moment, so the work never blocks input. Anything that needs exact positions
- *    (a click on an in-page link) renders them all first.
- *
- * 2. Jump checking. A smooth scroll to a section can be cut short, for example when the animation
- *    library measures the page just as the scroll starts. For a few seconds after a jump we check
- *    that the target really ends up where it should and finish the jump if not. If the visitor
- *    takes over (wheel, touch), the check is dropped so we never fight their scrolling.
+ * Below-the-fold sections start with content-visibility: auto and get rendered one per idle callback
+ * after load. In-page jumps render everything first, then re-check the target for a few seconds in
+ * case the smooth scroll gets interrupted.
  */
 
 /** Renders every section now and switches the lazy mode off for good. */
@@ -55,7 +46,7 @@ function renderSectionsWhenIdle() {
   };
 }
 
-/* ------------------------------------------------------------ jump checking */
+// jump checking
 
 const MAX_RETRIES = 2;
 const TICK_MS = 100;
@@ -78,10 +69,8 @@ function hasArrived(target: HTMLElement) {
 }
 
 /**
- * Call just before scrolling to a section. Makes positions exact, then watches the jump for a
- * few seconds: if the page stops moving before the target is in place, the jump is repeated.
- * (A timer rather than the `scrollend` event, because a scroll that is cancelled before it has
- * moved fires no event at all.)
+ * Call right before scrolling to a section. Uses a timer instead of `scrollend` because a scroll
+ * that's cancelled before it moves never fires that event.
  */
 export function prepareJump(id: string) {
   renderAllSections();
@@ -108,7 +97,7 @@ export function prepareJump(id: string) {
     }
     jump.retries += 1;
     stalled = 0;
-    target.scrollIntoView(); // smooth or instant, following the page's scroll-behavior
+    target.scrollIntoView(); // respects scroll-behavior
   }, TICK_MS);
 }
 
@@ -122,7 +111,7 @@ function onAnchorClick(event: MouseEvent) {
 export function startLazySections() {
   const cancelIdle = renderSectionsWhenIdle();
   document.addEventListener("click", onAnchorClick, true);
-  // The visitor is scrolling by hand: stop checking, the page is theirs.
+  // user took over, stop checking
   window.addEventListener("wheel", stopWatching, { passive: true });
   window.addEventListener("touchmove", stopWatching, { passive: true });
   return () => {
