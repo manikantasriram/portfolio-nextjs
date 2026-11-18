@@ -22,26 +22,33 @@ export function ProjectList() {
               </p>
             )}
             <p>{p.description}</p>
-            <ul className="stack" aria-label={`${p.name} tech stack`}>
+            <ul className="stack" aria-hidden="true">
               {p.stack.map((t, j) => (
-                <li key={t} className="tech" tabIndex={0} style={{ zIndex: p.stack.length - j }}>
-                  <span className="tech-orb" aria-hidden="true">
+                <li key={t} className="tech" style={{ zIndex: p.stack.length - j }}>
+                  <span className="tech-orb">
                     <SkillMark icon={stackIcon(t)} size={24} />
                   </span>
                   <span className="tech-name">{t}</span>
                 </li>
               ))}
             </ul>
+            <ul className="tech-list" aria-label={`${p.name} tech stack`}>
+              {p.stack.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
             {p.links && (
               <p className="plinks">
                 {p.links.demo && (
                   <a href={p.links.demo} target="_blank" rel="noopener noreferrer">
-                    Live demo <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                    Live demo <span className="sr-only">(opens in a new tab)</span>
+                    <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
                   </a>
                 )}
                 {p.links.code && (
                   <a href={p.links.code} target="_blank" rel="noopener noreferrer">
-                    Source code <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                    Source code <span className="sr-only">(opens in a new tab)</span>
+                    <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
                   </a>
                 )}
               </p>

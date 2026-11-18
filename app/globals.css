@@ -1301,6 +1301,34 @@
       opacity 0.2s,
       translate 0.35s var(--ease);
   }
+  /* the logos are decoration; this is the readable list */
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font: var(--fs-xs) / 1.7 var(--f-mono);
+    color: var(--mute);
+  }
+  .tech-list li:not(:last-child)::after {
+    content: "·" / "";
+    margin: 0 0.6em;
+    color: var(--c);
+  }
+  /* skills.json: names read as JSON strings */
+  .sg .tech-list {
+    grid-column: 2;
+    margin-top: 0;
+    color: var(--s);
+  }
+  .sg .tech-list li::before,
+  .sg .tech-list li::after {
+    content: '"' / "";
+  }
+  .sg .tech-list li:not(:last-child)::after {
+    content: '",' / "";
+    margin: 0 0.6em 0 0;
+    color: var(--s);
+  }
   /* label arrow */
   .tech-name::after {
     content: "";
@@ -1487,6 +1515,10 @@
     }
     .sg h3 {
       padding-top: 0;
+    }
+    .sg .tech-list {
+      grid-column: 1;
+      margin-top: 12px;
     }
   }
 

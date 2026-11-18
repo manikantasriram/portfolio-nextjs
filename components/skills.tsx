@@ -16,20 +16,19 @@ export function SkillsGrid() {
             </span>
             <span className="sr-only">{group.title}</span>
           </h3>
-          <ul className="stack stack-lg" aria-label={group.title}>
+          <ul className="stack stack-lg" aria-hidden="true">
             {group.skills.map((s, j) => (
-              <li
-                key={s.name}
-                className="tech"
-                tabIndex={0}
-                data-item=""
-                style={{ zIndex: group.skills.length - j }}
-              >
-                <span className="tech-orb" aria-hidden="true">
+              <li key={s.name} className="tech" data-item="" style={{ zIndex: group.skills.length - j }}>
+                <span className="tech-orb">
                   <SkillMark icon={s.icon} size={24} />
                 </span>
                 <span className="tech-name">{s.name}</span>
               </li>
+            ))}
+          </ul>
+          <ul className="tech-list" aria-label={group.title}>
+            {group.skills.map((s) => (
+              <li key={s.name}>{s.name}</li>
             ))}
           </ul>
         </div>

@@ -114,7 +114,8 @@ export default async function PhotoPage({ params }: Params) {
               Download original <Download className="i-down" strokeWidth={2} aria-hidden="true" />
             </a>
             <a className="btn" href={fullSrc(slug)} target="_blank" rel="noopener">
-              View at 100% <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+              View at 100% <span className="sr-only">(opens in a new tab)</span>
+              <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
             </a>
           </div>
 
@@ -136,7 +137,7 @@ export default async function PhotoPage({ params }: Params) {
           </nav>
 
           <a className="pv-ig" href={instagram.url} target="_blank" rel="noopener noreferrer me">
-            More frames on Instagram <b>@{instagram.handle}</b>
+            More frames on Instagram <b>@{instagram.handle}</b> <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight size={15} strokeWidth={2} aria-hidden="true" />
           </a>
           <p className="pv-keys" aria-hidden="true">

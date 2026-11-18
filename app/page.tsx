@@ -86,7 +86,8 @@ export default function Home() {
                 data-item=""
                 data-magnetic=""
               >
-                LinkedIn <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                LinkedIn <span className="sr-only">(opens in a new tab)</span>
+                <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
               </a>
               <a
                 className="btn"
@@ -96,7 +97,8 @@ export default function Home() {
                 data-item=""
                 data-magnetic=""
               >
-                GitHub <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                GitHub <span className="sr-only">(opens in a new tab)</span>
+                <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
               </a>
               <CopyEmail email={site.email} />
             </div>

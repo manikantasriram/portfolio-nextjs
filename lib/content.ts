@@ -8,7 +8,7 @@ export const hero = {
 export const about = {
   tenure: "3+ years of production experience",
   background:
-    "React and TypeScript on the front, FastAPI and PostgreSQL behind it. Three years of building for global hospitality brands, where a layout that breaks in Outlook is not an option, now taking products from first sketch to production.",
+    "React and TypeScript on the front, FastAPI and PostgreSQL behind it. I spent three years building for global hospitality brands, where a layout that breaks in Outlook isn't an option. Now I take products from first sketch to production.",
 } as const;
 
 export const contact = {
@@ -113,7 +113,7 @@ export const projects: Project[] = [
   {
     name: "Hotel Rate & Booking Manager",
     description:
-      "A full stack app for managing hotels, room types, rate plans and bookings, with admin and staff roles. Sortable, filterable data grids, optimistic updates, JWT auth and a documented REST API. Availability checks the busiest night of each stay, and a database row lock stops two people booking the last room.",
+      "A full stack app for managing hotels, room types, rate plans and bookings, with admin and staff roles. Sortable, filterable data grids, optimistic updates, JWT auth and a documented REST API. Availability is checked against the busiest night of each stay, and a database row lock stops two people from booking the last room.",
     stack: ["React", "TypeScript", "TanStack Query", "FastAPI", "PostgreSQL", "Docker"],
     status: "live",
     links: {
