@@ -191,7 +191,6 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "HTML5", icon: icon("html5") },
       { name: "CSS3", icon: icon("css3") },
       { name: "Tailwind CSS", icon: icon("tailwindcss") },
-      { name: "Sass", icon: icon("sass") },
     ],
   },
   {
@@ -210,7 +209,6 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "Git", icon: icon("git") },
       { name: "GitHub", icon: icon("github", true) },
       { name: "Vercel", icon: icon("vercel", true) },
-      { name: "Netlify", icon: icon("netlify") },
       { name: "Jest", icon: icon("jest") },
       { name: "Pytest", icon: icon("pytest") },
       { name: "Jira", icon: icon("jira") },

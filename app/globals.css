@@ -20,7 +20,10 @@
   --p: #2f5bff;
   --n: #c2410c;
   --c: #56617a;
-  /* card shadow */
+  /* skill orb lighting and card shadow */
+  --o1: #fff;
+  --o2: #dce4f3;
+  --osh: rgba(47, 91, 255, 0.14);
   --odrop: rgba(14, 26, 51, 0.4);
 
   --f-head: var(--font-space-grotesk), "DM Sans", system-ui, sans-serif;
@@ -56,6 +59,9 @@
   --p: #8fb0ff;
   --n: #ffa36b;
   --c: #8e9ab4;
+  --o1: #2e3e60;
+  --o2: #0e1628;
+  --osh: rgba(0, 0, 0, 0.55);
   --odrop: rgba(0, 0, 0, 0.8);
   color-scheme: dark;
 }
@@ -1364,7 +1370,7 @@
     }
   }
 
-  /* Skills */
+  /* Skills: overlapping logos per group; the name shows on hover or keyboard focus */
   .sg {
     position: relative;
     display: grid;
@@ -1373,15 +1379,131 @@
     padding: 14px 0 18px;
   }
   .sg h3 {
-    padding-top: 7px; /* lines up with the first row of chips */
+    padding-top: 43px; /* lines up with the middle of the logos */
     font: 400 var(--fs-sm) / 1.4 var(--f-mono);
     letter-spacing: 0;
     color: var(--p);
     overflow-wrap: anywhere;
   }
-  /* reuses .stack / .tech from Projects */
-  .sg .stack {
-    margin-top: 0;
+  .sg h3 .skey {
+    transition: color 0.3s;
+  }
+  /* highlight the key while one of its tools is hovered or focused */
+  .sg:has(.orb:hover) h3 .skey,
+  .sg:has(.orb:focus) h3 .skey {
+    color: var(--acc);
+  }
+  .orbs {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 14px;
+    padding: 30px 0 0 10px; /* room for the name label above */
+  }
+  .orb {
+    position: relative;
+    margin-left: -10px;
+    border-radius: 50%;
+    outline: none;
+    cursor: default;
+  }
+  .orb-ic {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 24%, var(--o1), var(--o2) 80%);
+    /* page-coloured ring separates the overlapping logos */
+    box-shadow:
+      0 0 0 3px var(--bg),
+      inset -3px -4px 8px var(--osh),
+      0 8px 14px -10px var(--odrop);
+    transition:
+      transform 0.45s var(--ease),
+      box-shadow 0.3s,
+      opacity 0.25s;
+  }
+  .orb-ic > img,
+  .orb-ic > svg,
+  .orb-ic > .bd {
+    width: 24px;
+    height: 24px;
+  }
+  .orb-ic > .bd {
+    border-radius: 6px;
+    font-size: 0.66rem;
+  }
+  .orb-ic > .bd.small {
+    font-size: 0.54rem;
+  }
+  .orb-name {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    padding: 5px 9px;
+    border-radius: 7px;
+    white-space: nowrap;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    color: var(--bg);
+    background: var(--ink);
+    pointer-events: none;
+    opacity: 0;
+    translate: -50% 6px;
+    transition:
+      opacity 0.2s,
+      translate 0.35s var(--ease);
+  }
+  /* label arrow */
+  .orb-name::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    translate: -50% 0;
+    border: 5px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .orb:hover,
+  .orb:focus {
+    z-index: 20 !important; /* above its neighbours */
+  }
+  .orb:hover .orb-ic,
+  .orb:focus .orb-ic {
+    transform: translateY(-4px) scale(1.12);
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--acc),
+      0 12px 18px -10px var(--odrop);
+  }
+  .orb:hover .orb-name,
+  .orb:focus .orb-name {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  @media (hover: hover) {
+    .orbs:hover .orb:not(:hover) .orb-ic {
+      opacity: 0.55;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orb-ic,
+    .orb-name {
+      transition: none;
+    }
+    .orb:hover .orb-ic,
+    .orb:focus .orb-ic {
+      transform: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .sg {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0;
+      padding: 20px 0 16px;
+    }
+    .sg h3 {
+      padding-top: 0;
+    }
   }
   .bd {
     display: grid;
@@ -1396,19 +1518,6 @@
   }
   [data-theme="dark"] .inv {
     filter: invert(1);
-  }
-  @media (max-width: 720px) {
-    .sg {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 0;
-      padding: 20px 0 16px;
-    }
-    .sg h3 {
-      padding-top: 0;
-    }
-    .sg .stack {
-      margin-top: 12px;
-    }
   }
 
   /* Photos reel */
