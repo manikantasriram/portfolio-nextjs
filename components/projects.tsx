@@ -22,26 +22,21 @@ export function ProjectList() {
               </p>
             )}
             <p>{p.description}</p>
-            <ul className="stack" aria-hidden="true">
-              {p.stack.map((t, j) => (
-                <li key={t} className="tech" style={{ zIndex: p.stack.length - j }}>
-                  <span className="tech-orb">
-                    <SkillMark icon={stackIcon(t)} size={24} />
-                  </span>
-                  <span className="tech-name">{t}</span>
-                </li>
-              ))}
-            </ul>
-            <ul className="tech-list" aria-label={`${p.name} tech stack`}>
+            <ul className="stack" aria-label={`${p.name} tech stack`}>
               {p.stack.map((t) => (
-                <li key={t}>{t}</li>
+                <li key={t} className="tech">
+                  <span className="tech-ic" aria-hidden="true">
+                    <SkillMark icon={stackIcon(t)} size={20} />
+                  </span>
+                  {t}
+                </li>
               ))}
             </ul>
             {p.links && (
               <p className="plinks">
                 {p.links.demo && (
-                  <a href={p.links.demo} target="_blank" rel="noopener noreferrer">
-                    Live demo <span className="sr-only">(opens in a new tab)</span>
+                  <a href={p.links.demo}>
+                    Live demo
                     <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
                   </a>
                 )}

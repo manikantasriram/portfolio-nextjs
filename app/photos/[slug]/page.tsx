@@ -56,7 +56,7 @@ export default async function PhotoPage({ params }: Params) {
     <main className="pv">
       <header className="pv-bar">
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- a full load lands on #photos exactly */}
-        <a href="/#photos" className="pv-back">
+        <a href="/#photos" className="pv-back" data-nav="back">
           <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" /> cd ~/photos
         </a>
         <span className="pv-path" aria-hidden="true">
@@ -69,7 +69,7 @@ export default async function PhotoPage({ params }: Params) {
 
       <div className="pv-body">
         <figure className="pv-stage">
-          <a href={fullSrc(slug)} target="_blank" rel="noopener" title="Open the original at 100%">
+          <a href={fullSrc(slug)} title="Open the original at 100%">
             {/* height-limited image, so `sizes` is the viewport height times the aspect ratio */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -113,21 +113,21 @@ export default async function PhotoPage({ params }: Params) {
             <a className="btn main" href={fullSrc(slug)} download={`manikanta-sriram-${slug}.jpg`}>
               Download original <Download className="i-down" strokeWidth={2} aria-hidden="true" />
             </a>
-            <a className="btn" href={fullSrc(slug)} target="_blank" rel="noopener">
-              View at 100% <span className="sr-only">(opens in a new tab)</span>
+            <a className="btn" href={fullSrc(slug)}>
+              View at 100%
               <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
             </a>
           </div>
 
           <nav className="pv-nav" aria-label="More photos">
-            <a href={`/photos/${prev.slug}`} rel="prev">
+            <a href={`/photos/${prev.slug}`} rel="prev" data-nav="swap">
               <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
               <span>
                 <small>previous</small>
                 {prev.title}
               </span>
             </a>
-            <a href={`/photos/${next.slug}`} rel="next">
+            <a href={`/photos/${next.slug}`} rel="next" data-nav="swap">
               <span>
                 <small>next</small>
                 {next.title}
@@ -136,8 +136,8 @@ export default async function PhotoPage({ params }: Params) {
             </a>
           </nav>
 
-          <a className="pv-ig" href={instagram.url} target="_blank" rel="noopener noreferrer me">
-            More frames on Instagram <b>@{instagram.handle}</b> <span className="sr-only">(opens in a new tab)</span>
+          <a className="pv-ig" href={instagram.url} rel="me">
+            More frames on Instagram <b>@{instagram.handle}</b>
             <ArrowUpRight size={15} strokeWidth={2} aria-hidden="true" />
           </a>
           <p className="pv-keys" aria-hidden="true">

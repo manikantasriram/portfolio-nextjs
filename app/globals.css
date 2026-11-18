@@ -20,11 +20,7 @@
   --p: #2f5bff;
   --n: #c2410c;
   --c: #56617a;
-  /* skill orb lighting */
-  --o1: #fff;
-  --o2: #dce4f3;
-  --osh: rgba(47, 91, 255, 0.14);
-  --ohi: rgba(255, 255, 255, 0.95);
+  /* card shadow */
   --odrop: rgba(14, 26, 51, 0.4);
 
   --f-head: var(--font-space-grotesk), "DM Sans", system-ui, sans-serif;
@@ -60,10 +56,6 @@
   --p: #8fb0ff;
   --n: #ffa36b;
   --c: #8e9ab4;
-  --o1: #2e3e60;
-  --o2: #0e1628;
-  --osh: rgba(0, 0, 0, 0.55);
-  --ohi: rgba(160, 185, 255, 0.16);
   --odrop: rgba(0, 0, 0, 0.8);
   color-scheme: dark;
 }
@@ -1239,123 +1231,45 @@
     color: var(--mute);
     max-width: 40em;
   }
-  /* Tech stack: overlapping logos. Names stay in the DOM for screen readers and only show on hover/focus. */
+  /* Tech stack: each tool as a chip with its logo and name */
   .stack {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 10px;
-    margin-top: 34px; /* space for the label */
-    padding-left: 10px;
+    gap: 8px;
+    margin-top: 22px;
   }
   .tech {
-    position: relative;
-    margin-left: -10px;
-    border-radius: 50%;
-    outline: none;
-    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    padding: 5px 12px 5px 7px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font: var(--fs-xs) / 1.2 var(--f-mono);
+    color: var(--ink);
+    white-space: nowrap;
   }
-  .tech-orb {
+  .tech-ic {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 32% 24%, var(--o1), var(--o2) 80%);
-    /* page-coloured ring separates the overlapping logos */
-    box-shadow:
-      0 0 0 3px var(--bg),
-      inset -3px -4px 8px var(--osh),
-      0 8px 14px -10px var(--odrop);
-    transition:
-      transform 0.45s var(--ease),
-      box-shadow 0.3s,
-      opacity 0.25s;
+    flex: none;
+    width: 20px;
+    height: 20px;
   }
-  .tech-orb > img,
-  .tech-orb > svg,
-  .tech-orb > .bd {
-    width: 24px;
-    height: 24px;
+  .tech-ic > img,
+  .tech-ic > svg,
+  .tech-ic > .bd {
+    width: 20px;
+    height: 20px;
   }
-  .tech-orb > .bd {
-    border-radius: 6px;
-    font-size: 0.66rem;
+  .tech-ic > .bd {
+    border-radius: 5px;
+    font-size: 0.5625rem;
   }
-  .tech-orb > .bd.small {
-    font-size: 0.54rem;
-  }
-  .tech-name {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    padding: 5px 9px;
-    border-radius: 7px;
-    white-space: nowrap;
-    font: var(--fs-xs) / 1 var(--f-mono);
-    color: var(--bg);
-    background: var(--ink);
-    pointer-events: none;
-    opacity: 0;
-    translate: -50% 6px;
-    transition:
-      opacity 0.2s,
-      translate 0.35s var(--ease);
-  }
-  /* the logos are decoration; this is the readable list */
-  .tech-list {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 14px;
-    font: var(--fs-xs) / 1.7 var(--f-mono);
-    color: var(--mute);
-  }
-  .tech-list li:not(:last-child)::after {
-    content: "·" / "";
-    margin: 0 0.6em;
-    color: var(--c);
-  }
-  /* skills.json: names read as JSON strings */
-  .sg .tech-list {
-    grid-column: 2;
-    margin-top: 0;
-    color: var(--s);
-  }
-  .sg .tech-list li::before,
-  .sg .tech-list li::after {
-    content: '"' / "";
-  }
-  .sg .tech-list li:not(:last-child)::after {
-    content: '",' / "";
-    margin: 0 0.6em 0 0;
-    color: var(--s);
-  }
-  /* label arrow */
-  .tech-name::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    translate: -50% 0;
-    border: 5px solid transparent;
-    border-top-color: var(--ink);
-  }
-  .tech:hover,
-  .tech:focus,
-  .tech:focus-within {
-    z-index: 20 !important; /* above its neighbours */
-  }
-  .tech:hover .tech-orb,
-  .tech:focus .tech-orb {
-    transform: translateY(-4px) scale(1.12);
-    box-shadow:
-      0 0 0 3px var(--bg),
-      0 0 0 5px var(--acc),
-      0 12px 18px -10px var(--odrop);
-  }
-  .tech:hover .tech-name,
-  .tech:focus .tech-name {
-    opacity: 1;
-    translate: -50% 0;
+  .tech-ic > .bd.small {
+    font-size: 0.5rem;
   }
   @media (hover: hover) {
     .prow:hover h3 {
@@ -1364,20 +1278,6 @@
     }
     .plist:hover .prow:not(:hover) {
       opacity: 0.45;
-    }
-    .stack:hover .tech:not(:hover) .tech-orb {
-      opacity: 0.55;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .tech,
-    .tech-orb,
-    .tech-name {
-      transition: none;
-    }
-    .tech:hover .tech-orb,
-    .tech:focus .tech-orb {
-      transform: none;
     }
   }
   @media (max-width: 860px) {
@@ -1473,25 +1373,15 @@
     padding: 14px 0 18px;
   }
   .sg h3 {
-    padding-top: 43px; /* lines up with the middle of the logos */
+    padding-top: 7px; /* lines up with the first row of chips */
     font: 400 var(--fs-sm) / 1.4 var(--f-mono);
     letter-spacing: 0;
     color: var(--p);
     overflow-wrap: anywhere;
   }
   /* reuses .stack / .tech from Projects */
-  .stack-lg {
+  .sg .stack {
     margin-top: 0;
-    padding-top: 30px; /* room for the name label above */
-    row-gap: 14px;
-  }
-  /* highlight the key while one of its tools is hovered or focused */
-  .sg:has(.tech:hover) h3 .skey,
-  .sg:has(.tech:focus) h3 .skey {
-    color: var(--acc);
-  }
-  .sg h3 .skey {
-    transition: color 0.3s;
   }
   .bd {
     display: grid;
@@ -1516,8 +1406,7 @@
     .sg h3 {
       padding-top: 0;
     }
-    .sg .tech-list {
-      grid-column: 1;
+    .sg .stack {
       margin-top: 12px;
     }
   }
