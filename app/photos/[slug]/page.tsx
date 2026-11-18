@@ -136,8 +136,8 @@ export default async function PhotoPage({ params }: Params) {
             </a>
           </nav>
 
-          <a className="pv-ig" href={instagram.url} rel="me">
-            More frames on Instagram <b>@{instagram.handle}</b>
+          <a className="pv-ig" href={instagram.url} target="_blank" rel="noopener noreferrer me">
+            More frames on Instagram <b>@{instagram.handle}</b> <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight size={15} strokeWidth={2} aria-hidden="true" />
           </a>
           <p className="pv-keys" aria-hidden="true">

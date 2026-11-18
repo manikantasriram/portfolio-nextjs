@@ -230,9 +230,10 @@ export function PhotoSheet() {
           })}
 
           <li className="reel-end" data-reveal="" data-active={active >= shownCount ? "" : undefined}>
-            <a href={instagram.url} rel="me">
+            <a href={instagram.url} target="_blank" rel="noopener noreferrer me">
               <span className="end-k">more on Instagram</span>
               <span className="end-h">@{instagram.handle}</span>
+              <span className="sr-only">(opens in a new tab)</span>
               <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
             </a>
           </li>

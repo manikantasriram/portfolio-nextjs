@@ -35,8 +35,8 @@ export function ProjectList() {
             {p.links && (
               <p className="plinks">
                 {p.links.demo && (
-                  <a href={p.links.demo}>
-                    Live demo
+                  <a href={p.links.demo} target="_blank" rel="noopener noreferrer">
+                    Live demo <span className="sr-only">(opens in a new tab)</span>
                     <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
                   </a>
                 )}
