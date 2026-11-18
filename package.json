@@ -11,6 +11,7 @@
     "photos": "node scripts/photo-variants.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "gsap": "^3.15.1",
     "lucide-react": "^1.73.0",
     "next": "16.4.6",
