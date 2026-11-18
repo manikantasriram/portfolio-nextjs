@@ -229,7 +229,10 @@ function photos(reel: HTMLElement) {
 
   // The browser can't scroll a pinned, transformed track to the focused photo, so move the page there.
   track.addEventListener("focusin", (e) => {
-    const item = (e.target as HTMLElement).closest<HTMLElement>(".shot, .reel-end");
+    const target = e.target as HTMLElement;
+    // keyboard only: a mouse click also focuses the link, and moving the page mid-click cancels it
+    if (!target.matches(":focus-visible")) return;
+    const item = target.closest<HTMLElement>(".shot, .reel-end");
     const total = distance();
     if (!pin || !item || total <= 0) return;
     const left = item.getBoundingClientRect().left - track.getBoundingClientRect().left;
