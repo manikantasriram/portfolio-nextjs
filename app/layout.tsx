@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { DM_Mono, DM_Sans, Space_Grotesk } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
@@ -111,6 +112,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

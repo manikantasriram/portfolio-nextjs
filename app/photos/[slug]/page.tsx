@@ -27,6 +27,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: p.caption,
     alternates: { canonical: `/photos/${slug}` },
     openGraph: {
+      type: "article",
+      siteName: site.name,
+      locale: "en_IN",
       title: `${p.title} | Photo by ${site.name}`,
       description: p.caption,
       url: `/photos/${slug}`,
@@ -52,8 +55,30 @@ export default async function PhotoPage({ params }: Params) {
   const next = photos[(i + 1) % photos.length];
   const num = String(i + 1).padStart(2, "0");
 
+  // Image metadata for Google Images: who took it and how to credit it.
+  const imageLd = {
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    name: p.title,
+    description: p.caption,
+    caption: p.alt,
+    contentUrl: `${site.url}${fullSrc(slug)}`,
+    thumbnailUrl: `${site.url}/images/photos/reel/${slug}-560.webp`,
+    url: `${site.url}/photos/${slug}`,
+    width: p.full.width,
+    height: p.full.height,
+    encodingFormat: "image/jpeg",
+    creator: { "@type": "Person", name: site.name, url: site.url },
+    creditText: site.name,
+    copyrightNotice: `© ${site.name}`,
+  };
+
   return (
     <main className="pv">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(imageLd).replace(/</g, "\\u003c") }}
+      />
       <header className="pv-bar">
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- a full load lands on #photos exactly */}
         <a href="/#photos" className="pv-back" data-nav="back">
