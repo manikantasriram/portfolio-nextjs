@@ -1,4 +1,5 @@
 import { skillGroups } from "@/lib/content";
+import { OrbTap } from "./orb-tap";
 import { SkillMark } from "./skill-mark";
 
 /** JSON-style key for a group title: "Backend and data" -> "backend_and_data". */
@@ -8,6 +9,7 @@ const key = (title: string) => title.toLowerCase().replace(/\s+/g, "_");
 export function SkillsGrid() {
   return (
     <div className="sgroups">
+      <OrbTap />
       {skillGroups.map((group) => (
         <div key={group.title} className="sg" data-stagger="">
           <i className="rule" aria-hidden="true" data-line="" />

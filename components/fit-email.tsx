@@ -18,7 +18,7 @@ export function FitEmail({ email }: { email: string }) {
       const size = parseFloat(getComputedStyle(el).fontSize);
       const overflow = el.scrollWidth - el.clientWidth;
       if (overflow > 1) {
-        el.style.fontSize = `${Math.max(12,Math.floor(((size * el.clientWidth) / el.scrollWidth) * 2) / 2 - 0.5)}px`;
+        el.style.fontSize = `${Math.max(12, Math.floor(((size * el.clientWidth) / el.scrollWidth) * 2) / 2 - 0.5)}px`;
       }
     };
 

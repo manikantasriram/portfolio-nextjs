@@ -6,10 +6,17 @@ export function getTheme(): Theme {
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
+/** Keeps the mobile browser bar in the chosen theme, not just the OS one. */
+export function syncThemeColor(theme: Theme) {
+  const color = theme === "dark" ? "#0A101D" : "#F6F8FB";
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", color));
+}
+
 export function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.dataset.theme = theme;
   root.style.colorScheme = theme;
+  syncThemeColor(theme);
 }
 
 export function setTheme(theme: Theme) {

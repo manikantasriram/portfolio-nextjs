@@ -91,6 +91,7 @@
     scroll-behavior: smooth;
     scroll-padding-top: 76px;
     -webkit-text-size-adjust: 100%;
+    scrollbar-color: color-mix(in srgb, var(--mute) 55%, transparent) var(--bg);
   }
   body {
     background: var(--bg);
@@ -469,7 +470,7 @@
   .name {
     font-size: var(--d1);
     line-height: 0.94;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.04em;
   }
   .name span {
     display: block;
@@ -480,7 +481,6 @@
   .name b {
     display: inline-block;
     font-weight: inherit;
-    will-change: transform;
   }
   .hgrid {
     display: grid;
@@ -1202,7 +1202,7 @@
     align-items: center;
     gap: 6px;
     font-size: var(--fs-sm);
-    font-weight: 600;
+    font-weight: 700;
     color: var(--acc);
     text-decoration: underline;
     text-decoration-thickness: 1px;
@@ -1594,6 +1594,20 @@
   .fl-chip[aria-pressed="true"] sup {
     color: inherit;
   }
+  /* touch screens: 40px chips with 8px gaps, and a taller hit area on the project links */
+  @media (pointer: coarse) {
+    .fl {
+      gap: 8px;
+    }
+    .fl-chip {
+      min-height: 40px;
+      align-items: center;
+    }
+    .plinks a {
+      padding-block: 10px;
+      margin-block: -10px;
+    }
+  }
   .fl-chip:focus-visible {
     outline: 2px solid var(--acc);
     outline-offset: 2px;
@@ -1799,7 +1813,7 @@
     color: var(--acc);
   }
   .shot figcaption b {
-    font: 600 var(--fs-md) / 1.3 var(--f-head);
+    font: 700 var(--fs-md) / 1.3 var(--f-head);
     letter-spacing: -0.01em;
     transition: color 0.25s;
   }
@@ -1832,7 +1846,7 @@
   }
   .end-h {
     padding-bottom: 6px;
-    font: 600 clamp(1.75rem, 2.4vw + 0.9rem, 3rem) / 1.05 var(--f-head);
+    font: 700 clamp(1.75rem, 2.4vw + 0.9rem, 3rem) / 1.05 var(--f-head);
     letter-spacing: -0.035em;
     white-space: nowrap;
     background: linear-gradient(var(--acc), var(--acc)) 0 100% / 0 1px no-repeat;

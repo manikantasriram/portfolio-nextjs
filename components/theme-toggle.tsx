@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
-import { applyTheme, getTheme, hasStoredTheme, subscribeTheme, toggleTheme } from "@/lib/theme";
+import { applyTheme, getTheme, hasStoredTheme, subscribeTheme, syncThemeColor, toggleTheme } from "@/lib/theme";
 
 export function ThemeToggle() {
   // null during prerender; the real theme is read from <html> after hydration.
@@ -10,6 +10,7 @@ export function ThemeToggle() {
 
   // follow the OS theme until the user picks one
   useEffect(() => {
+    syncThemeColor(getTheme());
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
       if (!hasStoredTheme()) applyTheme(mq.matches ? "dark" : "light");
