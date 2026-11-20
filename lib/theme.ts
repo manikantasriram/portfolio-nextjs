@@ -8,7 +8,7 @@ export function getTheme(): Theme {
 
 /** Keeps the mobile browser bar in the chosen theme, not just the OS one. */
 export function syncThemeColor(theme: Theme) {
-  const color = theme === "dark" ? "#0A101D" : "#F6F8FB";
+  const color = theme === "dark" ? "#000000" : "#FFFFFF";
   document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", color));
 }
 

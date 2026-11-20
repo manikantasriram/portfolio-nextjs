@@ -5,26 +5,26 @@
 
 /* Tokens */
 :root {
-  --bg: #f6f8fb;
-  --surface: #fff;
-  --ink: #0e1a33;
-  --mute: #55627d;
-  --line: #dfe5ef;
-  --acc: #2f5bff;
-  --br: #8b5cf6;
-  --ok: #067a52;
-  --warn: #c2410c;
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --ink: #09090b;
+  --mute: #52525b;
+  --line: #e4e4e7;
+  --acc: #2563eb;
+  --br: #be123c;
+  --ok: #15803d;
+  --warn: #b45309;
   /* syntax colours: keyword, string, property, number, comment */
-  --k: #7c3aed;
-  --s: #067a52;
-  --p: #2f5bff;
-  --n: #c2410c;
-  --c: #56617a;
+  --k: #be123c;
+  --s: #15803d;
+  --p: #1d4ed8;
+  --n: #a16207;
+  --c: #63636d;
   /* skill orb lighting and card shadow */
-  --o1: #fff;
-  --o2: #dce4f3;
-  --osh: rgba(47, 91, 255, 0.14);
-  --odrop: rgba(14, 26, 51, 0.4);
+  --o1: #fcfcfd;
+  --o2: #e7e7ea;
+  --osh: rgba(37, 99, 235, 0.12);
+  --odrop: rgba(9, 9, 11, 0.35);
 
   --f-head: var(--font-space-grotesk), "DM Sans", system-ui, sans-serif;
   --f-body: var(--font-dm-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -45,24 +45,24 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0a101d;
-  --surface: #111a2d;
-  --ink: #e6ecf8;
-  --mute: #9aa6bf;
-  --line: #1f2b44;
-  --acc: #7c9bff;
-  --br: #b79cff;
-  --ok: #5ed3a0;
-  --warn: #ffa36b;
-  --k: #b79cff;
-  --s: #5ed3a0;
-  --p: #8fb0ff;
-  --n: #ffa36b;
-  --c: #8e9ab4;
-  --o1: #2e3e60;
-  --o2: #0e1628;
-  --osh: rgba(0, 0, 0, 0.55);
-  --odrop: rgba(0, 0, 0, 0.8);
+  --bg: #000000;
+  --surface: #0c0c0e;
+  --ink: #fafafa;
+  --mute: #a1a1aa;
+  --line: #27272a;
+  --acc: #60a5fa;
+  --br: #fb7185;
+  --ok: #4ade80;
+  --warn: #fb923c;
+  --k: #fb7185;
+  --s: #4ade80;
+  --p: #7dd3fc;
+  --n: #fbbf24;
+  --c: #8a8a93;
+  --o1: #2a2a30;
+  --o2: #0a0a0c;
+  --osh: rgba(0, 0, 0, 0.6);
+  --odrop: rgba(0, 0, 0, 0.85);
   color-scheme: dark;
 }
 
@@ -1730,7 +1730,7 @@
     padding: 5px 9px;
     border-radius: 999px;
     font: var(--fs-xs) / 1 var(--f-mono);
-    color: #0a101d;
+    color: #09090b;
     background: rgba(255, 255, 255, 0.88);
     opacity: 0;
     translate: 0 -6px;

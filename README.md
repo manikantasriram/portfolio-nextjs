@@ -19,6 +19,7 @@ I'm a full stack developer in Hyderabad. The site is styled like a code editor: 
 - [Accessibility](#accessibility)
 - [Performance](#performance)
 - [SEO](#seo)
+- [Design](#design)
 
 ## What's on the site
 
@@ -81,6 +82,7 @@ The dev server runs at [http://localhost:3000](http://localhost:3000) and reload
 | `npm run lint`      | Runs ESLint |
 | `npm run typecheck` | Runs `tsc --noEmit` |
 | `npm run photos`    | Regenerates the web-sized photo copies |
+| `npm run tokens:check` | Checks `design/tokens.json` matches the colours in `app/globals.css` |
 
 To check the production build the way Vercel serves it, with clean URLs such as `/photos/chai`:
 
@@ -197,3 +199,7 @@ Lighthouse on the production build scores 99 to 100 for performance on mobile an
 - Self-hosted fonts and fixed image dimensions, so nothing shifts while the page loads
 
 After a deploy that changes content, submitting the sitemap again in Search Console gets Google to recrawl it sooner.
+
+## Design
+
+The colours, fonts, type scale, spacing and components are documented in [design/DESIGN.md](design/DESIGN.md), with the same values as data in [design/tokens.json](design/tokens.json). `npm run tokens:check` fails if the colours there drift from `app/globals.css`; CI runs it on every push.

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "photos": "node scripts/photo-variants.mjs"
+    "photos": "node scripts/photo-variants.mjs",
+    "tokens:check": "node scripts/check-tokens.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
