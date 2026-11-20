@@ -50,6 +50,7 @@ The site has a light and a dark theme. It follows your OS setting on the first v
 | Fonts      | Space Grotesk, DM Sans and DM Mono, self-hosted through `next/font` |
 | Images     | sharp, which generates the WebP copies of each photo |
 | Hosting    | Vercel, with Web Analytics and Speed Insights |
+| CI         | GitHub Actions: typecheck, lint, token check and build on every push and pull request |
 
 ## Running it locally
 
@@ -118,8 +119,14 @@ lib/
   theme.ts            reads, saves and switches the theme
 scripts/
   photo-variants.mjs  writes the WebP copies of each photo
+  check-tokens.mjs    checks design/tokens.json against the colours in globals.css
+design/
+  DESIGN.md           the style guide: colours, type, spacing, components, rules
+  tokens.json         the same values as W3C design tokens
+.github/workflows/
+  ci.yml              the CI workflow
 public/               resume PDF, social image, skill logos, portrait, photos and security.txt
-vercel.json           security headers and cache rules
+vercel.json           build command with checks, security headers and cache rules
 ```
 
 ## Editing content
@@ -145,6 +152,11 @@ The reel, the tag filters, the photo page, the sitemap and the previous and next
 ## Deploying
 
 The repository is connected to Vercel. A push to `main` deploys to production, and any other branch or pull request gets a preview URL.
+
+Two checks guard every deploy:
+
+- GitHub Actions (`.github/workflows/ci.yml`) runs `npm ci`, typecheck, lint, the token check and the build on every push to `main` and every pull request, and shows a pass or fail next to each commit.
+- Vercel's build command in `vercel.json` is `npm run typecheck && npm run lint && npm run build`, so if typecheck or lint fails the deploy stops and the current live version stays up.
 
 Canonical links, Open Graph tags, the sitemap and the structured data all use one site URL, set in `next.config.ts`. It uses `NEXT_PUBLIC_SITE_URL` when that's set (for a custom domain), otherwise Vercel's production domain, otherwise `https://manikantasriram.vercel.app`.
 
