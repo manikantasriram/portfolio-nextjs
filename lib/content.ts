@@ -114,7 +114,18 @@ export const projects: Project[] = [
     name: "Hotel Rate & Booking Manager",
     description:
       "A full stack app for managing hotels, room types, rate plans and bookings, with admin and staff roles. Sortable, filterable data grids, optimistic updates, JWT auth and a documented REST API. Availability is checked against the busiest night of each stay, and a database row lock stops two people from booking the last room.",
-    stack: ["React", "TypeScript", "TanStack Query", "FastAPI", "PostgreSQL", "Docker"],
+    stack: [
+      "React",
+      "TypeScript",
+      "TanStack Query",
+      "Tailwind CSS",
+      "FastAPI",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "Docker",
+      "Pytest",
+      "Vitest",
+    ],
     status: "live",
     links: {
       demo: "https://hotel-booking-manager.vercel.app",
@@ -122,10 +133,22 @@ export const projects: Project[] = [
     },
   },
   {
-    name: "AI Email Template Assistant",
+    name: "NexusFlow — Multi-Tenant B2B Project & Document Intelligence SaaS",
     description:
-      "Turns a text brief into a responsive HTML email template, streamed to the UI over Server-Sent Events. Planned scope: a validator that flags cross-client issues before save, and full version history.",
-    stack: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "LLM API"],
+      "A B2B SaaS where organisations manage projects, tasks and documents in one workspace, with owner, admin and member roles. Planned scope: every query scoped to the organisation and covered by tenant-isolation tests, optimistic Kanban updates, Redis caching and rate limiting, rotating JWT refresh tokens, and Docker with GitHub Actions CI/CD.",
+    stack: [
+      "React",
+      "TypeScript",
+      "TanStack Query",
+      "Zustand",
+      "Tailwind CSS",
+      "FastAPI",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "Redis",
+      "Docker",
+      "GitHub Actions",
+    ],
     status: "in progress",
   },
 ];
@@ -199,6 +222,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "Python", icon: icon("python") },
       { name: "FastAPI", icon: icon("fastapi") },
       { name: "PostgreSQL", icon: icon("postgresql") },
+      { name: "Redis", icon: icon("redis") },
       { name: "GraphQL", icon: icon("graphql") },
       { name: "Docker", icon: icon("docker") },
     ],
@@ -233,6 +257,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "Claude", icon: { kind: "inline", mark: "claude" } },
       { name: "ChatGPT", icon: icon("chatgpt", true) },
       { name: "Cursor", icon: { kind: "inline", mark: "cursor" } },
+      { name: "Ollama", icon: icon("ollama", true) },
     ],
   },
 ];
@@ -240,8 +265,10 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
 /** Tools that appear in project stacks but not in the Skills section. */
 const stackOnlyIcons: Record<string, SkillIcon> = {
   "TanStack Query": icon("tanstack"),
-  Redis: icon("redis"),
-  "LLM API": badge("AI", "#fff", "#7C3AED", true),
+  Zustand: icon("zustand"),
+  SQLAlchemy: icon("sqlalchemy"),
+  Vitest: icon("vitest"),
+  "GitHub Actions": icon("github", true),
 };
 
 /** The logo for a tool named in a project's stack: the Skills icon if there is one, else a badge. */

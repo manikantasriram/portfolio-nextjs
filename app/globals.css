@@ -1277,6 +1277,32 @@
   .tech-ic > .bd.small {
     font-size: 0.5rem;
   }
+  /* Chip hover: lift, accent border and tint, logo pop. Transforms and colour only. */
+  @media (hover: hover) {
+    .tech {
+      transition:
+        border-color 0.25s,
+        background-color 0.25s,
+        transform 0.35s var(--ease);
+    }
+    .tech-ic > * {
+      transition: transform 0.35s var(--ease);
+    }
+    .tech:hover {
+      border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
+      background-color: color-mix(in srgb, var(--acc) 8%, var(--surface));
+      transform: translateY(-2px);
+    }
+    .tech:hover .tech-ic > * {
+      transform: scale(1.15) rotate(-6deg);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: reduce) {
+    .tech:hover,
+    .tech:hover .tech-ic > * {
+      transform: none;
+    }
+  }
   @media (hover: hover) {
     .prow:hover h3 {
       color: var(--acc);
