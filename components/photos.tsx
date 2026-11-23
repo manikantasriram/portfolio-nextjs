@@ -259,7 +259,10 @@ export function PhotoSheet() {
             <ArrowLeft size={18} strokeWidth={2} aria-hidden="true" />
           </button>
           <p className="rn-count" aria-hidden="true">
-            <b>{pad(Math.min(active + 1, shownCount))}</b> / {pad(shownCount)}
+            {/* one unbreakable unit, so "/ 08" can't wrap onto its own line on narrow phones */}
+            <span className="rn-num">
+              <b>{pad(Math.min(active + 1, shownCount))}</b> / {pad(shownCount)}
+            </span>
             <i className="rn-bar">
               <i style={{ transform: `scaleX(${Math.min(active + 1, shownCount) / shownCount})` }} />
             </i>

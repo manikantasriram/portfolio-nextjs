@@ -1190,16 +1190,14 @@
     }
   }
 
-  /* Projects: big stacking cards. Each sticks just under the nav and the next one slides up over it;
-     the "project" scene shrinks and dims the card underneath. On narrow or short screens the cards stack
-     normally, so a tall card never hides its own links. */
+  /* Projects: big cards in normal flow. Nothing ever covers or dims a card, so its text and links stay
+     readable and clickable at every scroll position. */
   .plist {
     display: grid;
     gap: clamp(24px, 4vw, 40px);
   }
   .prow {
-    position: sticky;
-    top: calc(84px + var(--i, 0) * 16px);
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
     gap: 18px clamp(24px, 4vw, 48px);
@@ -1213,12 +1211,6 @@
       0 30px 60px -40px var(--odrop);
     overflow: hidden;
     transform-origin: 50% 0%;
-  }
-  @media (max-width: 720px), (max-height: 720px) {
-    .prow {
-      position: relative;
-      top: auto;
-    }
   }
   /* soft accent glow that follows the cursor (interactions() in motion-scenes.ts sets --mx / --my) */
   .prow::before {
@@ -1318,20 +1310,18 @@
   .pbody > .pstatus {
     justify-self: start;
   }
-  .pbody > .stack {
+  .pbody > .pstack {
     grid-column: 2;
     grid-row: 1 / span 3;
-    margin-top: 0;
-    align-content: start;
   }
   @media (max-width: 860px) {
     .pbody {
       grid-template-columns: minmax(0, 1fr);
     }
-    .pbody > .stack {
+    .pbody > .pstack {
       grid-column: 1;
       grid-row: auto;
-      margin-top: 22px;
+      margin-top: 20px;
     }
   }
   /* giant outlined project number */
@@ -1354,71 +1344,36 @@
     color: var(--mute);
     max-width: 40em;
   }
-  /* Tech stack: each tool as a chip with its logo and name */
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 22px;
+  /* Tech stack: the same overlapping logos as Skills (.orbs / .orb), under a JSON-style key.
+     The orbs sit on the card's surface, so their separating ring uses that colour, not the page's. */
+  .pstack-k {
+    font: var(--fs-xs) / 1.4 var(--f-mono);
+    color: var(--p);
   }
-  .tech {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 32px;
-    padding: 5px 12px 5px 7px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface);
-    font: var(--fs-xs) / 1.2 var(--f-mono);
-    color: var(--ink);
-    white-space: nowrap;
+  .pstack .orbs {
+    padding-top: 26px; /* room for the name label above */
   }
-  .tech-ic {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 20px;
-    height: 20px;
+  .pstack .orb-ic > img,
+  .pstack .orb-ic > svg,
+  .pstack .orb-ic > .bd {
+    width: 21px;
+    height: 21px;
   }
-  .tech-ic > img,
-  .tech-ic > svg,
-  .tech-ic > .bd {
-    width: 20px;
-    height: 20px;
+  /* a touch smaller than in Skills, so a full stack (up to 11 tools) fits on one row */
+  .pstack .orb-ic {
+    width: 42px;
+    height: 42px;
+    box-shadow:
+      0 0 0 3px var(--surface),
+      inset -3px -4px 8px var(--osh),
+      0 8px 14px -10px var(--odrop);
   }
-  .tech-ic > .bd {
-    border-radius: 5px;
-    font-size: 0.5625rem;
-  }
-  .tech-ic > .bd.small {
-    font-size: 0.5rem;
-  }
-  /* Chip hover: lift, accent border and tint, logo pop. Transforms and colour only. */
-  @media (hover: hover) {
-    .tech {
-      transition:
-        border-color 0.25s,
-        background-color 0.25s,
-        transform 0.35s var(--ease);
-    }
-    .tech-ic > * {
-      transition: transform 0.35s var(--ease);
-    }
-    .tech:hover {
-      border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
-      background-color: color-mix(in srgb, var(--acc) 8%, var(--surface));
-      transform: translateY(-2px);
-    }
-    .tech:hover .tech-ic > * {
-      transform: scale(1.15) rotate(-6deg);
-    }
-  }
-  @media (hover: hover) and (prefers-reduced-motion: reduce) {
-    .tech:hover,
-    .tech:hover .tech-ic > * {
-      transform: none;
-    }
+  .pstack .orb:hover .orb-ic,
+  .pstack .orb:focus .orb-ic {
+    box-shadow:
+      0 0 0 3px var(--surface),
+      0 0 0 5px var(--acc),
+      0 12px 18px -10px var(--odrop);
   }
   @media (hover: hover) {
     .prow:hover h3 {
@@ -1432,21 +1387,51 @@
   }
 
   /* Approach */
+  /* cards in the same style as the project cards: surface, border, radius, shadow and cursor glow */
   .appr {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 44px 32px;
+    gap: 20px;
   }
   .appr li {
-    border-top: 1px solid var(--line);
-    padding-top: 18px;
     position: relative;
+    padding: 24px 24px 26px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: 0 24px 48px -36px var(--odrop);
+    overflow: hidden;
+    transition: border-color 0.3s;
   }
+  .appr li:hover {
+    border-color: color-mix(in srgb, var(--acc) 40%, var(--line));
+  }
+  /* glow that follows the cursor (interactions() in motion-scenes.ts sets --mx / --my) */
+  .appr li::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in srgb, var(--acc) 11%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .appr li:hover::after {
+    opacity: 1;
+  }
+  .appr li > * {
+    position: relative; /* above the glow */
+  }
+  /* accent line along the top edge, inside the card */
   .appr li::before {
     content: "";
     position: absolute;
-    top: -1px;
-    left: 0;
+    top: 0;
+    left: 24px;
     width: 64px;
     height: 2px;
     background: var(--acc);
@@ -1485,7 +1470,7 @@
   @media (max-width: 560px) {
     .appr {
       grid-template-columns: minmax(0, 1fr);
-      gap: 30px;
+      gap: 14px;
     }
   }
 
@@ -1721,7 +1706,8 @@
     .fl {
       gap: 8px;
     }
-    .fl-chip {
+    .fl-chip,
+    .gf {
       min-height: 40px;
       align-items: center;
     }
@@ -2044,7 +2030,12 @@
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
   }
+  .rn-num {
+    flex: none;
+    white-space: nowrap;
+  }
   .rn-count b {
+    display: inline-block;
     min-width: 2ch;
     font-weight: 500;
     color: var(--ink);
@@ -2688,14 +2679,16 @@
   html[data-js] [data-scene="project"],
   html[data-js] [data-scene="portrait"],
   html[data-js] [data-scene="email"],
-  html[data-js] [data-scene="edu"] {
+  html[data-js] [data-scene="edu"],
+  html[data-js] [data-scene="approach"] {
     opacity: 0;
   }
   html[data-js] .sh.in > *,
   html[data-js] [data-scene="project"].in,
   html[data-js] [data-scene="portrait"].in,
   html[data-js] [data-scene="email"].in,
-  html[data-js] [data-scene="edu"].in {
+  html[data-js] [data-scene="edu"].in,
+  html[data-js] [data-scene="approach"].in {
     opacity: 1;
     transition: opacity 0.8s var(--ease);
   }

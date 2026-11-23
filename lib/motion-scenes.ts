@@ -92,45 +92,58 @@ const enterScenes = {
   },
 
   /**
-   * Project card: wipes up into view, the giant index rises, then the title, text and chips. The cards are
-   * sticky, so while the next one slides up over this card, this one shrinks back and dims.
+   * Project card, one-shot on entry: wipes up into view, the giant index rises, then the title, text,
+   * links and stack logos. Nothing scroll-linked afterwards, so the card always stays fully readable
+   * and its links clickable. The text is fully in within about 0.9s.
    */
   project(card: HTMLElement) {
     const title = card.querySelector<HTMLElement>("h3");
-    gsap.set($$(".pbody > p, .tech", card), { opacity: 0 });
+    gsap.set($$(".pbody > p, .pstack .orb", card), { opacity: 0 });
     if (title) gsap.set(title, { opacity: 0 });
     gsap.set(card, { opacity: 1 });
 
     gsap
       .timeline({ defaults: { ease: EASE_OUT } })
-      // clip-path, not transform, so it never fights the scroll-linked scale below
       .fromTo(
         card,
         { clipPath: "inset(100% 0% 0% 0% round 24px)" },
-        { clipPath: "inset(0% 0% 0% 0% round 24px)", duration: 1.1, clearProps: "clipPath" },
+        { clipPath: "inset(0% 0% 0% 0% round 24px)", duration: 0.8, clearProps: "clipPath" },
         0,
       )
-      .fromTo($$(".pidx b", card), { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.1 }, 0.15)
-      .fromTo($$(".pbody > p", card), { y: 18 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, 0.4)
+      .fromTo($$(".pidx b", card), { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.8 }, 0.1)
       .fromTo(
-        $$(".tech", card),
-        { y: 10, scale: 0.9 },
-        // clear these so the CSS hover works afterwards
-        { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.04, clearProps: "opacity,transform" },
-        0.6,
+        $$(".pbody > p", card),
+        { y: 14 },
+        { opacity: 1, y: 0, duration: 0.55, stagger: 0.06, clearProps: "opacity,transform" },
+        0.3,
+      )
+      .fromTo(
+        $$(".pstack .orb", card),
+        { y: 14, scale: 0.6 },
+        // the same quick pop-in as the Skills logos; cleared so the CSS hover lift still works
+        { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.04, ease: "back.out(2)", clearProps: "opacity,transform" },
+        0.4,
       );
-    if (title) riseLines(title, { delay: 0.2 });
+    if (title) riseLines(title, { delay: 0.15, duration: 0.8 });
+  },
 
-    // only when the cards actually stack (CSS turns sticky off on narrow or short screens)
-    const next = card.nextElementSibling as HTMLElement | null;
-    if (next && getComputedStyle(card).position === "sticky") {
-      gsap.to(card, {
-        scale: 0.92,
-        opacity: 0.4,
-        ease: "none",
-        scrollTrigger: { trigger: next, start: "top 92%", end: "top 30%", scrub: true },
-      });
-    }
+  /**
+   * "How I build" cards: the same wipe-up as the project cards, staggered across the grid, with the
+   * number, title and text rising in. One-shot, so nothing moves while you read.
+   */
+  approach(list: HTMLElement) {
+    gsap.set(list, { opacity: 1 });
+    const cards = $$("li", list);
+    gsap.fromTo(
+      cards,
+      { clipPath: "inset(100% 0% 0% 0% round 20px)" },
+      { clipPath: "inset(0% 0% 0% 0% round 20px)", duration: 0.8, ease: EASE_OUT, stagger: 0.08, clearProps: "clipPath" },
+    );
+    gsap.fromTo(
+      $$(".num, h4, p", list),
+      { y: 12, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: EASE_OUT, stagger: 0.03, delay: 0.2, clearProps: "opacity,transform" },
+    );
   },
 
   /** Education: the school name rises, then the end year counts up from the start year. */
@@ -525,7 +538,7 @@ function interactions() {
   }
 
   // a soft accent glow that follows the cursor across each project card (CSS reads --mx / --my)
-  $$(".prow").forEach((card) => {
+  $$(".prow, .appr li").forEach((card) => {
     listen(card, "pointermove", (e) => {
       const r = card.getBoundingClientRect();
       card.style.setProperty("--mx", `${e.clientX - r.left}px`);

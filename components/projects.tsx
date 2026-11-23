@@ -6,12 +6,7 @@ export function ProjectList() {
   return (
     <ol className="plist">
       {projects.map((p, i) => (
-        <li
-          key={p.name}
-          className="prow"
-          data-scene="project"
-          style={{ "--i": i } as React.CSSProperties}
-        >
+        <li key={p.name} className="prow" data-scene="project">
           <p className="pidx" aria-hidden="true">
             <b>{String(i + 1).padStart(2, "0")}</b>
           </p>
@@ -24,16 +19,22 @@ export function ProjectList() {
               </p>
             )}
             <p>{p.description}</p>
-            <ul className="stack" aria-label={`${p.name} tech stack`}>
-              {p.stack.map((t) => (
-                <li key={t} className="tech">
-                  <span className="tech-ic" aria-hidden="true">
-                    <SkillMark icon={stackIcon(t)} size={20} />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
+            {/* same overlapping logos as the Skills section; the name shows on hover, focus or tap */}
+            <div className="pstack">
+              <p className="pstack-k" aria-hidden="true">
+                &quot;stack&quot;:
+              </p>
+              <ul className="orbs" aria-label={`${p.name} tech stack`}>
+                {p.stack.map((t, j) => (
+                  <li key={t} className="orb" tabIndex={0} style={{ zIndex: p.stack.length - j }}>
+                    <span className="orb-ic" aria-hidden="true">
+                      <SkillMark icon={stackIcon(t)} size={24} />
+                    </span>
+                    <span className="orb-name">{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
             {p.links && (
               <p className="plinks">
                 {p.links.demo && (

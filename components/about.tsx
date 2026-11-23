@@ -45,9 +45,10 @@ export function About() {
       <h3 className="subhead" data-reveal="">
         <b aria-hidden="true">##</b> How I build
       </h3>
-      <ol className="appr" data-stagger="">
+      {/* cards styled like the project cards; the "approach" scene wipes them in, one after another */}
+      <ol className="appr" data-scene="approach">
         {approach.map((a, i) => (
-          <li key={a.title} data-item="">
+          <li key={a.title}>
             <span className="num" aria-hidden="true">
               {String(i + 1).padStart(2, "0")}
             </span>
