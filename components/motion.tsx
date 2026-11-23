@@ -13,7 +13,7 @@ type Scenes = typeof import("@/lib/motion-scenes");
 type EnterScene = Parameters<Scenes["enter"]>[0];
 type ScrubScene = Parameters<Scenes["attach"]>[0];
 
-const SCRUB_SCENES = ["graph", "statement", "photos"];
+const SCRUB_SCENES = ["graph", "statement", "photos", "marquee"];
 const INTENT_EVENTS = ["pointerdown", "pointermove", "touchstart", "keydown", "wheel", "scroll"] as const;
 
 /**

@@ -3,15 +3,17 @@ import { projects, stackIcon } from "@/lib/content";
 import { SkillMark } from "./skill-mark";
 
 export function ProjectList() {
-  const total = String(projects.length).padStart(2, "0");
   return (
     <ol className="plist">
       {projects.map((p, i) => (
-        <li key={p.name} className="prow" data-scene="project">
-          <i className="rule" aria-hidden="true" />
+        <li
+          key={p.name}
+          className="prow"
+          data-scene="project"
+          style={{ "--i": i } as React.CSSProperties}
+        >
           <p className="pidx" aria-hidden="true">
             <b>{String(i + 1).padStart(2, "0")}</b>
-            <span>/ {total}</span>
           </p>
           <h3>{p.name}</h3>
           <div className="pbody">

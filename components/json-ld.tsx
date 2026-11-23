@@ -34,7 +34,7 @@ export function JsonLd() {
           name: education.school,
           address: { "@type": "PostalAddress", addressLocality: "Tadepalligudem", addressCountry: "IN" },
         },
-        sameAs: [site.github, site.linkedin, photography.instagram.url],
+        sameAs: [site.github, site.linkedin, photography.instagram.url, photography.vsco.url],
       },
       {
         "@type": "ProfilePage",

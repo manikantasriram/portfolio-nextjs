@@ -12,7 +12,7 @@ import { photography } from "@/lib/content";
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export function PhotoSheet() {
-  const { intro, photos, instagram } = photography;
+  const { intro, photos, instagram, vsco } = photography;
   const [tag, setTag] = useState("all");
   const trackRef = useRef<HTMLUListElement>(null);
 
@@ -230,12 +230,20 @@ export function PhotoSheet() {
           })}
 
           <li className="reel-end" data-reveal="" data-active={active >= shownCount ? "" : undefined}>
-            <a href={instagram.url} target="_blank" rel="noopener noreferrer me">
-              <span className="end-k">more on Instagram</span>
-              <span className="end-h">@{instagram.handle}</span>
-              <span className="sr-only">(opens in a new tab)</span>
-              <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
-            </a>
+            <div className="end-links">
+              <a href={instagram.url} target="_blank" rel="noopener noreferrer me">
+                <span className="end-k">more on Instagram</span>
+                <span className="end-h">@{instagram.handle}</span>
+                <span className="sr-only">(opens in a new tab)</span>
+                <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
+              </a>
+              <a href={vsco.url} target="_blank" rel="noopener noreferrer me">
+                <span className="end-k">full gallery on VSCO</span>
+                <span className="end-h">vsco/{vsco.handle}</span>
+                <span className="sr-only">(opens in a new tab)</span>
+                <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
+              </a>
+            </div>
           </li>
         </ul>
 

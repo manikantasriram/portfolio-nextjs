@@ -11,7 +11,7 @@
   --mute: #52525b;
   --line: #e4e4e7;
   --acc: #2563eb;
-  --br: #be123c;
+  --br: #7c3aed;
   --ok: #15803d;
   --warn: #b45309;
   /* syntax colours: keyword, string, property, number, comment */
@@ -51,7 +51,7 @@
   --mute: #a1a1aa;
   --line: #27272a;
   --acc: #60a5fa;
-  --br: #fb7185;
+  --br: #a78bfa;
   --ok: #4ade80;
   --warn: #fb923c;
   --k: #fb7185;
@@ -160,6 +160,19 @@
   .meta {
     color: var(--mute);
     font-size: var(--fs-sm);
+  }
+  /* location with a map pin */
+  .loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  /* push-pin: red head is fixed, the needle uses currentColor */
+  .i-loc {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    color: var(--mute);
   }
   /* a 1px rule that GSAP draws from the left */
   .rule {
@@ -426,7 +439,8 @@
   .hero {
     position: relative;
     isolation: isolate;
-    padding: clamp(32px, 6vw, 80px) 0 clamp(40px, 5vw, 64px);
+    /* bottom + the next section's 48px top = the same 96px rhythm as between sections */
+    padding: clamp(28px, 5vw, 64px) 0 clamp(32px, 4vw, 48px);
   }
   .hero-grid {
     --mx: 72%;
@@ -550,6 +564,42 @@
   .btn:hover .i-down {
     transform: translateY(2px);
   }
+  /* round icon-only button (LinkedIn, GitHub); the name shows as a tooltip on hover or keyboard focus */
+  .btn.icon {
+    position: relative;
+    width: 48px;
+    padding: 0;
+  }
+  .btn.icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .btn.icon::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font: var(--fs-xs) / 1 var(--f-mono);
+    white-space: nowrap;
+    color: var(--bg);
+    background: var(--ink);
+    pointer-events: none;
+    opacity: 0;
+    translate: -50% 6px;
+    transition:
+      opacity 0.2s,
+      translate 0.3s var(--ease);
+  }
+  .btn.icon:hover::after,
+  .btn.icon:focus-visible::after {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  .btn.icon:hover svg {
+    transform: scale(1.12);
+  }
   .btn:hover .i-out {
     transform: translate(2px, -2px);
   }
@@ -573,6 +623,13 @@
   @media (max-width: 560px) {
     .cta .btn {
       flex: 1 1 100%;
+    }
+    /* icon buttons stay round; the button after them fills the rest of their row */
+    .cta .btn.icon {
+      flex: none;
+    }
+    .cta .btn.icon + .btn:not(.icon) {
+      flex: 1 1 0;
     }
   }
 
@@ -684,8 +741,9 @@
   }
 
   /* Sections */
+  /* 48px top and bottom on desktop (96px between sections), 32px on phones (64px between) */
   .sec {
-    padding: clamp(44px, 6vw, 80px) 0;
+    padding: clamp(32px, 4.5vw, 48px) 0;
   }
   /* Below-the-fold sections skip rendering until lazy-sections.ts marks them ready. 900px is just a placeholder height. */
   html[data-lazy] .sec:not(.ready),
@@ -694,7 +752,7 @@
     contain-intrinsic-size: auto 900px;
   }
   .sh {
-    margin-bottom: clamp(28px, 4vw, 48px);
+    margin-bottom: clamp(24px, 3vw, 36px);
   }
   /* section header */
   .hunk {
@@ -756,7 +814,7 @@
     text-wrap: pretty;
   }
   .subhead {
-    margin: clamp(56px, 8vw, 96px) 0 clamp(24px, 3.5vw, 36px);
+    margin: clamp(40px, 5vw, 64px) 0 clamp(20px, 2.5vw, 28px);
     font-size: clamp(1.5rem, 1.6vw + 1rem, 2rem);
     letter-spacing: -0.03em;
     line-height: 1.1;
@@ -1132,39 +1190,63 @@
     }
   }
 
-  /* Projects */
+  /* Projects: big stacking cards. Each sticks just under the nav and the next one slides up over it;
+     the "project" scene shrinks and dims the card underneath. On narrow or short screens the cards stack
+     normally, so a tall card never hides its own links. */
   .plist {
-    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: clamp(24px, 4vw, 40px);
   }
   .prow {
-    position: relative;
+    position: sticky;
+    top: calc(84px + var(--i, 0) * 16px);
     display: grid;
-    grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1.1fr);
-    column-gap: 32px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 18px clamp(24px, 4vw, 48px);
     align-items: start;
-    padding: 40px 0;
-    transition: opacity 0.4s;
+    padding: clamp(22px, 4vw, 44px);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    box-shadow:
+      0 -12px 40px -28px var(--odrop),
+      0 30px 60px -40px var(--odrop);
+    overflow: hidden;
+    transform-origin: 50% 0%;
   }
+  @media (max-width: 720px), (max-height: 720px) {
+    .prow {
+      position: relative;
+      top: auto;
+    }
+  }
+  /* soft accent glow that follows the cursor (interactions() in motion-scenes.ts sets --mx / --my) */
   .prow::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: var(--acc);
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    transition: transform 0.8s var(--ease);
-    z-index: 1;
+    inset: 0;
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in srgb, var(--acc) 11%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
   }
   .prow:hover::before {
-    transform: scaleX(1);
+    opacity: 1;
+  }
+  .prow > * {
+    position: relative; /* above the glow */
   }
   .pidx {
-    display: grid;
-    gap: 6px;
-    padding-top: 0.75em;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    overflow: hidden; /* masks the index as it rises in */
     font: var(--fs-xs) / 1 var(--f-mono);
     color: var(--c);
   }
@@ -1219,13 +1301,48 @@
   .plinks a:hover svg {
     transform: translate(2px, -2px);
   }
+  /* title across the full card; under it, status and description on the left, stack and links right */
+  .prow h3 {
+    grid-column: 1 / -1;
+  }
+  .pbody {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+  }
+  .pbody > * {
+    grid-column: 1;
+  }
+  .pbody > .pstatus {
+    justify-self: start;
+  }
+  .pbody > .stack {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    margin-top: 0;
+    align-content: start;
+  }
+  @media (max-width: 860px) {
+    .pbody {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pbody > .stack {
+      grid-column: 1;
+      grid-row: auto;
+      margin-top: 22px;
+    }
+  }
+  /* giant outlined project number */
   .pidx b {
-    color: var(--acc);
-    font-weight: 400;
-    font-size: var(--fs-sm);
+    font: 700 clamp(4.5rem, 12vw, 9rem) / 0.82 var(--f-head);
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--acc);
   }
   .prow h3 {
-    font-size: var(--d3);
+    font-size: clamp(2rem, 3.2vw + 1rem, 3.25rem);
     line-height: 1.08;
     letter-spacing: -0.035em;
     text-wrap: balance;
@@ -1306,35 +1423,11 @@
   @media (hover: hover) {
     .prow:hover h3 {
       color: var(--acc);
-      transform: translateX(10px);
-    }
-    .plist:hover .prow:not(:hover) {
-      opacity: 0.45;
     }
   }
   @media (max-width: 860px) {
     .prow {
-      grid-template-columns: 48px minmax(0, 1fr);
-      column-gap: 20px;
-      padding: 32px 0;
-    }
-    .pbody {
-      grid-column: 2;
-      margin-top: 14px;
-    }
-  }
-  @media (max-width: 480px) {
-    .prow {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .pidx {
-      display: flex;
-      align-items: baseline;
-      padding-top: 0;
-      margin-bottom: 12px;
-    }
-    .pbody {
-      grid-column: 1;
     }
   }
 
@@ -1574,6 +1667,9 @@
     margin-bottom: clamp(16px, 1.6vw, 20px);
   }
   .fl {
+    /* take the free space, so the chips never collapse into one per line next to the counter */
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -1860,6 +1956,10 @@
     padding: 0 clamp(24px, 8vw, 120px) 0 clamp(8px, 2vw, 24px);
     scroll-snap-align: end;
   }
+  .end-links {
+    display: grid;
+    gap: clamp(22px, 3vw, 36px);
+  }
   .reel-end a {
     display: grid;
     gap: 12px;
@@ -1999,7 +2099,22 @@
       display: none;
     }
     .fl-chip {
+      flex: none;
       padding: 8px 12px;
+    }
+    /* phones: one swipeable row of chips running edge to edge, faded at the right to hint at more */
+    .fl {
+      flex: 1 1 100%;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      margin-inline: -24px;
+      padding: 4px 24px;
+      mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent);
+    }
+    .fl::-webkit-scrollbar {
+      display: none;
     }
     .reel-track {
       gap: 18px;
@@ -2227,6 +2342,42 @@
     .edu-when {
       padding-top: 0;
     }
+  }
+
+  /* Announcement ticker before Contact: one slim line on a solid accent strip, like a store's sale bar.
+     Text uses --bg on --acc: 5.2:1 in light mode, 8.6:1 in dark. */
+  .mq {
+    overflow: hidden;
+    background: var(--acc);
+    color: var(--bg);
+  }
+  .mq-row {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    white-space: nowrap;
+  }
+  .mq-track {
+    display: inline-flex;
+    will-change: transform;
+  }
+  .mq-set {
+    display: inline-flex;
+    flex: none;
+  }
+  .mq-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding-right: 18px;
+    font: 500 0.8125rem / 1 var(--f-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .mq-star {
+    font-style: normal;
+    font-size: 0.75em;
+    opacity: 0.8;
   }
 
   /* Contact */
@@ -2536,13 +2687,15 @@
   html[data-js] .sh > *,
   html[data-js] [data-scene="project"],
   html[data-js] [data-scene="portrait"],
-  html[data-js] [data-scene="email"] {
+  html[data-js] [data-scene="email"],
+  html[data-js] [data-scene="edu"] {
     opacity: 0;
   }
   html[data-js] .sh.in > *,
   html[data-js] [data-scene="project"].in,
   html[data-js] [data-scene="portrait"].in,
-  html[data-js] [data-scene="email"].in {
+  html[data-js] [data-scene="email"].in,
+  html[data-js] [data-scene="edu"].in {
     opacity: 1;
     transition: opacity 0.8s var(--ease);
   }

@@ -17,7 +17,7 @@ Two themes. Light mode sits on pure white and dark mode on pure black, with neut
 | `--mute` | Secondary text, captions | `#52525b` · 7.7:1 | `#a1a1aa` · 8.2:1 |
 | `--c` | Comments, hashes, labels | `#63636d` · 5.9:1 | `#8a8a93` · 6.1:1 |
 | `--acc` | Accent, links, focus ring | `#2563eb` · 5.2:1 | `#60a5fa` · 8.3:1 |
-| `--br` | Freelance branch label | `#be123c` · 6.3:1 | `#fb7185` · 7.8:1 |
+| `--br` | Freelance branch label | `#7c3aed` · 5.7:1 | `#a78bfa` · 7.7:1 |
 | `--ok` | Live status | `#15803d` · 5.0:1 | `#4ade80` · 12.1:1 |
 | `--warn` | In-progress status | `#b45309` · 5.0:1 | `#fb923c` · 9.3:1 |
 | `--k` | Code keywords | `#be123c` | `#fb7185` |

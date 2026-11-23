@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { PinIcon } from "@/components/pin-icon";
 import { experience, type CommitType, type Role } from "@/lib/content";
 
 type Filter = "all" | CommitType;
@@ -87,7 +88,10 @@ function RoleEntry({ role, filter }: { role: Role; filter: Filter }) {
               {role.link.label} <span className="sr-only">(opens in a new tab)</span>
             </a>
           ) : (
-            role.location
+            <span className="loc">
+              <PinIcon className="i-loc" />
+              {role.location}
+            </span>
           )}
         </p>
       </div>

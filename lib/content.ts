@@ -74,7 +74,7 @@ export const experience: Role[] = [
     title: "Freelance Video Editor",
     dates: "Feb 2022 – Apr 2024",
     link: { href: "https://www.instagram.com/gadgetbytes/", label: "@gadgetbytes on Instagram" },
-    ref: { label: "freelance", tone: "branch" },
+    ref: { label: "freelance", tone: "main" },
     commits: [
       {
         hash: "9d4e2a1",
@@ -309,8 +309,9 @@ export interface Photo {
 
 export const photography = {
   intro:
-    "Photography is where I slow down. Away from the screen, a camera teaches me to wait for the light, look twice and fall for what most people walk past: the pattern hiding in a plastic chair, the patience of a pigeon, a temple tower glowing against the night. Every frame here is a moment that made me stop, breathe and press the shutter.",
+    "Photography is where I slow down. Away from the screen, a camera teaches me to wait for the light, look twice and fall for what most people walk past: the pattern hiding in a plastic chair, a spider signing its web, a temple tower glowing against the night. Every frame here is a moment that made me stop, breathe and press the shutter.",
   instagram: { handle: "travelwithmanik", url: "https://instagram.com/travelwithmanik" },
+  vsco: { handle: "manikantasriram", url: "https://vsco.co/manikantasriram/" },
   photos: [
     {
       slug: "charminar",
@@ -329,36 +330,12 @@ export const photography = {
       full: { width: 1000, height: 2000 },
     },
     {
-      slug: "night-train",
-      title: "Night train",
-      tag: "street",
-      caption: "Fans in perfect rows, people in every shape of tired. Symmetry finds you anywhere.",
-      alt: "Inside a train coach at night, rows of ceiling fans above blue seats and resting passengers",
-      full: { width: 1125, height: 2000 },
-    },
-    {
-      slug: "three-pandas",
-      title: "Three pandas",
-      tag: "still life",
-      caption: "Two bodybuilders and one point guard, posing on a mirror floor. Reflections double the drama.",
-      alt: "Three toy pandas, two flexing and one holding a basketball, reflected on a glossy floor",
-      full: { width: 1125, height: 2000 },
-    },
-    {
       slug: "raja-gopuram",
       title: "Raja Gopuram",
       tag: "architecture",
       caption: "Arunachaleswarar Temple, lit tier by tier, like a page that loads from the bottom up.",
       alt: "The towering Raja Gopuram of Arunachaleswarar Temple outlined in lights at night",
       full: { width: 1500, height: 2000 },
-    },
-    {
-      slug: "jumping-spider",
-      title: "Jumping spider",
-      tag: "macro",
-      caption: "Half a centimetre of curiosity on a grey sleeve, with every big black eye on me.",
-      alt: "A tiny pale jumping spider with large black eyes on grey fabric, pink blur behind",
-      full: { width: 1000, height: 2000 },
     },
     {
       slug: "ambedkar-statue",
@@ -377,36 +354,12 @@ export const photography = {
       full: { width: 1125, height: 2000 },
     },
     {
-      slug: "between-trains",
-      title: "Between two trains",
-      tag: "street",
-      caption: "A sliver of gravel between two trains, both heading somewhere. The quiet before the whistle.",
-      alt: "A narrow strip of gravel between a passenger train and a goods train under a hazy sky",
-      full: { width: 1000, height: 2000 },
-    },
-    {
-      slug: "ganesh",
-      title: "Ganesh, festival scale",
-      tag: "devotion",
-      caption: "Craning my neck to fit him in the frame: garlands, gold and a blessing hand the size of a door.",
-      alt: "A towering, brightly painted Ganesh idol draped in marigold garlands, seen from below",
-      full: { width: 1125, height: 2000 },
-    },
-    {
       slug: "signature-spider",
       title: "Signature spider",
       tag: "macro",
       caption: "It weaves its own zigzags into the web. Every builder leaves a signature.",
       alt: "Close-up of a yellow and black signature spider in its web, with zigzag silk bands",
       full: { width: 1500, height: 2000 },
-    },
-    {
-      slug: "looking-up",
-      title: "Looking up",
-      tag: "nature",
-      caption: "Stand at the trunk and look straight up: the branches burst like a firework. Perspective is free.",
-      alt: "Looking straight up a tree trunk to branches spreading out like a starburst of green leaves",
-      full: { width: 1000, height: 2000 },
     },
     {
       slug: "reclining-vishnu",
@@ -417,28 +370,12 @@ export const photography = {
       full: { width: 1500, height: 2000 },
     },
     {
-      slug: "window-guest",
-      title: "Window guest",
-      tag: "birds",
-      caption: "Grey feathers on chipped white bars, coral feet holding on. The city's most patient visitor.",
-      alt: "A grey pigeon with coral-red feet perched on a white window grill",
-      full: { width: 1125, height: 2000 },
-    },
-    {
       slug: "wings",
       title: "Wings, up close",
       tag: "macro",
       caption: "Ink-black and ice-blue, resting in an open palm. A pattern no stylesheet could fake.",
       alt: "A black butterfly with pale blue, black-spotted hind wings resting on an open palm",
       full: { width: 1000, height: 2000 },
-    },
-    {
-      slug: "painted-mountain",
-      title: "Painted mountain",
-      tag: "travel",
-      caption: "A mountain built for thrills at Wonderla, its rock grain drawn line by line. Even built stone earns a second look.",
-      alt: "Sculpted rock waterfall with ridged orange stone and a rail track under the Wonderla sign",
-      full: { width: 1500, height: 2000 },
     },
   ] satisfies Photo[],
 };

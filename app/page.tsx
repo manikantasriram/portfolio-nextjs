@@ -1,11 +1,14 @@
-import { ArrowUpRight, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { Suspense } from "react";
 import { About } from "@/components/about";
+import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { CopyEmail } from "@/components/copy-email";
+import { Education } from "@/components/education";
 import { ExperienceGraph } from "@/components/experience";
 import { FitEmail } from "@/components/fit-email";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
+import { Marquee } from "@/components/marquee";
 import { Motion } from "@/components/motion";
 import { Nav } from "@/components/nav";
 import { PhotoSheet } from "@/components/photos";
@@ -13,7 +16,7 @@ import { ProjectList } from "@/components/projects";
 import { Section } from "@/components/section";
 import { SkillsGrid } from "@/components/skills";
 import { StatusBar } from "@/components/status-bar";
-import { contact, education } from "@/lib/content";
+import { contact } from "@/lib/content";
 import { site } from "@/lib/site";
 
 export default function Home() {
@@ -43,22 +46,15 @@ export default function Home() {
           <SkillsGrid />
         </Section>
 
-        <Section id="education">
-          <article className="edu" data-stagger="">
-            <p className="edu-when" data-item="">
-              <time>{education.dates}</time>
-            </p>
-            <div data-item="">
-              <h3>{education.school}</h3>
-              <h4>{education.degree}</h4>
-              <p className="meta">{education.location}</p>
-            </div>
-          </article>
+        <Section id="education" comment="// git checkout init, where it started">
+          <Education />
         </Section>
 
         <Section id="photos" comment="// what I see when I step away from the screen">
           <PhotoSheet />
         </Section>
+
+        <Marquee />
 
         <Section id="contact" comment={`// ${contact.availability}`}>
           <div className="contact">
@@ -78,27 +74,30 @@ export default function Home() {
               >
                 Download resume <Download className="i-down" strokeWidth={2} aria-hidden="true" />
               </a>
+              {/* icon-only: the visible name lives in the tooltip, the accessible name in sr-only text */}
               <a
-                className="btn"
+                className="btn icon"
                 href={site.linkedin}
                 target="_blank"
                 rel="noopener noreferrer me"
                 data-item=""
                 data-magnetic=""
+                data-tip="LinkedIn"
               >
-                LinkedIn <span className="sr-only">(opens in a new tab)</span>
-                <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                <LinkedInIcon />
+                <span className="sr-only">LinkedIn (opens in a new tab)</span>
               </a>
               <a
-                className="btn"
+                className="btn icon"
                 href={site.github}
                 target="_blank"
                 rel="noopener noreferrer me"
                 data-item=""
                 data-magnetic=""
+                data-tip="GitHub"
               >
-                GitHub <span className="sr-only">(opens in a new tab)</span>
-                <ArrowUpRight className="i-out" strokeWidth={2} aria-hidden="true" />
+                <GitHubIcon />
+                <span className="sr-only">GitHub (opens in a new tab)</span>
               </a>
               <CopyEmail email={site.email} />
             </div>
