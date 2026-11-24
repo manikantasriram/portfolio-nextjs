@@ -2,10 +2,10 @@ import { Download } from "lucide-react";
 import { Suspense } from "react";
 import { About } from "@/components/about";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+import { ContactForm } from "@/components/contact-form";
 import { CopyEmail } from "@/components/copy-email";
 import { Education } from "@/components/education";
 import { ExperienceGraph } from "@/components/experience";
-import { FitEmail } from "@/components/fit-email";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Marquee } from "@/components/marquee";
@@ -61,8 +61,16 @@ export default function Home() {
             <p className="kick" data-reveal="" aria-hidden="true">
               <b>$</b>mail
             </p>
+            {/* headline instead of the giant address: the form is the main action now */}
             <div className="big-mask" data-scene="email">
-              <FitEmail email={site.email} />
+              <h3 className="ctitle">Let&apos;s build something together.</h3>
+            </div>
+            <div data-reveal="">
+              <ContactForm />
+              <p className="cmail">
+                Prefer email? <a href={`mailto:${site.email}`}>{site.email}</a>
+                <CopyEmail email={site.email} compact />
+              </p>
             </div>
             <div className="cta" data-stagger="">
               <a
@@ -99,7 +107,6 @@ export default function Home() {
                 <GitHubIcon />
                 <span className="sr-only">GitHub (opens in a new tab)</span>
               </a>
-              <CopyEmail email={site.email} />
             </div>
           </div>
         </Section>

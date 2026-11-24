@@ -3,7 +3,11 @@
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function CopyEmail({ email }: { email: string }) {
+/**
+ * Copies the email address. `compact` renders a small icon-only button (used next to the address
+ * under the contact form); otherwise a full "Copy email" button.
+ */
+export function CopyEmail({ email, compact = false }: { email: string; compact?: boolean }) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -22,6 +26,30 @@ export function CopyEmail({ email }: { email: string }) {
     }
   };
 
+  const icon = copied ? (
+    <Check className="i-pop" strokeWidth={2.4} aria-hidden="true" />
+  ) : (
+    <Copy strokeWidth={2} aria-hidden="true" />
+  );
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        className="copy-ic"
+        onClick={copy}
+        data-copied={copied}
+        aria-label="Copy email address"
+        data-tip={copied ? "Copied" : "Copy"}
+      >
+        {icon}
+        <span className="sr-only" aria-live="polite">
+          {copied ? "Copied" : ""}
+        </span>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -32,11 +60,7 @@ export function CopyEmail({ email }: { email: string }) {
       data-magnetic=""
     >
       <span aria-live="polite">{copied ? "Copied" : "Copy email"}</span>
-      {copied ? (
-        <Check className="i-pop" strokeWidth={2.4} aria-hidden="true" />
-      ) : (
-        <Copy strokeWidth={2} aria-hidden="true" />
-      )}
+      {icon}
     </button>
   );
 }

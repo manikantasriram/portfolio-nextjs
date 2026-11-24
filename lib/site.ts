@@ -13,6 +13,8 @@ export const site = {
   locality: "Hyderabad",
   country: "IN",
   email: "manikantasriram98@gmail.com",
+  /** Web3Forms access key for the contact form. Public by design: it can only deliver to the email above. */
+  contactFormKey: "6f6fd1af-777d-4b06-98f9-d14a47733487",
   github: "https://github.com/manikantasriram",
   linkedin: "https://linkedin.com/in/manekanttasriram",
   resume: "/Manikanta_Sriram_Resume.pdf",

@@ -195,7 +195,7 @@ const enterScenes = {
    * letters ripple up under the cursor (fine pointers only).
    */
   email(mask: HTMLElement) {
-    const email = mask.querySelector<HTMLElement>(".big");
+    const email = mask.querySelector<HTMLElement>(".ctitle");
     gsap.set(mask, { opacity: 1 });
     if (!email) return;
     gsap.fromTo(
