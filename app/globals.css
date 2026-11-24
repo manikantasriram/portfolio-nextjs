@@ -159,7 +159,11 @@
     font: var(--fs-sm) / 1.5 var(--f-mono);
     color: var(--c);
   }
+  /* date, then place or link on its own line: the role column is narrow at every width */
   .meta {
+    display: grid;
+    justify-items: start;
+    gap: 4px;
     color: var(--mute);
     font-size: var(--fs-sm);
   }
@@ -630,6 +634,14 @@
     .cta .btn.icon {
       flex: none;
     }
+    /* Contact: Resume and the two icon buttons share one row, all 48px tall */
+    .contact .cta {
+      flex-wrap: nowrap;
+    }
+    .contact .cta .btn.main {
+      flex: 1 1 0;
+      min-width: 0;
+    }
     .cta .btn.icon + .btn:not(.icon) {
       flex: 1 1 0;
     }
@@ -905,6 +917,10 @@
       border-color 0.2s,
       background-color 0.2s;
   }
+  /* "all" selected reads as selected (ink), not greyed out like a disabled chip */
+  .gf.all {
+    --t: var(--ink);
+  }
   .gf.feat {
     --t: var(--acc);
   }
@@ -934,6 +950,12 @@
     .gf {
       min-height: 40px;
       padding: 0 14px;
+    }
+  }
+  /* phones: drop the command prefix (as in the photo filters) so the chips fit on one row */
+  @media (max-width: 600px) {
+    .gcmd {
+      display: none;
     }
   }
 
@@ -1086,6 +1108,9 @@
     color: var(--t);
     background: color-mix(in srgb, var(--t) 13%, transparent);
     justify-self: start;
+    /* same width for feat / perf / fix, so every message starts on one line */
+    min-width: calc(4ch + 16px);
+    text-align: center;
   }
   .ty.feat {
     --t: var(--acc);
@@ -1336,25 +1361,25 @@
     /* only used if the logos wrap: room for a first-row label between the rows */
     row-gap: 40px;
   }
-  /* phones and tablets: slightly smaller logos with a bit more overlap, so a full stack (up to 11)
-     fits on one row on most phones */
+  /* phones and tablets: the same logos as Skills (48px circles, 24px marks, 10px overlap) */
   /* (.pbody prefix: these must win over the base .pstack sizes further down this file) */
   @media (max-width: 899px) {
     .pbody .pstack .orbs {
-      padding-left: 13px;
+      padding-left: 10px;
+      row-gap: 14px; /* wrapped rows sit as close as in Skills */
     }
     .pbody .pstack .orb {
-      margin-left: -13px;
+      margin-left: -10px;
     }
     .pbody .pstack .orb-ic {
-      width: 38px;
-      height: 38px;
+      width: 48px;
+      height: 48px;
     }
     .pbody .pstack .orb-ic > img,
     .pbody .pstack .orb-ic > svg,
     .pbody .pstack .orb-ic > .bd {
-      width: 19px;
-      height: 19px;
+      width: 24px;
+      height: 24px;
     }
   }
   /* In project cards the name label opens BELOW the logo (arrow pointing up), into the gap before
@@ -1699,6 +1724,8 @@
   /* Photos reel */
   #photos {
     overflow-x: clip;
+    /* lets the reel measure the section width (cqw) instead of the viewport (vw) */
+    container-type: inline-size;
   }
   .reel {
     /* same height for every frame, width follows the photo */
@@ -1823,11 +1850,13 @@
   }
   /* track breaks out of the column; first frame lines up with the text */
   .reel-track {
-    --edge: max(24px, calc(50vw - 520px + 32px));
+    /* matches .wrap: 1240px column, 24px side padding (32px from 721px). cqw is the section's
+       width, which unlike vw leaves out a classic scrollbar, so the first frame sits on the text */
+    --edge: max(24px, calc(50cqw - 620px + 32px));
     display: flex;
     align-items: flex-start;
     gap: clamp(28px, 4vw, 64px);
-    margin-inline: calc(50% - 50vw);
+    margin-inline: calc(50% - 50cqw);
     padding: 4px var(--edge) 8px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -1837,6 +1866,11 @@
   }
   .reel-track::-webkit-scrollbar {
     display: none;
+  }
+  @media (min-width: 721px) {
+    .reel-track {
+      --edge: max(32px, calc(50cqw - 620px + 32px));
+    }
   }
   /* Pinned reel (desktop + GSAP). Frame height leaves room for the filters and caption on laptop screens. */
   .reel.pinned {
@@ -2189,8 +2223,68 @@
     .fl::-webkit-scrollbar {
       display: none;
     }
+    /* phones: a 2-column grid instead of the swipe strip, so every photo is visible at once */
     .reel-track {
-      gap: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 12px;
+      margin-inline: 0;
+      padding: 0;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+    .reel-track.nudge > li {
+      animation: none;
+    }
+    .shot figure {
+      width: 100%;
+    }
+    /* one shape for every tile keeps the grid rows even; the photo page shows the full frame */
+    .reel .frame {
+      height: auto;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: 10px;
+    }
+    .reel:not(.pinned) .shot:not([data-active]) .frame {
+      opacity: 1;
+    }
+    .shot figcaption {
+      gap: 4px;
+      padding-top: 10px;
+    }
+    .shot figcaption b {
+      font-size: var(--fs-sm);
+    }
+    /* "01 · architecture" stays on one line in a narrow tile */
+    .cap-n {
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    .cap-t,
+    .reel .open {
+      display: none;
+    }
+    /* Instagram / VSCO close the grid across both columns */
+    .reel-end {
+      grid-column: 1 / -1;
+      height: auto;
+      padding: 24px 0 0;
+      border-top: 1px solid var(--line);
+    }
+    .end-h {
+      font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+    /* arrow sits beside the handle instead of on its own line */
+    .reel-end a {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+    .end-k {
+      grid-column: 1 / -1;
+    }
+    .reel-nav {
+      display: none;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -2487,6 +2581,13 @@
     font-size: var(--fs-sm);
     color: var(--mute);
   }
+  /* address + copy button: one group that never wraps apart */
+  .cmail-addr {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
   .cmail a {
     color: var(--acc);
     font-weight: 600;
@@ -2497,6 +2598,7 @@
   }
   .copy-ic {
     position: relative;
+    flex: none; /* never squeezed below its touch size */
     display: grid;
     place-items: center;
     width: 36px;
@@ -2554,6 +2656,24 @@
     .copy-ic {
       width: 44px;
       height: 44px;
+    }
+  }
+
+  /* "Download resume" becomes "Resume" on very small phones; the long label stays for screen readers */
+  .lbl-short {
+    display: none;
+  }
+  @media (max-width: 360px) {
+    .lbl-long {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .lbl-short {
+      display: inline;
     }
   }
 

@@ -67,9 +67,13 @@ export default function Home() {
             </div>
             <div data-reveal="">
               <ContactForm />
+              {/* the address and its copy button are one group, so they never wrap apart */}
               <p className="cmail">
-                Prefer email? <a href={`mailto:${site.email}`}>{site.email}</a>
-                <CopyEmail email={site.email} compact />
+                <span>Prefer email?</span>
+                <span className="cmail-addr">
+                  <a href={`mailto:${site.email}`}>{site.email}</a>
+                  <CopyEmail email={site.email} compact />
+                </span>
               </p>
             </div>
             <div className="cta" data-stagger="">
@@ -80,7 +84,12 @@ export default function Home() {
                 data-item=""
                 data-magnetic=""
               >
-                Download resume <Download className="i-down" strokeWidth={2} aria-hidden="true" />
+                {/* very small phones show "Resume"; the full label stays for screen readers */}
+                <span className="lbl-long">Download resume</span>
+                <span className="lbl-short" aria-hidden="true">
+                  Resume
+                </span>
+                <Download className="i-down" strokeWidth={2} aria-hidden="true" />
               </a>
               {/* icon-only: the visible name lives in the tooltip, the accessible name in sr-only text */}
               <a

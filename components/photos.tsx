@@ -6,7 +6,7 @@ import { InstagramIcon, VscoIcon } from "@/components/brand-icons";
 import { photography } from "@/lib/content";
 
 /*
- * Photo reel. A native snap strip on phones (and until GSAP loads); on wide screens it pins and
+ * Photo reel. A 2-column grid on phones, a native snap strip on tablets (and until GSAP loads); on wide screens it pins and
  * scrolls sideways ("photos" scene in motion-scenes.ts). Each frame opens /photos/<slug>.
  */
 
@@ -79,7 +79,8 @@ export function PhotoSheet() {
   useEffect(() => {
     const track = trackRef.current;
     if (!track || !("IntersectionObserver" in window)) return;
-    if (!window.matchMedia("(max-width: 900px)").matches) return;
+    // only the swipe strip (tablets) needs the hint; phones show a grid
+    if (!window.matchMedia("(min-width: 601px) and (max-width: 900px)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let timer = 0;
     const io = new IntersectionObserver(
@@ -190,11 +191,8 @@ export function PhotoSheet() {
                 data-active={at === active ? "" : undefined}
                 style={{ "--ar": `${p.full.width} / ${p.full.height}` } as React.CSSProperties}
               >
-                <a
-                  className="shot-link"
-                  href={`/photos/${p.slug}`}
-                  aria-label={`${p.title}: open the full photo`}
-                >
+                {/* the name comes from the photo's alt text and the visible caption (WCAG 2.5.3 label in name) */}
+                <a className="shot-link" href={`/photos/${p.slug}`}>
                   <figure>
                     <div className="frame">
                       {/* eslint-disable-next-line @next/next/no-img-element -- static export, images are pre-sized */}

@@ -82,7 +82,6 @@ function RoleEntry({ role, filter }: { role: Role; filter: Filter }) {
         <h4>{role.title}</h4>
         <p className="meta">
           <time>{role.dates}</time>
-          <span aria-hidden="true"> · </span>
           {role.link ? (
             <a className="ext" href={role.link.href} target="_blank" rel="noopener noreferrer">
               {role.link.label} <span className="sr-only">(opens in a new tab)</span>
