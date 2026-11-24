@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Download } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { InstagramIcon } from "@/components/brand-icons";
 import { PhotoKeys } from "@/components/photo-keys";
 import { photography } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -162,7 +163,12 @@ export default async function PhotoPage({ params }: Params) {
           </nav>
 
           <a className="pv-ig" href={instagram.url} target="_blank" rel="noopener noreferrer me">
-            More frames on Instagram <b>@{instagram.handle}</b> <span className="sr-only">(opens in a new tab)</span>
+            <InstagramIcon />
+            {/* one text unit, so the sentence and handle wrap together beside the icon */}
+            <span>
+              More frames on Instagram <b>@{instagram.handle}</b>
+            </span>
+            <span className="sr-only">(opens in a new tab)</span>
             <ArrowUpRight size={15} strokeWidth={2} aria-hidden="true" />
           </a>
           <p className="pv-keys" aria-hidden="true">

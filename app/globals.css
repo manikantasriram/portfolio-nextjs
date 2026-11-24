@@ -1211,14 +1211,15 @@
     box-shadow:
       0 -12px 40px -28px var(--odrop),
       0 30px 60px -40px var(--odrop);
-    overflow: hidden;
     transform-origin: 50% 0%;
   }
-  /* soft accent glow that follows the cursor (interactions() in motion-scenes.ts sets --mx / --my) */
+  /* soft accent glow that follows the cursor (interactions() in motion-scenes.ts sets --mx / --my).
+     Rounded itself, so the card needs no overflow clipping and a logo's name label can show in full. */
   .prow::before {
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: inherit;
     background: radial-gradient(
       480px circle at var(--mx, 50%) var(--my, 0%),
       color-mix(in srgb, var(--acc) 11%, transparent),
@@ -1295,36 +1296,18 @@
   .plinks a:hover svg {
     transform: translate(2px, -2px);
   }
-  /* title across the full card; under it, status and description on the left, stack and links right */
+  /* one column at every size: status, description, stack logos, then links */
   .prow h3 {
     grid-column: 1 / -1;
   }
   .pbody {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    column-gap: clamp(24px, 4vw, 56px);
-    align-items: start;
+    justify-items: start;
   }
-  .pbody > * {
-    grid-column: 1;
-  }
-  .pbody > .pstatus {
-    justify-self: start;
-  }
+  /* card rhythm: status 12px, description, logos 20px below it, links 18px below those */
   .pbody > .pstack {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-  }
-  @media (max-width: 860px) {
-    .pbody {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .pbody > .pstack {
-      grid-column: 1;
-      grid-row: auto;
-      margin-top: 20px;
-    }
+    margin-top: 20px;
   }
   /* giant outlined project number */
   .pidx b {
@@ -1348,12 +1331,52 @@
   }
   /* Tech stack: the same overlapping logos as Skills (.orbs / .orb), under a JSON-style key.
      The orbs sit on the card's surface, so their separating ring uses that colour, not the page's. */
-  .pstack-k {
-    font: var(--fs-xs) / 1.4 var(--f-mono);
-    color: var(--p);
-  }
   .pstack .orbs {
-    padding-top: 26px; /* room for the name label above */
+    padding-top: 0;
+    /* only used if the logos wrap: room for a first-row label between the rows */
+    row-gap: 40px;
+  }
+  /* phones and tablets: slightly smaller logos with a bit more overlap, so a full stack (up to 11)
+     fits on one row on most phones */
+  /* (.pbody prefix: these must win over the base .pstack sizes further down this file) */
+  @media (max-width: 899px) {
+    .pbody .pstack .orbs {
+      padding-left: 13px;
+    }
+    .pbody .pstack .orb {
+      margin-left: -13px;
+    }
+    .pbody .pstack .orb-ic {
+      width: 38px;
+      height: 38px;
+    }
+    .pbody .pstack .orb-ic > img,
+    .pbody .pstack .orb-ic > svg,
+    .pbody .pstack .orb-ic > .bd {
+      width: 19px;
+      height: 19px;
+    }
+  }
+  /* In project cards the name label opens BELOW the logo (arrow pointing up), into the gap before
+     the links, so it never covers the description above. */
+  .pstack .orb-name {
+    bottom: auto;
+    top: calc(100% + 8px);
+    translate: -50% -6px;
+  }
+  .pstack .orb:hover .orb-name,
+  .pstack .orb:focus .orb-name {
+    translate: -50% 0;
+  }
+  .pstack .orb-name::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--ink);
+  }
+  /* room for that label: about 24px tall plus its 8px offset */
+  .pbody > .pstack + .plinks {
+    margin-top: 40px;
   }
   .pstack .orb-ic > img,
   .pstack .orb-ic > svg,
@@ -1376,6 +1399,53 @@
       0 0 0 3px var(--surface),
       0 0 0 5px var(--acc),
       0 12px 18px -10px var(--odrop);
+  }
+  /* Desktop: larger logos. Skills 56px circles with 28px marks, project stacks 48px with 24px marks
+     (logo glyphs in the 24-32px range read clearly). The overlap scales with them; phones keep the
+     smaller sizes above. */
+  /* scoped to .sg so these win over the base Skills rules, which come later in this file */
+  @media (min-width: 900px) {
+    .sg .orbs {
+      padding-left: 12px;
+    }
+    .sg .orb {
+      margin-left: -12px;
+    }
+    .sg .orb-ic {
+      width: 56px;
+      height: 56px;
+    }
+    .sg .orb-ic > img,
+    .sg .orb-ic > svg,
+    .sg .orb-ic > .bd {
+      width: 28px;
+      height: 28px;
+    }
+    .sg .orb-ic > .bd {
+      font-size: 0.75rem;
+    }
+    .sg .orb-ic > .bd.small {
+      font-size: 0.62rem;
+    }
+    .sgroups .sg h3 {
+      padding-top: 47px; /* keeps the key level with the middle of the larger logos */
+    }
+    .pstack .orbs {
+      padding-left: 10px;
+    }
+    .pstack .orb {
+      margin-left: -10px;
+    }
+    .pstack .orb-ic {
+      width: 48px;
+      height: 48px;
+    }
+    .pstack .orb-ic > img,
+    .pstack .orb-ic > svg,
+    .pstack .orb-ic > .bd {
+      width: 24px;
+      height: 24px;
+    }
   }
   @media (hover: hover) {
     .prow:hover h3 {
@@ -1959,12 +2029,22 @@
     color: var(--c);
   }
   .end-h {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    width: fit-content;
     padding-bottom: 6px;
     font: 700 clamp(1.75rem, 2.4vw + 0.9rem, 3rem) / 1.05 var(--f-head);
     letter-spacing: -0.035em;
     white-space: nowrap;
     background: linear-gradient(var(--acc), var(--acc)) 0 100% / 0 1px no-repeat;
     transition: background-size 0.7s var(--ease);
+  }
+  /* Instagram / VSCO mark before the handle */
+  .end-h > svg {
+    flex: none;
+    width: 0.8em;
+    height: 0.8em;
   }
   .end-go {
     color: var(--acc);
@@ -2272,6 +2352,11 @@
     width: fit-content;
     font-size: var(--fs-sm);
     color: var(--mute);
+  }
+  .pv-ig > svg:first-child {
+    flex: none;
+    width: 1.05em;
+    height: 1.05em;
   }
   .pv-ig b {
     color: var(--acc);

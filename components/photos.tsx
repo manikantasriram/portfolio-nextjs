@@ -2,6 +2,7 @@
 
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { InstagramIcon, VscoIcon } from "@/components/brand-icons";
 import { photography } from "@/lib/content";
 
 /*
@@ -233,13 +234,18 @@ export function PhotoSheet() {
             <div className="end-links">
               <a href={instagram.url} target="_blank" rel="noopener noreferrer me">
                 <span className="end-k">more on Instagram</span>
-                <span className="end-h">@{instagram.handle}</span>
+                <span className="end-h">
+                  <InstagramIcon />@{instagram.handle}
+                </span>
                 <span className="sr-only">(opens in a new tab)</span>
                 <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
               </a>
               <a href={vsco.url} target="_blank" rel="noopener noreferrer me">
                 <span className="end-k">full gallery on VSCO</span>
-                <span className="end-h">vsco/{vsco.handle}</span>
+                <span className="end-h">
+                  <VscoIcon />
+                  {vsco.handle}
+                </span>
                 <span className="sr-only">(opens in a new tab)</span>
                 <ArrowUpRight className="end-go" size={22} strokeWidth={1.8} aria-hidden="true" />
               </a>

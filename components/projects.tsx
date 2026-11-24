@@ -21,9 +21,6 @@ export function ProjectList() {
             <p>{p.description}</p>
             {/* same overlapping logos as the Skills section; the name shows on hover, focus or tap */}
             <div className="pstack">
-              <p className="pstack-k" aria-hidden="true">
-                &quot;stack&quot;:
-              </p>
               <ul className="orbs" aria-label={`${p.name} tech stack`}>
                 {p.stack.map((t, j) => (
                   <li key={t} className="orb" tabIndex={0} style={{ zIndex: p.stack.length - j }}>

@@ -235,6 +235,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "Vercel", icon: icon("vercel", true) },
       { name: "Jest", icon: icon("jest") },
       { name: "Pytest", icon: icon("pytest") },
+      { name: "Postman", icon: icon("postman") },
       { name: "Jira", icon: icon("jira") },
       { name: "Azure DevOps", icon: icon("azuredevops") },
     ],
