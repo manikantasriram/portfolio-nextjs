@@ -1366,7 +1366,6 @@
   @media (max-width: 899px) {
     .pbody .pstack .orbs {
       padding-left: 10px;
-      row-gap: 14px; /* wrapped rows sit as close as in Skills */
     }
     .pbody .pstack .orb {
       margin-left: -10px;
@@ -1381,17 +1380,21 @@
       width: 24px;
       height: 24px;
     }
+    /* a stack with no links after it (in progress): room inside the card for the last row's label */
+    .pbody > .pstack:last-child {
+      padding-bottom: 32px;
+    }
   }
   /* In project cards the name label opens BELOW the logo (arrow pointing up), into the gap before
      the links, so it never covers the description above. */
   .pstack .orb-name {
     bottom: auto;
     top: calc(100% + 8px);
-    translate: -50% -6px;
+    translate: calc(-50% + var(--dx, 0px)) -6px;
   }
   .pstack .orb:hover .orb-name,
-  .pstack .orb:focus .orb-name {
-    translate: -50% 0;
+  .pstack .orb:is(:focus-visible, [data-on]) .orb-name {
+    translate: calc(-50% + var(--dx, 0px)) 0;
   }
   .pstack .orb-name::after {
     top: auto;
@@ -1419,7 +1422,7 @@
       0 8px 14px -10px var(--odrop);
   }
   .pstack .orb:hover .orb-ic,
-  .pstack .orb:focus .orb-ic {
+  .pstack .orb:is(:focus-visible, [data-on]) .orb-ic {
     box-shadow:
       0 0 0 3px var(--surface),
       0 0 0 5px var(--acc),
@@ -1591,7 +1594,7 @@
   }
   /* highlight the key while one of its tools is hovered or focused */
   .sg:has(.orb:hover) h3 .skey,
-  .sg:has(.orb:focus) h3 .skey {
+  .sg:has(.orb:is(:focus-visible, [data-on])) h3 .skey {
     color: var(--acc);
   }
   .orbs {
@@ -1649,7 +1652,7 @@
     background: var(--ink);
     pointer-events: none;
     opacity: 0;
-    translate: -50% 6px;
+    translate: calc(-50% + var(--dx, 0px)) 6px;
     transition:
       opacity 0.2s,
       translate 0.35s var(--ease);
@@ -1659,17 +1662,17 @@
     content: "";
     position: absolute;
     top: 100%;
-    left: 50%;
+    left: calc(50% - var(--dx, 0px)); /* stays on the logo when the label shifts */
     translate: -50% 0;
     border: 5px solid transparent;
     border-top-color: var(--ink);
   }
   .orb:hover,
-  .orb:focus {
+  .orb:is(:focus-visible, [data-on]) {
     z-index: 20 !important; /* above its neighbours */
   }
   .orb:hover .orb-ic,
-  .orb:focus .orb-ic {
+  .orb:is(:focus-visible, [data-on]) .orb-ic {
     transform: translateY(-4px) scale(1.12);
     box-shadow:
       0 0 0 3px var(--bg),
@@ -1677,9 +1680,9 @@
       0 12px 18px -10px var(--odrop);
   }
   .orb:hover .orb-name,
-  .orb:focus .orb-name {
+  .orb:is(:focus-visible, [data-on]) .orb-name {
     opacity: 1;
-    translate: -50% 0;
+    translate: calc(-50% + var(--dx, 0px)) 0;
   }
   @media (hover: hover) {
     .orbs:hover .orb:not(:hover) .orb-ic {
@@ -1692,7 +1695,7 @@
       transition: none;
     }
     .orb:hover .orb-ic,
-    .orb:focus .orb-ic {
+    .orb:is(:focus-visible, [data-on]) .orb-ic {
       transform: none;
     }
   }
@@ -1704,6 +1707,12 @@
     }
     .sg h3 {
       padding-top: 0;
+    }
+    /* room above the logos for the label, clear of the key; if a group wraps (smallest phones),
+       room between the rows too */
+    .sg .orbs {
+      padding-top: 40px;
+      row-gap: 40px;
     }
   }
   .bd {
