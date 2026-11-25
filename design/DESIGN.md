@@ -77,7 +77,3 @@ Display sizes are fluid (`clamp`), so the larger number is the desktop size.
 - A visible focus ring on everything interactive.
 - With `prefers-reduced-motion`, nothing animates and nothing is hidden.
 - Links that open a new tab (LinkedIn, GitHub, the live demo, source code and Instagram) say so to screen readers.
-
-## Design file
-
-The full desktop and phone pages and a style guide are drawn in a Claude design file. It's private to the owner, who can share it from its Share menu: https://claude.ai/artifact/Atit6zG2NVJq15hq5RWtSs

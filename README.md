@@ -4,8 +4,20 @@ Source for my personal site, [manikantasriram.vercel.app](https://manikantasrira
 
 I'm a full stack developer in Hyderabad. The site is styled like a code editor: each section is a file (`about.md`, `experience.log`, `projects.tsx`, `skills.json`), my work history is drawn as a `git log --graph`, and a status bar at the bottom shows which file you're reading as you scroll.
 
+## Featured projects
+
+Both are live, with demo accounts on their sign-in pages.
+
+| Project | What it is | Links |
+| ------- | ---------- | ----- |
+| **NexusFlow** | Multi-tenant B2B project and document intelligence SaaS: organisations with owner, admin and member roles, a keyboard-accessible Kanban board with optimistic updates, and documents that are summarised and turned into tasks. React, TypeScript, TanStack Query, FastAPI, PostgreSQL, Redis, Docker, GitHub Actions. | [Live demo](https://nexusflow-manikanta.vercel.app) · [Source](https://github.com/manikantasriram/nexusflow) |
+| **Hotel Rate & Booking Manager** | Hotels, room types, rate plans and bookings with admin and staff roles, sortable data grids and a row lock that stops two people booking the last room. React, TypeScript, TanStack Query, FastAPI, PostgreSQL, Docker. | [Live demo](https://hotel-booking-manager.vercel.app) · [Source](https://github.com/manikantasriram/hotel-booking-manager) |
+
+The demo APIs run on Render's free plan, which sleeps when idle, so the first request after a quiet spell can take up to a minute.
+
 ## Contents
 
+- [Featured projects](#featured-projects)
 - [What's on the site](#whats-on-the-site)
 - [Stack](#stack)
 - [Running it locally](#running-it-locally)
