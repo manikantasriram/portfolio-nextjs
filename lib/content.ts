@@ -159,7 +159,7 @@ export const projects: Project[] = [
   {
     name: "NexusFlow — Multi-Tenant B2B Project & Document Intelligence SaaS",
     description:
-      "A B2B SaaS where organisations manage projects, tasks and documents in one workspace, with owner, admin and member roles. Planned scope: every query scoped to the organisation and covered by tenant-isolation tests, optimistic Kanban updates, Redis caching and rate limiting, rotating JWT refresh tokens, and Docker with GitHub Actions CI/CD.",
+      "A B2B SaaS where organisations manage projects, tasks and documents in one workspace, with owner, admin and member roles. Every query is scoped to the organisation and covered by tenant-isolation tests. The Kanban board updates optimistically, rolls back on errors and works fully by keyboard. Uploaded documents are summarised, and their to-dos become tasks in one click. Rotating refresh tokens with reuse detection, Redis-backed caching and login rate limiting, and Docker with GitHub Actions CI on PostgreSQL.",
     stack: [
       "React",
       "TypeScript",
@@ -173,7 +173,11 @@ export const projects: Project[] = [
       "Docker",
       "GitHub Actions",
     ],
-    status: "in progress",
+    status: "live",
+    links: {
+      demo: "https://nexusflow-manikanta.vercel.app",
+      code: "https://github.com/manikantasriram/nexusflow",
+    },
   },
 ];
 
