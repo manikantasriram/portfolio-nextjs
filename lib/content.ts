@@ -70,6 +70,30 @@ export const experience: Role[] = [
     ],
   },
   {
+    company: "Ascent Business Technology Inc",
+    title: "Jr. UI/UX Designer",
+    dates: "Oct 2022 – Nov 2022",
+    location: "Hyderabad, India",
+    ref: { label: "ui-ux", tone: "main" },
+    commits: [
+      {
+        hash: "6f2b8d3",
+        type: "feat",
+        text: "Designed wireframes and interactive prototypes in Figma and Adobe XD for a risk management fintech application.",
+      },
+      {
+        hash: "b40e7c9",
+        type: "feat",
+        text: "Created new designs for the company's web pages and web app, from first layout to developer-ready screens.",
+      },
+      {
+        hash: "d93a1f5",
+        type: "feat",
+        text: "Partnered with the UI team to refine existing interfaces with consistent design standards and cleaner layouts.",
+      },
+    ],
+  },
+  {
     company: "Gadgetbytes",
     title: "Freelance Video Editor",
     dates: "Feb 2022 – Apr 2024",
@@ -214,6 +238,7 @@ export const skillGroups: { title: string; skills: Skill[] }[] = [
       { name: "HTML5", icon: icon("html5") },
       { name: "CSS3", icon: icon("css3") },
       { name: "Tailwind CSS", icon: icon("tailwindcss") },
+      { name: "Material UI", icon: icon("materialui") },
     ],
   },
   {
